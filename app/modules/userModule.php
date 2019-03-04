@@ -1,0 +1,238 @@
+<?php 
+class userModule extends appCtrl{
+
+	public $DB;
+	
+	public function __construct()
+	{
+		$this->DB = new Database();
+		$this->DB->table = 'users';
+	}
+
+
+
+	public function allUsers()
+	{
+		$sql = "SELECT users.id, role_id, roles.role as 'role', name, email,  
+			isLocked, lockedDateTime, loginAttempts, status from users 
+			INNER JOIN roles on users.role_id = roles.id ";	
+
+		$user = $this->DB->rawSql($sql)->returnData();
+
+		if($user != null)
+		{
+			return $user;
+		}
+		else {
+			return false;
+		}
+	}
+
+
+	public function userById($id)
+	{
+		$sql = "SELECT users.id, role_id, roles.role as 'role', name, email,  
+			isLocked, lockedDateTime, loginAttempts, status from users 
+			INNER JOIN roles on users.role_id = roles.id WHERE users.id = $id LIMIT 1";	
+
+		if(!$user = $this->DB->rawSql($sql)->returnData())
+		{
+			return false;
+		}
+
+		return $user;
+
+		
+	}
+
+
+	public function addNewUser($data)
+	{
+
+		$password = $data['password'];
+
+		$hashedPassword = $this->hashPassword($password);
+
+		$data['password'] = $hashedPassword;
+
+
+		if(!$last_id = $this->DB->insert($data))
+		{
+			return false;
+		}
+
+		return $last_id;
+
+	}
+
+	
+	public function emailExists($email)
+	{
+
+		if($user_id = $this->DB->pluck('email')->Where("email = '".$email."'"))
+		{
+			return true;
+		}
+
+		else {
+			return false;
+		}
+
+	}
+
+
+	public function userByCreds($creds)
+	{
+
+		return $this->DB->returnSet($creds['email'], $creds['password']);
+
+	}
+
+	public function changePassword($id, $newPassword)
+	{
+
+		$data['password'] = $this->hashPassword($newPassword);
+
+		if($this->DB->update($data, $id))
+		{
+			return true;
+		}
+		else {
+			return $this->DB;
+		}
+	}
+
+
+	public function hashPassword($password)
+	{
+
+		$hashedPassword = password_hash($password, PASSWORD_BCRYPT, array(
+		'cost' => 12
+		));
+
+
+		return $hashedPassword;
+
+	}
+
+
+	public function userByEmail($email)
+	{
+
+		/*
+		$sql = "SELECT id, role_id, name, email, password, isLocked, lockedDateTime, loginAttempts, status, 
+		TIMESTAMPDIFF(SECOND, lockedDateTime, NOW()) AS 'Secs' from users where email = '{$email}' LIMIT 1";
+		*/
+
+		$sql = "SELECT users.id, role_id, roles.role as 'role', name, email, password, 
+			isLocked, lockedDateTime, loginAttempts, status, 
+			TIMESTAMPDIFF(SECOND, lockedDateTime, NOW()) AS 'Secs' from users 
+			INNER JOIN roles on users.role_id = roles.id 
+			where email = '{$email}' LIMIT 1";	
+
+		$user = $this->DB->rawSql($sql)->returnData();
+
+		if($user != null)
+		{
+			return $user;
+		}
+		else {
+			return false;
+		}
+	}
+
+	public function incrementAttempts($attempts, $user_id)
+	{
+
+		$data['loginAttempts'] = $attempts;
+
+
+		if($attempts >= MAX_LOGIN)
+		{
+			$this->lockUser($user_id);
+		}
+
+
+
+		return ($this->DB->update($data, $user_id)) ? true : false;
+	}
+
+	public function lockUser($user_id)
+	{
+
+		$data['isLocked'] = 1;
+		$data['lockedDateTime'] = $this->Dt_24();
+		$this->DB->update($data, $user_id);
+
+	}
+
+	public function unLockUser($user_id)
+	{
+		$data['isLocked'] = 0;
+		$data['loginAttempts'] = 0;
+		$data['lockedDateTime'] = '1000-01-01 00:00:00';
+		if($this->DB->update($data, $user_id))
+		{
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+
+
+	public function disableUser($user_id)
+	{
+
+		$this->lockUser($user_id);
+		$data['status'] = 0;
+		$this->DB->update($data, $user_id);
+	}
+
+
+	public function statusToggle($data, $user_id)
+	{
+
+
+		if($data['status'] == 1)
+		{
+
+			$data['loginAttempts'] = 0;
+			$data['lockedDateTime'] = '1000-01-01 00:00:00';
+		}
+		
+
+		if($this->DB->update($data, $user_id))
+		{
+			return true;
+		}
+		else {
+			return false;
+		}
+
+	}
+
+
+	public function lockedDurationCheck($user_id)
+	{
+
+		
+	}
+
+
+	public function pluckIdByEmail($email)
+	{
+
+		if($user_id = $this->DB->pluck('id')->Where("email = '".$email."'"))
+		{
+			return $user_id;
+		}
+
+		else {
+			return false;
+		}
+
+	}
+
+
+}
