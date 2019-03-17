@@ -32,10 +32,20 @@ class quizQuestionsModule {
 	public function allocateQuestionsByQuizId($quiz_id)
 	{
 
+		/*
+
 		$sql = "INSERT INTO quizQuestions (quiz_id, question_id)
 			SELECT qz.id as quiz_id, que.id as question_id from quiz qz
 			INNER JOIN questions que on qz.category_id = que.category_id 
 			WHERE qz.id = $quiz_id AND que.status = 1 AND (que.quiz_id = $quiz_id OR que.quiz_id IS NULL)";
+
+			*/
+
+		$sql = "INSERT INTO quizQuestions (quiz_id, question_id)
+			SELECT qz.id as quiz_id, que.id as question_id from quiz qz
+			INNER JOIN questions que on qz.category_id = que.category_id 
+			WHERE qz.id = $quiz_id AND que.status = 1 AND (que.quiz_id = $quiz_id OR que.quiz_id IS NULL)
+			AND que.section_id IN (SELECT subject_id from subjects where quiz_id = $quiz_id)";
 
 		if($this->DB->rawSql($sql))
 		{
@@ -67,8 +77,9 @@ class quizQuestionsModule {
 		*/
 		$sql = "SELECT GROUP_CONCAT(que.id) as question_id, count(que.id) as quecount from quiz qz
 				INNER JOIN questions que on qz.category_id = que.category_id 
-				WHERE qz.id = $quiz_id AND que.status = 1 AND (que.quiz_id = $quiz_id OR que.quiz_id IS NULL) AND 
-    			que.id NOT IN (SELECT question_id from quizquestions where quiz_id = $quiz_id)";
+				WHERE qz.id = $quiz_id AND que.status = 1 AND (que.quiz_id = $quiz_id OR que.quiz_id IS NULL) 
+				AND que.section_id IN (SELECT subject_id from subjects where quiz_id = $quiz_id) 
+    			AND que.id NOT IN (SELECT question_id from quizquestions where quiz_id = $quiz_id)";
 
 
 			if($data = $this->DB->rawSql($sql)->returnData())
@@ -82,32 +93,17 @@ class quizQuestionsModule {
 	}
 
 
-
-	public function statusToggle()
-	{
-
-
-
-
-	}
-
-
-	public function destroy()
-	{
-
-	}
-
-
 	public function listMatchQuestions($quiz_id)
 	{
 		$sql = "SELECT qq.id, qq.status as 'qqStatus', que.id as questionId, que.queDesc, que.optionA, que.optionB, que.optionC, que.optionD,
-			cat.name as category, 
+			cat.name as category, sub.name as 'subject',   
 			lvl.levelEN, lvl.levelAR, 
 			typ.typeEN, 
 			que.answer 
 			from quizquestions qq 
 			INNER JOIN questions que on que.id = qq.question_id 
 			INNER JOIN categories cat on cat.id = que.category_id 
+			INNER JOIN categories sub on sub.id = que.section_id 
 			INNER JOIN level lvl on que.level_id = lvl.id 
 			INNER JOIN type typ on typ.id = que.type_id 
 			WHERE qq.quiz_id = $quiz_id";
@@ -178,11 +174,26 @@ class quizQuestionsModule {
 	}
 
 
-
-	public function listQuizPlayQuestions($quiz_id, $reqQues)
+	public function appliedQuizSections($quiz_id)
 	{
 
 
+		$sql = "SELECT subject_id, quePerSection, points from subjects WHERE quiz_id = $quiz_id AND quePerSection > 0 AND points > 0";
+
+
+		if($subjects = $this->DB->rawSql($sql)->returnData())
+		{
+			return $subjects;
+		}
+
+			return false;
+
+	}
+
+
+
+	public function listQuizPlayQuestions($quiz_id, $reqQues)
+	{
 
 			$sql = "SELECT qq.id, qq.status as 'qqStatus', que.id as questionId, que.type_id, que.queDesc, que.optionA, que.optionB, que.optionC, que.optionD,
 			cat.name as category, 
@@ -208,6 +219,85 @@ class quizQuestionsModule {
 
 	}
 
+
+	public function listQuizPlayQuestionsDistro($quiz_id)
+	{
+
+			$subjects = $this->appliedQuizSections($quiz_id);
+
+
+
+			$questionsArray = [];
+
+
+			$counter = 1;
+
+
+
+
+			foreach ($subjects as $key => $subj) {
+
+
+
+			$subject_id = $subj['subject_id'];
+			$queFromSection = $subj['quePerSection'];
+
+
+
+			$sql = "SELECT qq.id, qq.status as 'qqStatus', que.id as questionId, que.type_id, que.queDesc, que.optionA, que.optionB, que.optionC, que.optionD,
+			cat.name as category, 
+            sec.name as 'subDecipline',
+			lvl.levelEN, lvl.levelAR, 
+			typ.typeEN 
+			
+			from quizquestions qq 
+			INNER JOIN questions que on que.id = qq.question_id 
+			INNER JOIN categories cat on cat.id = que.category_id 
+            INNER JOIN categories sec on que.section_id = sec.id 
+			INNER JOIN level lvl on que.level_id = lvl.id 
+			INNER JOIN type typ on typ.id = que.type_id 
+			WHERE qq.quiz_id = $quiz_id AND qq.status = 1 AND que.section_id = $subject_id  
+			ORDER BY RAND() LIMIT $queFromSection";
+
+
+			if($questions = $this->DB->rawSql($sql)->returnData())
+			{
+				foreach ($questions as $key => $item) {				
+					array_push($questionsArray, $item);	
+				}
+			}
+
+
+			
+			}
+		
+			return $questionsArray;
+			
+	}
+
+
+
+	public function quizAllocatedQuestionsSubjects($quiz_id)
+	{
+
+
+		$sql = "SELECT que.section_id as 'subject_id', sec.name as 'subjects' from quizquestions qq 
+		inner join questions que on que.id = qq.question_id inner join categories cat on cat.id = que.category_id 
+		inner join categories sec on sec.id = que.section_id 
+		inner join subjects sub on sub.subject_id = que.section_id 
+		where qq.quiz_id = $quiz_id AND sub.quiz_id = $quiz_id 
+		AND que.section_id IN (SELECT subject_id from subjects where quiz_id = $quiz_id) GROUP BY sec.id";
+
+
+		if($qqSubjects = $this->DB->rawSql($sql)->returnData())
+		{
+			return $qqSubjects;
+		}
+
+		return false;
+
+
+	}
 
 
 }

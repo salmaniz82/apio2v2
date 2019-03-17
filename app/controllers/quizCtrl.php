@@ -19,7 +19,6 @@
 			student will see the courses he is enrolled in
 		*/
 
-
 		$allowedRoles = [1,2];
     	if( JwtAuth::validateToken() && in_array((int) JwtAuth::$user['role_id'], $allowedRoles) )
 		{
@@ -42,14 +41,39 @@
 			}
 
 		}
+		else {
+			return $this->uaReponse();		
+		}
+
+	}
+
+
+
+	public function single()
+	{
+
+		$quizID = $this->getID();
+
+
+		if($quiz = $this->module->getQuizById($quizID))
+		{
+			$data['quiz'] = $quiz;
+			$statusCode = 200;
+		}
 
 		else {
 
-			return $this->uaReponse();
-			
-		}
+			$data['message'] = "Cannot Find Quiz with ID of $quizID";
+			$statusCode = 500;
 
-		
+		}	
+
+
+
+		return View::responseJson($data, $statusCode);
+
+
+
 	}
 
 
@@ -58,19 +82,36 @@
 		
 
 		$keys = array('title', 'category_id', 'minScore', 'maxScore', 'startDateTime', 'endDateTime', 'noques', 'duration');
-		$dataPayload = sanitize($keys);
+		$dataPayload = $this->module->DB->sanitize($keys);
+
 
 		$dataPayload['status'] = 0;
 		$dataPayload['enrollment'] = 0;
-
 		$dataPayload['user_id'] = $this->jwtUserId();
 
+		$decipline = $_POST['cleanDesp'];
+		$subDecipline = $_POST['cleanSubDesp'];
 
 		if($res = $this->module->addQuiz($dataPayload))
 		{
-			$data['message'] = "New Quiz added";
+			
 			$statusCode = 200;
-			$data['last_id'] = $res; 
+			$data['last_id'] = $res;
+
+			$categoryModule = $this->load('module', 'category');
+        	$subDescIds = $categoryModule->verifySubDeciplines($decipline, $subDecipline);
+        	$quiz_id = $res;
+        	// insert sub decipline with ids
+
+        	$subjectModule = $this->load('module', 'subject');
+        	if($subjectModule->saveQuizSubjects($quiz_id, $subDescIds))
+        	{
+        		$data['message'] = "New Quiz added with subjects";
+        	}
+        	else {
+        		$data['message'] = "New Quiz failed to save subjects";	
+        	}
+
 		}
 		else {
 
@@ -80,7 +121,7 @@
 
 		}
 
-		View::responseJson($data, 200);
+		return View::responseJson($data, $statusCode);
 
 	}
 
@@ -437,7 +478,7 @@
 			$data['quiz'] = $quiz;
 			$requiredQuestions = $quiz[0]['noques'];
 
-			if($questions = $quizQuestionModule->listQuizPlayQuestions($quiz_id, $requiredQuestions))
+			if($questions = $quizQuestionModule->listQuizPlayQuestionsDistro($quiz_id))
 			{
 				
 				$data['questions'] = $questions;
@@ -459,6 +500,35 @@
 		return View::responseJson($data, $statusCode);
 
 	}
+
+
+
+    public function quizProgress()
+    {
+    	/*
+    	teacher view of progress
+    	*/
+        $quiz_id = $this->getID();
+        if($progress = $this->module->quizProgress($quiz_id))
+        {
+        	$data['attempted'] = $progress;
+        	$data['status'] = true;
+        	$statusCode = 200;
+        }
+        else {
+
+
+        	$data['status'] = false;
+        	$statusCode = 500;
+
+        }
+        return View::responseJson($data, $statusCode);
+
+    }
+
+
+
+
 
 
 }

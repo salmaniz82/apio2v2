@@ -32,7 +32,7 @@
 	       LENGTH(p.path) - LENGTH(REPLACE(p.path,'/','')) - 2  
 	      ),
 	    c.name
-	    ) AS tree
+	    ) AS tree, pcat_id 
 	    FROM categories c
 	    LEFT JOIN category_path p ON c.id = p.cat_id
 	    ORDER BY p.path ASC;";
@@ -209,6 +209,43 @@
 		else {
 			return false;
 		}
+	}
+
+
+	public function getCatIdsByParent($decipline)
+	{
+
+
+		$sql = "SELECT id FROM categories WHERE pcat_id IN ($decipline)";
+
+		if($rows = $this->DB->rawSql($sql)->returnData())
+		{
+			return $rows;
+		}
+		else {
+			return false;
+		}
+
+
+	}
+
+
+
+	public function verifySubDeciplines($decipline, $subdecipline)
+	{
+
+		$dbcatIdsSanitized = [];
+		$parent_id = implode(',', $decipline);
+		$catIdsFromDB = $this->getCatIdsByParent($parent_id);
+
+		for($i=0; $i<sizeof($catIdsFromDB); $i++)
+		{		 
+			array_push($dbcatIdsSanitized, $catIdsFromDB[$i]['id']);
+
+		}
+
+		return array_intersect($dbcatIdsSanitized, $subdecipline);
+
 
 	}
 

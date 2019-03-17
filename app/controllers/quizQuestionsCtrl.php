@@ -82,6 +82,7 @@
 			$data['questions'] = $questions;
 			$data['noQues'] = sizeof($questions);
 			$data['category'] = $questions[0]['category'];
+			$data['qqSubjects'] = $this->module->quizAllocatedQuestionsSubjects($quiz_id);
 			$statusCode = 200;
 		}
 		else 

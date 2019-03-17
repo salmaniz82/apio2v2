@@ -138,31 +138,42 @@ $route->get('/quiz-global', 'quizCtrl@globals');
 
 $route->get('/quiz', 'quizCtrl@index');
 
-$route->post('/quiz', 'quizCtrl@save');
+$route->get('/quiz/{id}', 'quizCtrl@single');
 
+$route->post('/quiz', 'quizCtrl@save');
 
 $route->get('/quiz-question-validity/{id}', 'quizCtrl@checkValidityCount');
 
 $route->put('/quiz-enrollment-toggle/{id}', 'quizCtrl@enrollToggle');
 
 
+$route->get('/quiz/progress/{id}', 'quizCtrl@quizProgress');
+
+$route->get('/quiz/subjects/{id}', 'subjectCtrl@index');
+
+
+$route->put('/quiz/distribution/{id}', 'subjectCtrl@updateDistro');
+
+
+$route->get('/quiz/inspectanswers/{quiz_id}/{attempt_id}', 'answersCtrl@inpspectAnswers');
+
+$route->get('/quiz/scorecard/{quiz_id}/{attempt_id}', 'answersCtrl@scoreCard');
+
+
+
+
+
+
+
 /* STUDENT QUIZ LIST */
 
 $route->get('/std-quiz-list', 'quizCtrl@studentQuizListHandler');
-
-
 
 $route->post('/std-quiz-initiate', 'quizCtrl@studentQuizInitiate');
 
 $route->get('/std-quiz-play/quiz_id/{quiz_id}/attempt_id/{attempt_id}', 'quizCtrl@studentQuizData');
 
 $route->post('/std-patch-answers', 'answersCtrl@patchAnswers');
-
-
-
-
-
-
 
 
 $route->get('/quiz-questions-by-quiz-id/{id}', 'quizQuestionsCtrl@getQuestionByQuizId');
@@ -199,16 +210,15 @@ $route->put('/enroll/retake/{id}', 'enrollmentCtrl@toggleRetake');
 
 
 
+$route->get('/testQuizPlay/{id}', 'moduletestCtrl@testQuizPlayQuestion');
+
+
+
+
 
 
 
 $route->get('/demo', 'userCtrl@demopage');
-
-
-
-
-$route->get('/enrollicr', 'moduletestCtrl@incEnroll');
-
 
 
 

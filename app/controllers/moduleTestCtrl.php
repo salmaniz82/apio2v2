@@ -2,28 +2,6 @@
 
 
 
-	public function is_available()
-	{
-
-
-		$vehicleModule = $this->load('module', 'vehicle');
-
-		$vehicle_id = 59;
-
-		var_dump($vehicleModule->pluckVendor_id($vehicle_id));
-
-
-	}
-
-	public function updateMileage()
-    {
-
-        $id = 12139;
-        $vehicleModule = $this->load('module', 'vehicle');
-        $data['mileage'] = '321900';
-        $result = $vehicleModule->updateMileage($data, $id);
-
-    }
 
 
     public function loadgump()
@@ -35,23 +13,6 @@
     }
 
 
-    public function testcli()
-    {
-
-        $clientModule = $this->load('module', 'client');
-        $client_id = 500;        
-        $vendor_id = 500;
-
-        if($clientModule->addClient($client_id, $vendor_id))
-        {
-            echo "done";
-        }
-        else {
-            echo "failed";
-        }
-
-
-    }
 
 
     public function dateEvaluationTest()
@@ -147,16 +108,89 @@
     {
         
         $enrollmentModule = $this->load('module', 'enroll');
-
         $enrollmentModule->registerAttempt(57);
-
-
-
         View::responseJson($enrollmentModule->DB, 200);
 
+    }
+
+
+    public function catcheck()
+    {
+
+
+        /*
+            {
+                "title": "checking STD English 2",
+                "category_id": "75",
+                "cleanDesp": ["88"],
+                "cleanSubDesp":["93"],
+                "duration": 10,
+                "startDateTime": "2019-03-10 12:24",
+                "endDateTime": "2019-03-30 12:28",
+                "maxScore": 10,
+                "minScore": 8,
+                "noques": 10
+        }
+
+        */
+
+
+        $quizid = 45;
+
+
+        $decipline = $_POST['cleanDesp'];
+        $subDecipline = $_POST['cleanSubDesp'];
+        
+
+        $categoryModule = $this->load('module', 'category');
+        $subDescIds = $categoryModule->verifySubDeciplines($decipline, $subDecipline);
+
+        $dataset['cols'] = array('quiz_id', 'subject_id');
+
+        $keyCounter = 0;
+
+        foreach($subDescIds as $key => $value) {
+
+            $dataset['vals'][$keyCounter] = array($quizid, $value);
+
+            $keyCounter++;            
+        }
+
+
+        prx($dataset);     
+
+        /*
+        $subjectModule = $this->load('module', 'subject');
+        $subjectModule->saveQuizSubjects($quiz_id, $subDescIds);
+        */
+        
+
+    }
+
+
+
+
+
+    public function testQuizPlayQuestion()
+    {
+
+
+       $quiz_id = $this->getID();
+
+        $quizQuestionModule = $this->load('module', 'quizQuestions');
+
+        if($questions = $quizQuestionModule->listQuizPlayQuestionsDistro($quiz_id))
+            {
+                
+                $data['questions'] = $questions;
+
+            }
+
+            View::responseJson($data, 200);
 
 
     }
+
 
 
 }
