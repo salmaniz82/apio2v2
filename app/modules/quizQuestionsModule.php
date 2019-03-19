@@ -96,7 +96,7 @@ class quizQuestionsModule {
 	public function listMatchQuestions($quiz_id)
 	{
 		$sql = "SELECT qq.id, qq.status as 'qqStatus', que.id as questionId, que.queDesc, que.optionA, que.optionB, que.optionC, que.optionD,
-			cat.name as category, sub.name as 'subject',   
+			cat.name as category, sub.name as 'subject', que.section_id as 'subject_id',   
 			lvl.levelEN, lvl.levelAR, 
 			typ.typeEN, 
 			que.answer 
@@ -298,6 +298,22 @@ class quizQuestionsModule {
 
 
 	}
+
+
+	public function statusToggle($dataPayload, $qqid)
+	{
+
+
+		if($this->DB->update($dataPayload, $qqid))
+		{
+			return true;
+		}
+
+		return false;
+			
+
+	}
+		
 
 
 }

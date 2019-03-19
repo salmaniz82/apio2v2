@@ -174,7 +174,6 @@
     public function testQuizPlayQuestion()
     {
 
-
        $quiz_id = $this->getID();
 
         $quizQuestionModule = $this->load('module', 'quizQuestions');
@@ -186,10 +185,13 @@
 
             }
 
-            View::responseJson($data, 200);
-
+           View::responseJson($data, 200);
 
     }
+
+
+
+    
 
 
 

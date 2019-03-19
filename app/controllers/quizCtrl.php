@@ -338,9 +338,22 @@
 
 		if($statusValidity == 'valid' && $required > 0 && $allocated != 0)
 		{
-			// attempt to enable enrollment		
+			// attempt to enable enrollment	once passed the allocation test
 
-			return $this->enrollmentToggleHandler($dataPayload, $quiz_id);		
+
+			$distroData = $this->module->quizDistroValidity($quiz_id);	
+
+			if($distroData == false || $distroData['distStatus'] == 'invalid')
+			{
+				$data['message'] = "Please resolve Weight distribution invalid configuration";
+				$statusCode  = 400;
+			}
+
+			else {
+
+				return $this->enrollmentToggleHandler($dataPayload, $quiz_id);
+
+			}
 
 
 		}

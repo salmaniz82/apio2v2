@@ -144,6 +144,9 @@ $route->post('/quiz', 'quizCtrl@save');
 
 $route->get('/quiz-question-validity/{id}', 'quizCtrl@checkValidityCount');
 
+
+
+
 $route->put('/quiz-enrollment-toggle/{id}', 'quizCtrl@enrollToggle');
 
 
@@ -180,6 +183,8 @@ $route->get('/quiz-questions-by-quiz-id/{id}', 'quizQuestionsCtrl@getQuestionByQ
 
 $route->post('/quiz-question-allocate/{id}', 'quizQuestionsCtrl@allocateQuestions');
 
+$route->put('/quiz-question-status-toggle/{quiz_id}/{subject_id}', 'quizQuestionsCtrl@qqStatusToggle');
+
 $route->get('/quiz-questions/{id}', 'quizQuestionsCtrl@listMatchQuestions');
 
 $route->get('/newquestion-available/{id}', 'quizQuestionsCtrl@questionSyncCheck');
@@ -211,6 +216,11 @@ $route->put('/enroll/retake/{id}', 'enrollmentCtrl@toggleRetake');
 
 
 $route->get('/testQuizPlay/{id}', 'moduletestCtrl@testQuizPlayQuestion');
+
+
+
+
+
 
 
 

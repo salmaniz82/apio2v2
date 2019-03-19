@@ -167,4 +167,54 @@
 
 
 
+	public function qqStatusToggle()
+    {
+
+
+    	$_POST = Route::$_PUT;
+
+        $quiz_id = (int) Route::$params['quiz_id'];
+        $subject_id = (int) Route::$params['subject_id'];
+
+        $subjectModule = $this->load('module', 'subject');
+        $subjectsState = $subjectModule->canToggleQuizQuestions($quiz_id, $subject_id);
+
+
+        $dataPayload['status'] = $_POST['status'];
+        $qqid = $_POST['qqId'];
+
+
+        if($dataPayload['status'] == 0 && is_array($subjectsState) && $subjectsState['enableStatusToggle'] == 0)
+        {
+
+            $statusCode = 400;
+            $data['status'] = false;
+            $data['message'] = $subjectsState['quePerSection'] . " questions required ". " available " . $subjectsState['allocated'];
+            $data['subject'] = $subjectsState['subjects'];
+            return View::responseJson($data, $statusCode);
+
+        }
+
+        $data['toggleRequest'] = $dataPayload['status'] == 1;
+
+        
+        if($this->module->statusToggle($dataPayload, $qqid))
+        {
+        	
+	       	$statusCode = 200;
+            $data['status'] = true;
+            $data['message'] = ($dataPayload['status'] == 1) ? 'Questions Enabled for Quiz' : 'Questions Disabled for Quiz';
+        }
+
+        else {
+
+        	$statusCode = 500;
+            $data['status'] = false;
+            $data['message'] = "Failed while updating question status";
+        }
+
+        return View::responseJson($data, $statusCode);
+
+    }
+
 }

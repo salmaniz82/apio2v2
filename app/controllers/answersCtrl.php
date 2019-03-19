@@ -80,6 +80,8 @@ class answersCtrl extends appCtrl
 					
 				}
 
+
+				$data['qzAttemptSubjects'] = $this->module->quizAttemptQuestionSubjects($attempt_id);
 				$data['status'] = true;
 				$statusCode = 200;
 
@@ -109,6 +111,7 @@ class answersCtrl extends appCtrl
 			$data['scorecard'] = $scoreCard;
 			$data['total'] = array_sum(array_column($scoreCard, 'actualScore'));
 			$data['maxTotal'] = array_sum(array_column($scoreCard, 'maxScore'));
+			$data['queTotal'] = array_sum(array_column($scoreCard, 'quePerSection'));
 			$data['overAllPer'] = ($data['total'] / $data['maxTotal']) * 100;
 			$data['status'] = true;
 			$statusCode = 200;
