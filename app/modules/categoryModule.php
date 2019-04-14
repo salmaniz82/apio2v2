@@ -83,6 +83,16 @@
 	}
 
 
+	public function flatRootList()
+	{
+
+		$sql = "SELECT id, name from categories where pcat_id IS NULL";	
+
+		return 	$this->DB->rawSql($sql)->returnData();
+
+	}
+
+
 
 
 	public function checkDuplicate(array $dataPayload)

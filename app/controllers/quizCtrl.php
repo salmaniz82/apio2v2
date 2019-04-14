@@ -26,19 +26,24 @@
 			$user_id = $this->jwtUserId();
 			$role_id = $this->jwtRoleId();
 
-			if($role_id == 1)
+			if($quiz = $this->module->fetchQuizList($user_id, $role_id))
 			{
-				// list for admin
-				return $this->adminQuizListHandler();
-			}
 
-			else if ($role_id == 2)
-			{
-				
-				// list for entity / teacher
-				return $this->teacherQuizListHandler($user_id, $role_id);
+				$data['status'] = true;
+				$data['quiz'] = $quiz;
+				$statusCode = 200;
 
 			}
+
+			else {
+
+				$data['status'] = false;
+				$data['message'] = "NO Quiz found";
+				$statusCode = 404;
+
+			}
+
+			return View::responseJson($data, $statusCode);
 
 		}
 		else {
@@ -247,6 +252,8 @@
 
 	public function teacherQuizListHandler($user_id, $role_id)
 	{
+
+		// fetch teacher quiz list
 
 
 
@@ -494,7 +501,25 @@
 			if($questions = $quizQuestionModule->listQuizPlayQuestionsDistro($quiz_id))
 			{
 				
+
+				for($i=0; $i<sizeof($questions); $i++)
+				{
+
+
+					$question_id = $questions[$i]['questionId'];
+
+		
+					
+					if($media = $quizQuestionModule->getQuestionMedia($question_id))
+					{					
+						// attach a media to questions
+						$questions[$i]['media'] = $media;
+					}
+
+				}
+
 				$data['questions'] = $questions;
+
 
 			}
 

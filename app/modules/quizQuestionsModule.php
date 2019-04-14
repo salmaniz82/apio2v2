@@ -313,6 +313,18 @@ class quizQuestionsModule {
 			
 
 	}
+
+
+
+	public function getQuestionMedia($question_id)
+	{
+
+		$sql = "SELECT m.type, m.title, m.filepathurl from media m
+		INNER JOIN quemedia qm on m.id = qm.media_id where qm.question_id = $question_id";
+		return $this->DB->rawSql($sql)->returnData();
+
+	}
+	
 		
 
 

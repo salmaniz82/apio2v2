@@ -191,6 +191,35 @@
 
 
 
+    public function testMediaLink()
+    {
+
+        $question_id = $this->getID();
+
+        $quizQuestionModule = $this->load('module', 'quizQuestions');
+        $media = $quizQuestionModule->getQuestionMedia($question_id);
+
+
+        if($media)
+        {
+            $data = $media;
+        }
+
+        else {
+            $data['message'] = "not found";
+        }
+
+
+
+        View::responseJson($data, 200);
+
+        
+
+
+    }
+
+
+
     
 
 

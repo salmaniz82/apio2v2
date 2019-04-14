@@ -274,6 +274,28 @@
 
 
 
+	public function flatRootList()
+	{
+		if($category = $this->module->flatRootList())
+		{
+			$data['categories'] = $category;
+			$statusCode = 200;
+		}
+
+		else {
+
+			$data['message'] = "failed to load categoies";
+			$statusCode = 500;
+
+		}
+
+		return View::responseJson($data, $statusCode);
+
+
+	}
+
+
+
 
 
 }

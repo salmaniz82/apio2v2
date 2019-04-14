@@ -82,6 +82,9 @@ $route->post('/cat/add-with-text', 'categoryCtrl@addWithText');
 
 $route->get('/cats', 'categoryCtrl@index');
 
+
+$route->get('/category-flat-root', 'categoryCtrl@flatRootList');
+
 $route->get('/cats/{id}', 'categoryCtrl@single');
 
 $route->post('/cats', 'categoryCtrl@save');
@@ -218,13 +221,9 @@ $route->put('/enroll/retake/{id}', 'enrollmentCtrl@toggleRetake');
 $route->get('/testQuizPlay/{id}', 'moduletestCtrl@testQuizPlayQuestion');
 
 
+$route->get('/media', 'mediaCtrl@index');
 
-
-
-
-
-
-
+$route->post('/media', 'mediaCtrl@save');
 
 
 
@@ -232,8 +231,7 @@ $route->get('/demo', 'userCtrl@demopage');
 
 
 
-
-
+$route->get('/testmedialink/{id}', 'moduletestCtrl@testMediaLink');
 
 
 

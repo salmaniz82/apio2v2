@@ -36,7 +36,26 @@
 		{
 			$data['last_id'] = $last_Id;
 			$statusCode = 200;
-			
+
+
+			if(isset($_POST['mediaIds']))
+			{
+
+				$mediaIds = $_POST['mediaIds'];
+
+				$questionMediaModule = $this->load('module', 'questionsMedia');
+				if($questionMediaModule->saveQuestionMedia($last_Id, $mediaIds))
+				{
+					$data['message'] = "New Question Added Successfully";
+					$statusCode = 200;
+				}
+				else {
+					$data['message'] = "Failed to attach media to question";
+					$statusCode = 406;
+				}
+
+			}
+
 
 			/*
 				if that stored with quiz id that need to be auto synced to question table

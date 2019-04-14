@@ -27,6 +27,32 @@
 	}
 
 
+	public function fetchQuizList($user_id, $role_id)
+	{
+
+
+		if($role_id == 1)
+		{
+			$sql = "SELECT * from quiz ORDER BY id desc";
+		}
+		else {
+
+			$sql = "SELECT * from quiz where user_id = $user_id ORDER BY id desc";
+		}
+
+
+		if($data = $this->DB->rawSql($sql)->returnData())
+		{
+
+			return $data;
+		}
+		else {
+			return false;
+		}
+
+	}
+
+
 
 	public function getQuizById($quiz_id)
 	{

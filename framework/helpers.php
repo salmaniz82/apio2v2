@@ -68,4 +68,12 @@ function lang()
 }
 
 
+
+function sanitizeFilename($string)
+{
+	$res = preg_replace("/[^a-z0-9\.]/", "", $string);
+	return $res;
+}
+
+
 ?>
