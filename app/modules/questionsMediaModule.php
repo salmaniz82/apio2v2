@@ -12,16 +12,16 @@
 	}
 
 
-	public function saveQuestionMedia($queId, $mediaIds)
+	public function saveQuestionMedia($queId, $mediaPayload)
 	{
 
-		$dataset['cols'] = array('question_id', 'media_id');	
+		$dataset['cols'] = array('question_id', 'media_id', 'qmlabel');	
 
 		$keyCounter = 0;
 
-		foreach($mediaIds as $key => $value) {
+		foreach($mediaPayload as $key => $value) {
 
-			$dataset['vals'][$keyCounter] = array($queId, $value);
+			$dataset['vals'][$keyCounter] = array($queId, $value['id'], $value['title']);
 
 			$keyCounter++;
 		}	

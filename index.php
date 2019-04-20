@@ -233,6 +233,7 @@ $route->get('/demo', 'userCtrl@demopage');
 
 $route->get('/testmedialink/{id}', 'moduletestCtrl@testMediaLink');
 
+$route->get('/mediabyid/{id}', 'mediaCtrl@singleItemById');
 
 
 $route->otherwise( function() {

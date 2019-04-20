@@ -41,7 +41,7 @@
 		INNER JOIN categories cat on cat.id = m.category_id where m.id = $id";
 
 
-		if($data = $this->DB->getbyId($id)->returnData())
+		if($data = $this->DB->rawsql($sql)->returnData())
 		{
 			return $data;
 		}
@@ -67,12 +67,6 @@
 	}
 
 
-	public function update($data, $id)
-	{
-
-
-
-
-	}
+	
 
 }

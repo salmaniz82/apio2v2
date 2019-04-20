@@ -41,10 +41,13 @@
 			if(isset($_POST['mediaIds']))
 			{
 
-				$mediaIds = $_POST['mediaIds'];
+				$mediaPost = $_POST['mediaIds'];
 
+				$mediaPayload = [];
+
+				
 				$questionMediaModule = $this->load('module', 'questionsMedia');
-				if($questionMediaModule->saveQuestionMedia($last_Id, $mediaIds))
+				if($questionMediaModule->saveQuestionMedia($last_Id, $mediaPost))
 				{
 					$data['message'] = "New Question Added Successfully";
 					$statusCode = 200;
