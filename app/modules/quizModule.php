@@ -57,7 +57,10 @@
 	public function getQuizById($quiz_id)
 	{
 
-		$sql = "SELECT qz.id, qz.title, qz.category_id, cat.name as 'category', qz.maxScore, qz.minScore, qz.duration, qz.startDateTime, qz.endDateTime, qz.noques, qz.user_id from quiz qz
+		$sql = "SELECT qz.id, qz.title, qz.category_id, cat.name as 'category', 
+		qz.maxScore, qz.minScore, qz.duration, qz.startDateTime, qz.endDateTime, qz.noques, qz.user_id, qz.status as 'status',
+		qz.enrollment as 'enrollment' 
+		 from quiz qz
 		INNER JOIN categories cat on cat.id = category_id
 		WHERE qz.id = $quiz_id LIMIT 1;";
 
