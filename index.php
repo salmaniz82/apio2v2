@@ -119,6 +119,29 @@ $route->post('/register-enroll', 'userCtrl@registerEnroll');
 $route->get('/roles', 'rolesCtrl@index');
 
 
+
+
+/* PERMISSIONS */
+
+
+$route->get('/permissions', 'permissionsCtrl@index');
+
+$route->post('/permissions', 'permissionsCtrl@save');
+
+/* ROLE PERMISSIONS */
+
+$route->get('/role-permissions', 'rolePermissionsCtrl@index');
+
+$route->post('/role-permissions', 'rolePermissionsCtrl@save');
+
+/* ROLE PERMISSIONS */
+
+$route->get('/user-permissions/{id}', 'userPermissionsCtrl@index');
+
+$route->get('/user-permissions-concat/{id}', 'userPermissionsCtrl@permissionArrayList');
+
+
+
 /* CATEGORIES */
 
 
