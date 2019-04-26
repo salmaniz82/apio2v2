@@ -76,13 +76,21 @@ class jwtauthCtrl extends appCtrl {
 
 	    		$userModule->unLockUser($user[0]['id']);
 
+	    		$userPermissionModule = $this->load('module', 'userpermissions');
+
+	    		if($permissions = $userPermissionModule->permissionArrayList($user_id))
+	    		{
+	    			$user[0]['permissions'] = $permissions;	
+	    		}
+
+
 	    		$payload = $user[0];
 	    		$token = JwtAuth::generateToken($payload);
 	        	$data['status'] = true;
 	        	$data['message'] = 'user found';
 	        	$data['token'] = $token;
 	        	$data['user'] = $payload;
-	        	
+        	
 	        	$statusCode = 200;
 
 	    	}

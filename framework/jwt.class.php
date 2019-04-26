@@ -96,7 +96,7 @@ class JwtAuth {
                     return $token;
                 }
                 else {
-                    return "Error while updateing token";
+                    return "Error while updating token";
                 }
 
 
@@ -169,13 +169,8 @@ class JwtAuth {
 
         $db = new Database();
         $db->table = 'user_token';
-
-        $data['token'] = $token;
-        
-
+        $data['token'] = $token;       
         $id = $db->pluck('id')->where("user_id = $user_id");
-
-
 
         if($db->update($data, $id))
         {
