@@ -134,6 +134,8 @@ $route->get('/role-permissions', 'rolePermissionsCtrl@index');
 
 $route->post('/role-permissions', 'rolePermissionsCtrl@save');
 
+$route->delete('/role-permissions/{id}/{role_id}/{permission_id}', 'rolePermissionsCtrl@delete');
+
 /* ROLE PERMISSIONS */
 
 $route->get('/user-permissions/{id}', 'userPermissionsCtrl@index');

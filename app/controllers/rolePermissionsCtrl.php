@@ -1,0 +1,151 @@
+<?php class rolePermissionsCtrl extends appCtrl
+{
+
+	public $module;
+
+
+	public function __construct()
+	{
+		$this->module = $this->load('module', 'rolepermissions');
+	}
+
+
+	public function check()
+	{
+		echo  "check this one";
+	}
+
+
+	public function index()
+	{
+		if($rows = $this->module->returnAllRolePermissions())
+		{
+			$data['permissions'] = $rows;
+			$statusCode = 200;
+		}
+		else {
+			$data['message'] = "Permission not found";
+			$statusCode = 500;
+		}
+			$roleModule = $this->load('module', 'role');
+			$permssionModule = $this->load('module', 'permissions');
+			$data['allPermissions'] = $permssionModule->returnAllPermissions();
+			$data['allRoles'] = $roleModule->returnAllRoles();
+
+
+		return View::responseJson($data, $statusCode);
+	}
+
+
+	public function save()
+	{
+
+
+		if(isset($_POST['role_id']) && isset($_POST['permission_id']))
+		{
+			$role_id = $_POST['role_id'];
+			$permission_id = $_POST['permission_id'];
+
+		}
+
+		else {
+
+			$data['message'] = "Expected values were not found";
+			$statusCode = 406;
+
+			return View::responseJson($data, $statusCode);	
+
+		}
+
+
+		if(!$this->module->checkDuplicate($role_id, $permission_id))
+		{
+
+			// then insert new value
+			$dataPayload['role_id'] = $role_id;
+			$dataPayload['permission_id'] = $permission_id;
+
+			if($last_id = $this->module->insert($dataPayload))
+			{
+				
+				$data['lastRecord'] = $this->module->getById($last_id);
+				$statusCode = 200;
+
+				// load permission module
+
+				$userPermissionModule = $this->load('module', 'userpermissions');
+				if($affected = $userPermissionModule->permissionUpdateTriggerOnInsert($role_id, $permission_id))
+				{
+					$data['message'] = "Done with " . $affected . " users permission updated ";
+				}
+
+				else {
+					$data['message'] = "New Permission Added failed to udpate user permissions";
+				}
+
+
+			}
+			else {
+
+				$data['message'] = "Failed while adding new permission";
+				$statusCode = 500;
+			}
+
+		}
+		else {
+
+			$data['message'] = "Permission already associated with this role";
+			$statusCode = 406;
+		}
+		
+		return View::responseJson($data, $statusCode);
+	}
+
+
+	public function delete()
+	{
+
+
+		$rolePermissionId = $this->getID();
+		$role_id = (int) Route::$params['role_id'];;
+		$permission_id = Route::$params['role_id'];
+		
+
+		if($this->module->removeItem($rolePermissionId))
+		{
+
+			$data['message'] = "role permission removed";
+
+			$statusCode = 406;
+
+			// if delete is successfull trigger clean userPermission tables
+			$userPermissionModule = $this->load('module', 'userpermissions');	
+
+
+			if($affected = $userPermissionModule->userPermissionTriggerOnDelete($role_id, $permission_id))
+			{
+				
+				$data['count'] = $affected;
+				$statusCode = 200;
+				$data['meta'] = "removed and triggered worked";
+			}
+		}
+
+		else {
+
+			$data['message'] = "Failed while removing role permissions";
+			$statusCode = 500;
+
+		}
+
+
+		return View::responseJson($data, $statusCode);
+
+
+	}
+
+
+	
+
+
+}
