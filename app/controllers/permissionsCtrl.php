@@ -39,6 +39,20 @@
 		{
 
 				$dataPayload['name'] = slugify($_POST['name']);
+
+
+				if($this->module->checkDuplicate($dataPayload['name']))
+				{
+
+					$data['message'] = "Permission Already Exists";
+					$statusCode = 406;
+
+					return View::responseJson($data, $statusCode);
+
+				}
+
+
+
 				if($last_id = $this->module->insert($dataPayload))
 				{
 					$data['message'] = "New Permission created";

@@ -52,10 +52,28 @@
 	}	
 
 
-	public function restoreToDefaults()
+	public function resetUserPermission()
 	{
 
-		return true;
+		
+		
+		$userID = (int) $this->getParam('user_id');
+		$role_id = (int) $this->getParam('role_id');
+
+		if($resetCount = $this->module->deletePermissionsForSingleUser($userID, $role_id))
+		{
+			$data['message'] = "User set to defaults with " . $resetCount ." permissions";
+			$statusCode = 200;
+		}
+
+		else {
+
+			$data['message'] = "Cannot reset user permission please try later";
+			$statusCode = 500;
+
+		}
+
+		return View::responseJson($data, $statusCode);
 
 	}
 

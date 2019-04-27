@@ -43,7 +43,7 @@ class rolepermissionsModule {
 		INNER JOIN roles r on r.id = rp.role_id WHERE rp.id = $id LIMIT 1";
 
 
-		if($row = $this->DB->getbyId($id)->returnData())
+		if($row = $this->DB->rawSql($sql)->returnData())
 		{
 			return $row;
 		}

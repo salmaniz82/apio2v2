@@ -56,4 +56,16 @@ class permissionsModule {
 		}
 	}
 
+
+	public function checkDuplicate($permission)
+	{
+
+		if($this->DB->build('S')->Colums()->Where("name = '".$permission."'")->go()->returnData())
+		{
+			return true;
+		}
+		return false;
+	
+	}
+
 }

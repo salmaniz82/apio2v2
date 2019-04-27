@@ -104,6 +104,28 @@ class userpermissionsModule {
 	}
 
 
+
+	public function deletePermissionsForSingleUser($userID, $role_id)
+	{
+		$sql = "DELETE FROM userpermissions where user_id = $userID";
+		$this->DB->rawSql($sql);
+
+		return $this->insertUserPermissionSingleUser($userID, $role_id);
+		
+	}
+
+
+	public function insertUserPermissionSingleUser($userID, $role_id)
+	{
+
+		$sql = "INSERT INTO userpermissions(user_id, permission_id, status)	
+		SELECT $userID as 'user_id', rp.permission_id as 'permission_id', rp.status as 'status' from rolepermissions rp where rp.role_id = $role_id";
+		$this->DB->rawSql($sql);
+		return $this->DB->connection->affected_rows;
+
+	}
+
+
 	/*
 
 	GETTING ALL PERMISSION ASSOCIATED TO USER FILTER BY ROLE TYPE
@@ -112,17 +134,17 @@ class userpermissionsModule {
 	WHERE u.role_id = 4;
 
 
-	INSERT PERMISSION TO USERS MATCHED FROM ROLE PERMISSIONS
+	INSERT PERMISSION FOR ALL USERS MATCHED FROM ROLE PERMISSIONS
 	--------------------------------------------------------
 	INSERT INTO userpermissions(user_id, permission_id, status)
-	SELECT u.id as user_id, rp.permission_id as 'permission_id', 1 as 'status' from users u 
+	SELECT u.id as user_id, rp.permission_id as 'permission_id', rp.status as 'status' from users u 
 	INNER JOIN rolepermissions rp on u.role_id = rp.role_id;
 
 
 	INSERT PERMISSION FOR A SINGLE USER
 	-----------------------------------
 	INSERT INTO userpermissions(user_id, permission_id, status)	
-	SELECT $last_id as 'user_id', rp.permission_id as 'permission_id', rp.status as 'status' from rolepermissions rp where rp.role_id = $role_id;
+	SELECT $user_id as 'user_id', rp.permission_id as 'permission_id', rp.status as 'status' from rolepermissions rp where rp.role_id = $role_id;
 
 
 	GETTING PERMISSION FOR A SINGLE USER

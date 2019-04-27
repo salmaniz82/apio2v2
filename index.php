@@ -142,6 +142,8 @@ $route->get('/user-permissions/{id}', 'userPermissionsCtrl@index');
 
 $route->get('/user-permissions-concat/{id}', 'userPermissionsCtrl@permissionArrayList');
 
+$route->put('/users-permissons/reset/{user_id}/{role_id}', 'userPermissionsCtrl@resetUserPermission');
+
 
 
 /* CATEGORIES */

@@ -96,6 +96,25 @@ class appCtrl {
     }
 
 
+
+    public function getParam($label)
+	{
+		
+		if( isset(Route::$params[$label]) )
+		{
+			return Route::$params[$label];
+		}
+		else 
+		{
+			return null;
+		}
+
+	}
+
+
+
+
+
    
     
 }
