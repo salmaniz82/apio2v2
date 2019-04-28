@@ -37,6 +37,28 @@ class userpermissionsModule {
 
 	}
 
+
+	public function userPermissionByID($id)
+	{
+
+		$sql = "SELECT u.id as user_id, up.permission_id, per.name as 'permission',
+		up.status as 'pStatus' from users u 
+		inner join userpermissions up on up.user_id = u.id
+		inner join permissions per on per.id = up.permission_id 
+		WHERE up.id = $id";
+
+		if($row = $this->DB->rawSql($sql)->returnData())
+		{
+			return $row;
+		}
+
+		return false;
+
+	}
+
+
+
+
 	public function userPermissionConcat($user_id)
 	{
 
@@ -88,11 +110,12 @@ class userpermissionsModule {
 	public function userPermissionTriggerOnDelete($role_id, $permission_id)
 	{
 		$sql = "DELETE FROM userpermissions where id IN (
-        SELECT * FROM (
+    
+    	SELECT * FROM (
     	SELECT uper.id as 'id' from users u 
-			INNER JOIN userpermissions uper on u.id = uper.user_id
-			WHERE u.role_id = $role_id AND permission_id = $permission_id
-    	) AS P ";
+		INNER JOIN userpermissions uper on u.id = uper.user_id
+		WHERE u.role_id = $role_id AND permission_id = $permission_id
+    	) AS P )";
 
 
     	if($this->DB->rawSql($sql))
@@ -124,6 +147,103 @@ class userpermissionsModule {
 		return $this->DB->connection->affected_rows;
 
 	}
+
+
+	public function privateUserPermisstionToggle($dataPayload)
+	{
+
+		$user_id = $dataPayload['user_id'];
+		$permission_id = $dataPayload['permission_id'];
+		$status = $dataPayload['pStatus'];
+
+
+
+		$sql = "UPDATE userpermissions SET status = $status WHERE user_id = $user_id AND permission_id = $permission_id";
+
+
+		$this->DB->rawSql($sql);
+
+
+		if($this->DB->connection->affected_rows != 0)
+		{
+			return true;
+		}
+
+		return false;
+
+	}
+
+
+	public function userPermissionCustomList($user_id)
+	{
+
+
+		$sql = "SELECT per.id as 'id', per.name as 'permission' from permissions per
+		WHERE id NOT IN (select permission_id as 'id' from userpermissions where user_id = $user_id)";
+
+
+		if($row = $this->DB->rawSql($sql)->returnData())
+		{
+			return $row;
+		}
+
+		return false;
+
+	}
+
+
+
+	public function save($dataPayload)
+	{
+
+
+		if($lastId = $this->DB->insert($dataPayload))
+		{
+			return $lastId;
+		}
+
+		return false;
+
+	}
+
+
+	public function checkDuplicate($user_id, $permission_id)
+	{
+
+		if($this->DB->build('S')->Colums()->Where("user_id = '".$user_id."'")->Where("permission_id = '".$permission_id."'")->go()->returnData())
+		{
+			return true;
+		}
+		return false;
+	
+	}
+
+
+	public function rolePermissionIds($role_id, $permission_id)
+	{
+		$sql = "SELECT GROUP_CONCAT(CONCAT(uper.id)) as 'ids' from users u 
+		INNER JOIN userpermissions uper on u.id = uper.user_id WHERE u.role_id = $role_id AND permission_id = $permission_id";
+
+
+		if($row = $this->DB->rawSql($sql)->returnData())
+		{
+			$concatedList = $row[0]['ids'];
+			return $concatedList;
+		}
+
+	}
+
+
+
+	public function statusTogglePermissionOnRoleUpdate($uperIds, $status)
+	{
+
+		$sql = "UPDATE userpermissions SET status = $status WHERE id IN ($uperIds) ";
+		$this->DB->rawSql($sql);
+		return $this->DB->connection->affected_rows;
+
+	}
+
 
 
 	/*

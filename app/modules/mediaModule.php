@@ -17,7 +17,7 @@
 	{
 
 
-		$sql = "SELECT m.id, m.category_id, cat.name as 'category', m.title, m.filepathurl, m.type, m.size , m.user_id from media m
+		$sql = "SELECT m.id, m.category_id, cat.name as 'category', m.title, m.filepathurl, m.type, format_bytes(m.size) as 'size' , m.user_id from media m
 		INNER JOIN categories cat on cat.id = m.category_id";
 
 		$media = $this->DB->rawsql($sql)->returnData();
@@ -37,7 +37,7 @@
 	{
 
 
-		$sql = $sql = "SELECT m.id, m.category_id, cat.name as 'category', m.title, m.filepathurl, m.type, m.size , m.user_id from media m
+		$sql = $sql = "SELECT m.id, m.category_id, cat.name as 'category', m.title, m.filepathurl, m.type, format_bytes(m.size) as 'size' , m.user_id from media m
 		INNER JOIN categories cat on cat.id = m.category_id where m.id = $id";
 
 

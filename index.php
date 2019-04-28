@@ -136,13 +136,22 @@ $route->post('/role-permissions', 'rolePermissionsCtrl@save');
 
 $route->delete('/role-permissions/{id}/{role_id}/{permission_id}', 'rolePermissionsCtrl@delete');
 
+$route->put('/role-permissions', 'rolePermissionsCtrl@statusToggle');
+
+
 /* ROLE PERMISSIONS */
 
 $route->get('/user-permissions/{id}', 'userPermissionsCtrl@index');
 
+$route->post('/user-permissions', 'userPermissionsCtrl@saveCustomPermission');
+
+
 $route->get('/user-permissions-concat/{id}', 'userPermissionsCtrl@permissionArrayList');
 
 $route->put('/users-permissons/reset/{user_id}/{role_id}', 'userPermissionsCtrl@resetUserPermission');
+
+
+$route->put('/users-permissons/status-toggle/{user_id}/{permission_id}', 'userPermissionsCtrl@userPrivatePermissionToggle');
 
 
 

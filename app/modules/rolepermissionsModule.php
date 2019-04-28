@@ -95,4 +95,20 @@ class rolepermissionsModule {
 
 	}
 
+
+	public function statusToggle($dataPayload)
+	{
+
+
+		$status =  $dataPayload['status'];
+		$role_id = $dataPayload['role_id'];
+		$permission_id = $dataPayload['permission_id'];
+		
+		$sql = "UPDATE rolepermissions SET status = $status WHERE role_id = $role_id AND permission_id = $permission_id";
+		$this->DB->rawSql($sql);
+		return $this->DB->connection->affected_rows;
+
+	}
+
+
 }

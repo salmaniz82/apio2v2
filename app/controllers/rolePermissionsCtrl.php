@@ -108,7 +108,7 @@
 
 		$rolePermissionId = $this->getID();
 		$role_id = (int) Route::$params['role_id'];;
-		$permission_id = Route::$params['role_id'];
+		$permission_id = Route::$params['permission_id'];
 		
 
 		if($this->module->removeItem($rolePermissionId))
@@ -134,6 +134,50 @@
 		else {
 
 			$data['message'] = "Failed while removing role permissions";
+			$statusCode = 500;
+
+		}
+
+
+		return View::responseJson($data, $statusCode);
+
+
+	}
+
+
+	public function statusToggle()
+	{
+
+		$_POST = Route::$_PUT;
+		$dataPayload['status'] = $_POST['status'];		
+		$dataPayload['role_id'] = (int) $_POST['role_id'];
+		$dataPayload['permission_id'] = (int) $_POST['permission_id'];
+
+
+		if($this->module->statusToggle($dataPayload))
+		{
+
+			$userPermissionModule = $this->load('module', 'userpermissions');
+			$data['message'] = ($dataPayload['status'] == 0) ? "Permission Disabled" :  "Permission Enabled";
+			$data['status'] = $_POST['status'];
+			$permissionIdsToUPdate = $userPermissionModule->rolePermissionIds($dataPayload['role_id'], $dataPayload['permission_id']);
+
+
+			$udpateCount = $userPermissionModule->statusTogglePermissionOnRoleUpdate($permissionIdsToUPdate, $data['status']);
+
+
+			$data['count'] = $udpateCount;
+
+
+
+
+			$statusCode = 200;
+		}
+
+		else {
+
+			$data['message'] = "Failed permission status cannot be updated";
+			$data['status'] = $_POST['status'];
 			$statusCode = 500;
 
 		}
