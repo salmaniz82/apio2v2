@@ -272,6 +272,10 @@ $route->get('/testmedialink/{id}', 'moduletestCtrl@testMediaLink');
 $route->get('/mediabyid/{id}', 'mediaCtrl@singleItemById');
 
 
+
+$route->get('/test-enc-data', 'moduletestCtrl@testenc');
+
+
 $route->otherwise( function() {
 
     $data['message'] = 'Request Not found';

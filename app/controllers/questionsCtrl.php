@@ -93,6 +93,8 @@
 			$data['res'] = $last_Id;
 			$statusCode = 500;
 			$data['message'] = "Failed to Add new Question";
+			$data['db'] = $this->module->DB->connection;
+
 		}
 
 

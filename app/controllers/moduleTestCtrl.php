@@ -1,9 +1,6 @@
 <?php class moduleTestCtrl extends appCtrl {
 
 
-
-
-
     public function loadgump()
     {
 
@@ -12,9 +9,6 @@
 
     }
 
-
-
-
     public function dateEvaluationTest()
     {
 
@@ -22,10 +16,6 @@
         $currentDateTime = $this->Dt_24();
 
         echo "Current Datetime" . $currentDateTime . "<br>";
-
-
-
-
 
         $bookingModule = $this->load('module', 'booking');
 
@@ -39,9 +29,6 @@
 
         $startTime = (string) $this->convertToMysqlTime($startTime);
         $endTime = (string) $this->convertToMysqlTime($endTime);
-
-
-
 
         $startPoint = (string) $this->mergeDateTime($startDate, $startTime);
         $endPoint = (string) $this->mergeDateTime($endDate, $endTime);
@@ -174,7 +161,7 @@
     public function testQuizPlayQuestion()
     {
 
-       $quiz_id = $this->getID();
+        $quiz_id = $this->getID();
 
         $quizQuestionModule = $this->load('module', 'quizQuestions');
 
@@ -213,10 +200,45 @@
 
         View::responseJson($data, 200);
 
+    }
+
+
+    public function testenc()
+    {
+
+
+        /*
+        $this->module = $this->load('module', 'category');
+        $data['catlist'] = $this->module->flatJoinList();
+
+        
+        */
+
+        
+        $users = array(
+
+           'name' => "salman",
+           'email' => 'sa@isystematic.com',
+           'role' => 'admin',
+           'permission' => array('dashboard', 'users', 'quiz', 'questions')
+        );
+
+
+
+        $message = "Test";     
+        $jsEncoded  = "aGVsbG8gbXkgbmFtZSBpcyBjaHVua3kh";
+        $phpEncoded = "ImhlbGxvIG15IG5hbWUgaXMgY2h1bmt5ISI=";
+
+
+        echo $this->encodeData($message);
+        
         
 
 
     }
+
+
+
 
 
 
