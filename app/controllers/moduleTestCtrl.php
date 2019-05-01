@@ -225,16 +225,13 @@
 
 
 
-        $message = "Test";     
-        $jsEncoded  = "aGVsbG8gbXkgbmFtZSBpcyBjaHVua3kh";
-        $phpEncoded = "ImhlbGxvIG15IG5hbWUgaXMgY2h1bmt5ISI=";
-
-
-        echo $this->encodeData($message);
-        
         
 
+        $data['users'] = $this->encodeData($users);
 
+
+        return View::responseJson($data, 200);
+        
     }
 
 

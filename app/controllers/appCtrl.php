@@ -116,7 +116,6 @@ class appCtrl {
 	{
 
 		// return urlencode(base64_encode(json_encode($data)));
-
 		return base64_encode(json_encode($data));
 
 	}
@@ -125,18 +124,10 @@ class appCtrl {
 	public function decodeData($str)
 	{
 
-		
-		
-
 		return base64_decode($str);
-
-		
 
 	}
 
+	
 
-
-
-   
-    
 }

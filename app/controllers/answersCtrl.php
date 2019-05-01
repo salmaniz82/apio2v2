@@ -29,6 +29,9 @@ class answersCtrl extends appCtrl
 
 
 			$this->module->saveCalculatedSubjectsScore($attempt_id);
+
+			$queCounter = $this->module->udpateQuestionCounter($attempt_id);
+
 			$score = $this->module->getCalcuatedScoreSum($attempt_id);
 			$this->module->setBasicScore($attempt_id, $score);
 
@@ -36,6 +39,7 @@ class answersCtrl extends appCtrl
 			$data['correct'] = $correct;
 			$data['wrong'] = $inCorrect;
 			$data['score'] = $score;
+			$data['consumed'] = $queCounter;
 			$statusCode = 200;
 			$data['status'] = true;
 		}

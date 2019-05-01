@@ -141,7 +141,7 @@
 		INNER JOIN enrollment en on en.quiz_id = qz.id 
 		LEFT JOIN stdattempts sta on sta.enroll_id = en.id 
 		WHERE sta.id IN (SELECT max(id) as id from stdattempts group by enroll_id) AND
-		en.student_id = $student_id";
+		en.student_id = $student_id ORDER BY sta.attempted_at DESC";
 
 
 		if($quiz = $this->DB->rawSql($sql)->returnData())
@@ -231,7 +231,7 @@
 
 
 		$sql = "SELECT qz.id as 'quizId', sta.id as 'attemptId', std.id as 'student_id', en.id as 'enroll_id',  std.name, std.email,  qz.title, qz.category_id, qz.maxScore, qz.minScore, qz.duration, 
-		qz.noques, qz.user_id, en.attempts, en.retake,  DATE_FORMAT(sta.attempted_at,'%d-%m-%y %h:%i %p') as attempted_at, sta.score as 'score',
+		qz.noques, qz.user_id, en.attempts, en.retake,  sta.attempted_at as attempted_at, sta.score as 'score',
 
 		((sta.score * 100) / qz.maxScore) as 'per' 
 		
@@ -241,7 +241,7 @@
 
 		LEFT JOIN stdattempts sta on sta.enroll_id = en.id 
 		WHERE sta.id IN (SELECT max(id) as id from stdattempts group by enroll_id) AND
-		qz.id = $quiz_id";
+		qz.id = $quiz_id ORDER BY sta.attempted_at DESC";
 
 
 

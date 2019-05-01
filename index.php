@@ -276,6 +276,20 @@ $route->get('/mediabyid/{id}', 'mediaCtrl@singleItemById');
 $route->get('/test-enc-data', 'moduletestCtrl@testenc');
 
 
+
+
+$route->get('/xtime', function() {
+
+	$attemptedData = '2019-04-30 21:50:00';
+
+
+	echo strtotime(Date('Y-m-d H:i:s'));
+
+	// echo xTimeAgo($attemptedData);
+
+});
+
+
 $route->otherwise( function() {
 
     $data['message'] = 'Request Not found';

@@ -518,7 +518,7 @@
 
 				}
 
-				$data['questions'] = $questions;
+				$data['questions'] = $this->encodeData($questions);
 
 
 			}

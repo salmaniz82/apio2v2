@@ -87,7 +87,7 @@ class answersModule extends appCtrl {
 	public function setBasicScore($attempt_id, $score)
 	{
 		
-		$sql = "UPDATE stdattempts sta SET sta.score = $score WHERE sta.id = $attempt_id";
+		$sql = "UPDATE stdattempts sta SET sta.score = $score, sta.attempted_at = NOW() WHERE sta.id = $attempt_id";
 
 		if($this->DB->rawSql($sql))
 		{
@@ -250,6 +250,24 @@ class answersModule extends appCtrl {
 		else {
 			return false;
 		}
+	}
+
+
+
+	public function udpateQuestionCounter($attempt_id)
+	{
+
+		$sql = "UPDATE questions que 
+			INNER JOIN stdanswers sa on sa.question_id = que.id 
+			SET que.consumed = que.consumed + 1 WHERE sa.attempt_id = $attempt_id AND sa.answer <> 'u/a'";
+
+		if($this->DB->rawSql($sql))
+		{
+			return $this->DB->connection->affected_rows;
+		}
+
+		return false;
+
 	}
 
 
