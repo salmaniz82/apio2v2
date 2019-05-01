@@ -47,20 +47,35 @@
 
 		$quizModule = $this->load('module', 'quiz');
 		if(1 != $quizModule->quizEnrollmentEnabled($quiz_id))
-		{
-		
+		{	
 			// break the flow
-
 			$data['message'] = "Quiz Enrollment is disabled";
 			$statusCode = 406;
 			$data['status'] = false;
-
 			return View::responseJson($data, $statusCode);
+			die();
+		}
 
+		if(isset($_POST['dtsScheduled'])) 
+		{
+			$dateScheduled = $_POST['dtsScheduled'];
+		}
+		else {
+			$dateScheduled = NULL;		
+		}
+
+					
+		if(!$quizModule->validateEnrollmentRange($quiz_id, $dateScheduled))
+		{
+
+			$data['message'] = "Enrollment and Scheduled dates must be in range of Quiz startDatetime | endDateTime ";
+			$statusCode = 406;
+			$data['status'] = false;
+			return View::responseJson($data, $statusCode);
 			die();
 
-
 		}
+		
 
 
 

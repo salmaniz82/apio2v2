@@ -267,6 +267,29 @@
 	}
 
 
+	public function validateEnrollmentRange($quizId, $enrollmentDateTime = null)
+	{
+	
+
+		if($enrollmentDateTime == null)
+		{
+				$sql = "SELECT id, title from quiz where startDateTime <= NOW() AND endDateTime >= NOW() AND id = $quizId";
+		}		
+		else {
+			$sql = "SELECT id, title from quiz where startDateTime <= NOW() AND endDateTime >= $enrollmentDateTime AND id = $quizId";		
+		}
+		
+
+		if($this->DB->rawSql($sql)->returnData())
+		{
+			return true;
+		}
+
+		return false;
+
+	}
+
+
 
 
 }
