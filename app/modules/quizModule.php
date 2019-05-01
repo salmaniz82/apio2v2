@@ -100,26 +100,13 @@
 		// pending quiz query
 
 		$sql = "SELECT qz.id, en.id as 'enroll_id', qz.title, qz.category_id, qz.maxScore, qz.minScore, qz.duration, qz.noQues, 
-		en.student_id, en.dateEnrolled, en.attempts, en.retake,
-			IF(qz.endDateTime > NOW(), 'valid', 'expired') as 'validity' 
+		en.student_id, en.dateEnrolled, en.dtsScheduled,  en.attempts, en.retake,
+			IF(qz.endDateTime > NOW(), 'valid', 'expired') as 'validity',  IF(en.dtsScheduled > NOW(), 'countdown', 'eligible') as 'schedule' 
 		from enrollment en 
 		INNER JOIN quiz qz on qz.id = en.quiz_id 
 		WHERE en.id NOT IN (SELECT DISTINCT(enroll_id) from stdattempts) AND en.student_id = $studentId";
 
-				/*
-				attempted quiz list query
-				
-				SELECT sta.id as 'attemptId', qz.id as 'quizId', en.id as 'enroll_id', qz.title, qz.category_id, qz.maxScore, qz.minScore, qz.duration,
-					qz.noques, qz.user_id, en.attempts, en.retake,  sta.attempted_at, sta.score, 
-					IF(qz.endDateTime > NOW(), 'valid', 'expired') as 'validity' 
-				FROM quiz qz 
-				INNER JOIN enrollment en on en.quiz_id = qz.id 
-				LEFT JOIN stdattempts sta on sta.enroll_id = en.id 
-				WHERE sta.id IN (SELECT max(id) as id from stdattempts group by enroll_id);
-
-				*/
-
-			if($quiz = $this->DB->rawSql($sql)->returnData())
+		if($quiz = $this->DB->rawSql($sql)->returnData())
 			{
 				return $quiz;	
 			}
