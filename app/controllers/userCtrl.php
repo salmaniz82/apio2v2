@@ -86,15 +86,20 @@
 
 	}
 
-	public function destroy()
-	{
-
-	}
+	
 
 
 	public function statusToggle()
 	{
 		
+		if(!jwACL::isLoggedIn()) 
+			return $this->uaReponse();	
+		
+		if(!jwACL::has('user-status-toggle')) 
+			return $this->accessDenied();
+
+
+
 		$_POST = Route::$_PUT;
 		$user_id = $this->getID();
 		$data['status'] = $_POST['status'];
@@ -229,15 +234,22 @@
 				$data['message'] = "User With Email Already Exists";
 				$data['status'] = false;				
 			}
-
 			return View::responseJson($data, $statusCode);
-
-		
-
-
 	}
 
 
+	public function destroy()
+	{
+
+		if(!jwACL::isLoggedIn()) 
+			return $this->uaReponse();	
+		
+		if(!jwACL::has('delete-user')) 
+			return $this->accessDenied();
+
+		echo "You can now remove a user";
+
+	}
 
 
 }

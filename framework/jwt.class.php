@@ -26,7 +26,9 @@ class JwtAuth {
         $email = mysqli_real_escape_string($db->connection, $creds['email']);
         $password = mysqli_real_escape_string($db->connection, $creds['password']);
 
-        $result = $db->build('S')->Colums()->Where("email = '".$email."'")->go()->returnData();
+        $sql = "SELECT users.id, role_id, roles.role as 'role', name, email from users 
+            INNER JOIN roles on users.role_id = roles.id WHERE users.email = $email LIMIT 1";
+        $result = $db->rawSql()->returnData($sql);
 
         if($result != null)
         {           
@@ -136,7 +138,14 @@ class JwtAuth {
 
             $user_id = $storedToken[0]['user_id'];
 
-            $user = $db->getbyId($user_id, ['id', 'name', 'email', 'role_id'])->returnData();
+           // $user = $db->getbyId($user_id, ['id', 'name', 'email', 'role_id'])->returnData();
+
+            
+
+            $sql = "SELECT users.id, role_id, roles.role as 'role', name, email from users 
+            INNER JOIN roles on users.role_id = roles.id WHERE users.id = $user_id LIMIT 1";
+            $user = $db->rawSql($sql)->returnData();
+            
 
             self::$user = $user[0];
            

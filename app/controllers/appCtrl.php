@@ -30,8 +30,17 @@ class appCtrl {
 	{
 
 		$data['status'] = false;
-    	$data['message'] = "Access Denied";
+    	$data['message'] = "Not Authenticated Request denied";
 	    $statusCode = 401;
+    	return view::responseJson($data, $statusCode);
+	}
+
+	public function accessDenied() 
+	{
+
+		$data['status'] = false;
+    	$data['message'] = "Access Denied: Unauthorized";
+	    $statusCode = 403;
     	return view::responseJson($data, $statusCode);
 	}
 
@@ -71,9 +80,9 @@ class appCtrl {
 		{
 			return (int) JwtAuth::$user['id'];
 		}
-		else {
+		
 			return false;
-		}
+		
 
     }
 
@@ -84,9 +93,9 @@ class appCtrl {
 		{
 			return (int) JwtAuth::$user['role_id'];
 		}
-		else {
+		
 			return false;
-		}
+		
 
     }
 

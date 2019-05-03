@@ -13,7 +13,7 @@
 */
 require_once ABSPATH . 	'app/config.php';
 require_once ABSPATH . 	'app/controllers/appCtrl.php';
-require_once ABSPATH . 	'app/acl.php';
+require_once ABSPATH . 	'app/jwacl.php';
 
 /*
 	Loading Core Framework Files

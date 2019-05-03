@@ -13,9 +13,12 @@ $routeList = false;
 sleep(1);
 
 
+
 $route->get('/', function() {
-	$data = "Welcome to IO2 v3 API";
+	
+	$data = "Welcome to IO2 v3 API <br>";
 	view::responseJson($data, 200);
+
 });
 
 
@@ -279,23 +282,7 @@ $route->get('/testmedialink/{id}', 'moduletestCtrl@testMediaLink');
 
 $route->get('/mediabyid/{id}', 'mediaCtrl@singleItemById');
 
-
-
 $route->get('/test-enc-data', 'moduletestCtrl@testenc');
-
-
-
-
-$route->get('/xtime', function() {
-
-	$attemptedData = '2019-04-30 21:50:00';
-
-
-	echo strtotime(Date('Y-m-d H:i:s'));
-
-	// echo xTimeAgo($attemptedData);
-
-});
 
 
 $route->otherwise( function() {
