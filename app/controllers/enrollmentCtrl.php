@@ -177,8 +177,41 @@
 
 
 
+	public function udpateScheduleDatetime()
+	{
+
+		$enroll_id = $this->getID();
+		$quiz_id = $this->getParam('quiz_id');
+		$_POST = Route::$_PUT;
+		$dateScheduled  = $_POST['dtsScheduled'];
 
 
+		$quizModule = $this->load('module', 'quiz');
+
+
+		if(!$quizModule->validateEnrollmentRange($quiz_id, $dateScheduled))
+		{
+
+			$data['message'] = "Enrollment and Scheduled dates must be in range of Quiz startDatetime | endDateTime ";
+			$statusCode = 406;
+			$data['status'] = false;
+
+			return View::responseJson($data, $statusCode);
+			die();
+		}
+
+		$dataPayload['dtsScheduled'] = $dateScheduled;
+
+
+		if($this->module->udpateScheduleDateTime($dataPayload, $enroll_id))
+		{
+			$data['message'] = "Enrollment Scheduled with Success";
+			$statusCode = 200;
+		}
+
+		return View::responseJson($data, $statusCode);
+
+	}
 
 
 }

@@ -273,19 +273,15 @@
 
 		if($enrollmentDateTime == null)
 		{
-				$sql = "SELECT id, title from quiz where startDateTime <= NOW() AND endDateTime >= NOW() AND id = $quizId";
+				$sql = "SELECT id, title,startDateTime, endDateTime from quiz where startDateTime <= NOW() AND endDateTime >= NOW() AND id = $quizId";
 		}		
 		else {
-			$sql = "SELECT id, title from quiz where startDateTime <= NOW() AND endDateTime >= $enrollmentDateTime AND id = $quizId";		
+			$sql = "SELECT id, title, startDateTime, endDateTime from quiz where startDateTime <= NOW() AND endDateTime >= '{$enrollmentDateTime}' AND id = $quizId";		
 		}
+
+
+		return $this->DB->rawSql($sql)->returnData();
 		
-
-		if($this->DB->rawSql($sql)->returnData())
-		{
-			return true;
-		}
-
-		return false;
 
 	}
 

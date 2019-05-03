@@ -244,7 +244,15 @@ $route->get('/question-section-summary', 'questionsCtrl@summaryCount');
 
 
 
+
+
 $route->get('/enroll/{id}', 'enrollmentCtrl@listEnrolledStudents');
+
+
+$route->put('/enroll/schedule-datetime/{id}/{quiz_id}', 'enrollmentCtrl@udpateScheduleDatetime');
+
+
+
 
 $route->post('/enroll', 'enrollmentCtrl@saveEnrollment');
 

@@ -69,12 +69,19 @@ class Database
 
         $data = null;
 
-        while( $rows = $this->resource->fetch_assoc() )
+        if($this->resource != null || $this->resource != false)
         {
-            $data[] = $rows;
+
+            while( $rows = $this->resource->fetch_assoc() )
+            {
+                $data[] = $rows;
+            }
+
+            return $data;
+
         }
 
-        return $data;
+        return null;
 
     }
 

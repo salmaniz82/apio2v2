@@ -15,7 +15,7 @@
 	public function enrolledStudents($quiz_id)
 	{
 		
-		$sql = "SELECT en.id, en.student_id, en.quiz_id, std.name, std.email, date(en.dateEnrolled) as dateEnrolled, en.attempts, en.retake,
+		$sql = "SELECT en.id, en.student_id, en.quiz_id, en.dtsScheduled, std.name, std.email, en.dateEnrolled as 'dateEnrolled', en.attempts, en.retake,
 		qz.user_id 
 		from enrollment en 
 		inner join users std on std.id = en.student_id 
@@ -115,6 +115,19 @@
 		}
 
 		return false;
+	}
+
+
+	public function udpateScheduleDateTime($dataPayload, $enroll)
+	{
+
+		
+		if($this->DB->update($dataPayload, $enroll))
+		{
+			return $this->DB->connection->affected_rows;
+		}
+		return false;
+
 	}
 
 
