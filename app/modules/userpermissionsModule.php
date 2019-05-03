@@ -246,6 +246,22 @@ class userpermissionsModule {
 
 
 
+	public function assignNewUserDefaultRolePermissions($user_id, $role_id)
+	{
+		$sql = "INSERT INTO userpermissions (user_id, permission_id) 
+		SELECT $user_id as 'user_id', permission_id FROM rolepermissions where role_id = $role_id";
+
+		if($this->DB->rawSql($sql))
+		{
+			return true;
+		}
+
+		return false;
+
+	}
+
+
+
 	/*
 
 	GETTING ALL PERMISSION ASSOCIATED TO USER FILTER BY ROLE TYPE
