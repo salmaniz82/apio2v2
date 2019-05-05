@@ -247,7 +247,32 @@
 		if(!jwACL::has('delete-user')) 
 			return $this->accessDenied();
 
-		echo "You can now remove a user";
+
+
+		$user_id = $this->getID();
+
+
+		if($this->module->deleteUser($user_id))
+		{
+
+			$data['message'] = "User removed";
+			$statusCode = 200;
+			$data['status'] = false;
+
+		}
+
+		else {
+
+			$statusCode = 500;
+			$data['message'] = "User removal failed";
+			$data['status'] = false;
+
+		}
+
+
+
+
+		return View::responseJson($data, $statusCode);	
 
 	}
 

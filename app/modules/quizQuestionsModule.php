@@ -44,7 +44,8 @@ class quizQuestionsModule {
 		$sql = "INSERT INTO quizQuestions (quiz_id, question_id)
 			SELECT qz.id as quiz_id, que.id as question_id from quiz qz
 			INNER JOIN questions que on qz.category_id = que.category_id 
-			WHERE qz.id = $quiz_id AND que.status = 1 AND (que.quiz_id = $quiz_id OR que.quiz_id IS NULL)
+			WHERE qz.id = $quiz_id AND que.status = 1 AND (que.quiz_id = $quiz_id OR que.quiz_id IS NULL) 
+			AND que.consumed <= qz.threshold  
 			AND que.section_id IN (SELECT subject_id from subjects where quiz_id = $quiz_id)";
 
 		if($this->DB->rawSql($sql))
@@ -63,7 +64,9 @@ class quizQuestionsModule {
 		$sql = "INSERT IGNORE INTO quizquestions (quiz_id, question_id)
 			SELECT qz.id as quiz_id, que.id as question_id from quiz qz
 			INNER JOIN questions que on qz.category_id = que.category_id 
-			WHERE qz.id = $quiz_id AND que.status = 1 AND (que.quiz_id = $quiz_id OR que.quiz_id IS NULL)";
+			WHERE qz.id = $quiz_id AND que.status = 1 
+			AND que.consumed <= qz.threshold 
+			AND (que.quiz_id = $quiz_id OR que.quiz_id IS NULL)";
 			$this->DB->rawSql($sql);
 			return $this->DB->connection->affected_rows;
 		
@@ -78,6 +81,7 @@ class quizQuestionsModule {
 		$sql = "SELECT GROUP_CONCAT(que.id) as question_id, count(que.id) as quecount from quiz qz
 				INNER JOIN questions que on qz.category_id = que.category_id 
 				WHERE qz.id = $quiz_id AND que.status = 1 AND (que.quiz_id = $quiz_id OR que.quiz_id IS NULL) 
+				AND que.consumed <= qz.threshold 
 				AND que.section_id IN (SELECT subject_id from subjects where quiz_id = $quiz_id) 
     			AND que.id NOT IN (SELECT question_id from quizquestions where quiz_id = $quiz_id)";
 
@@ -96,6 +100,7 @@ class quizQuestionsModule {
 	public function listMatchQuestions($quiz_id)
 	{
 		$sql = "SELECT qq.id, qq.status as 'qqStatus', que.id as questionId, que.queDesc, que.optionA, que.optionB, que.optionC, que.optionD,
+			que.consumed as 'hits',  
 			cat.name as category, sub.name as 'subject', que.section_id as 'subject_id',   
 			lvl.levelEN, lvl.levelAR, 
 			typ.typeEN, 
@@ -141,6 +146,7 @@ class quizQuestionsModule {
 
 
 		$sql = "SELECT qq.id, qq.status as 'qqStatus', que.id as questionId, que.queDesc, que.optionA, que.optionB, que.optionC, que.optionD,
+				que.consumed as 'hits', 
 			cat.name as category, 
 			lvl.levelEN, lvl.levelAR, 
 			typ.typeEN, 
@@ -322,6 +328,26 @@ class quizQuestionsModule {
 		$sql = "SELECT m.type, qm.qmlabel as 'title', m.filepathurl from media m
 		INNER JOIN quemedia qm on m.id = qm.media_id where qm.question_id = $question_id";
 		return $this->DB->rawSql($sql)->returnData();
+
+	}
+
+
+	public function thresholdValidation($quizId)
+	{
+		$sql  = "SELECT count(qq.id) as 'expired',
+			qz.threshold  
+			from quizquestions qq 
+			INNER JOIN questions que on que.id = qq.question_id 
+            INNER JOIN quiz qz on qz.id = qq.quiz_id 
+			WHERE qq.status = 1 AND qq.quiz_id = $quizId  
+            AND que.consumed > qz.threshold";
+
+            if($row = $this->DB->rawSql($sql)->returnData())
+            {
+            	return $row[0];	
+            }
+
+           return false;
 
 	}
 	

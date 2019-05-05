@@ -282,7 +282,9 @@ $route->get('/testmedialink/{id}', 'moduletestCtrl@testMediaLink');
 
 $route->get('/mediabyid/{id}', 'mediaCtrl@singleItemById');
 
-$route->get('/test-enc-data', 'moduletestCtrl@testenc');
+$route->get('/test-encoding', 'moduletestCtrl@testenc');
+
+
 
 
 $route->otherwise( function() {

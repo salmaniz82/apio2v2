@@ -235,4 +235,20 @@ class userModule extends appCtrl{
 	}
 
 
+	public function deleteUser($userId)
+	{
+
+
+		if($this->DB->delete($userId, true))
+		{
+			return true;
+		}
+
+
+		return false;
+
+
+	}
+
+
 }

@@ -286,6 +286,21 @@
 	}
 
 
+	public function pluckThresholdByQuizId($quizID)
+	{
+
+		if($threshold = $this->DB->pluck('threshold')->Where("id = '".$quizID."'"))
+		{
+			return $threshold;
+		}
+
+		else {
+			return false;
+		}
+
+	}
+
+
 
 
 }
