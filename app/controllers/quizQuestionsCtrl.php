@@ -39,6 +39,8 @@
 		
 		$quiz_id = $this->getID();
 
+		$this->module->globalThresholdByQuizId($quiz_id);
+
 		if($affectedRows = $this->module->allocateQuestionsByQuizId($quiz_id))
 		{
 			
@@ -75,6 +77,8 @@
 
 		$quiz_id = $this->getID();
 
+		$this->module->globalThresholdByQuizId($quiz_id);
+
 
 		if($questions = $this->module->listMatchQuestions($quiz_id))
 		{
@@ -84,6 +88,9 @@
 			$data['category'] = $questions[0]['category'];
 			$data['qqSubjects'] = $this->module->quizAllocatedQuestionsSubjects($quiz_id);
 			$data['threshold'] = $this->module->thresholdValidation($quiz_id);
+			$data['globalThreshold'] = GLOBAL_Threshold;
+			$data['gThresholdCount'] = (int) $this->module->globalThresholdCount($quiz_id);
+
 			$statusCode = 200;
 		}
 		else 
@@ -103,6 +110,8 @@
 	{
 
 		$quiz_id = $this->getID();
+
+		$this->module->globalThresholdByQuizId($quiz_id);
 
 
 		if($newQuesAvailable = $this->module->synchronizeCheck($quiz_id))
@@ -217,5 +226,6 @@
         return View::responseJson($data, $statusCode);
 
     }
+
 
 }

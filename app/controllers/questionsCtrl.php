@@ -21,7 +21,7 @@
 	{
 
 		$keys = array('category_id', 'section_id', 'level_id', 'type_id', 'queDesc', 'optionA', 'optionB', 'optionC', 'optionD', 'answer');
-		$dataPayload = sanitize($keys);
+		$dataPayload = $this->module->DB->sanitize($keys);
 		$dataPayload['user_id'] = $this->jwtUserId();
 		$dataPayload['status'] = 1;
 

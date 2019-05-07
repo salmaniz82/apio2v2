@@ -104,14 +104,23 @@ class quizQuestionsModule {
 			cat.name as category, sub.name as 'subject', que.section_id as 'subject_id',   
 			lvl.levelEN, lvl.levelAR, 
 			typ.typeEN, 
-			que.answer 
+			que.answer,
+
+			(CASE 
+            WHEN que.entity_id IS NULL AND que.quiz_id IS NULL 
+             THEN 'public' 
+             WHEN que.entity_id IS NULL AND que.quiz_id = qq.quiz_id   
+             then 'private'
+             ELSE 'local'
+             end ) as 'scope' 
+
 			from quizquestions qq 
 			INNER JOIN questions que on que.id = qq.question_id 
 			INNER JOIN categories cat on cat.id = que.category_id 
 			INNER JOIN categories sub on sub.id = que.section_id 
 			INNER JOIN level lvl on que.level_id = lvl.id 
 			INNER JOIN type typ on typ.id = que.type_id 
-			WHERE qq.quiz_id = $quiz_id";
+			WHERE qq.quiz_id = $quiz_id ORDER BY qq.status DESC, que.consumed DESC";
 
 			if($questions = $this->DB->rawSql($sql)->returnData())
 			{
@@ -150,7 +159,17 @@ class quizQuestionsModule {
 			cat.name as category, 
 			lvl.levelEN, lvl.levelAR, 
 			typ.typeEN, 
-			que.answer 
+			que.answer,
+
+			(CASE 
+            WHEN que.entity_id IS NULL AND que.quiz_id IS NULL 
+             THEN 'public' 
+             WHEN que.entity_id IS NULL AND que.quiz_id = qq.quiz_id   
+             then 'private'
+             ELSE 'local'
+             end ) as 'scope' 
+
+
 			from quizquestions qq 
 			INNER JOIN questions que on que.id = qq.question_id 
 			INNER JOIN categories cat on cat.id = que.category_id 
@@ -347,11 +366,56 @@ class quizQuestionsModule {
             	return $row[0];	
             }
 
-           return false;
+	}
 
+	public function globalThresholdCount($quizId)
+	{
+		$globalThreshold = GLOBAL_Threshold;
+
+		$sql  = "SELECT count(qq.id) as 'expired'
+			
+			from quizquestions qq 
+			INNER JOIN questions que on que.id = qq.question_id 
+            INNER JOIN quiz qz on qz.id = qq.quiz_id 
+			WHERE qq.status = 1 AND qq.quiz_id = $quizId  
+            AND que.consumed > $globalThreshold";
+
+            if($row = $this->DB->rawSql($sql)->returnData())
+            {
+            	return $row[0]['expired'];
+            }
+
+            return 0;
+	}
+
+	public function globalThresholdByQuizId($quiz_id)
+	{
+
+		/*
+		disable questions global status when crossed global threshold limit
+		fire prerior to on question listings
+		- before allocation
+		- before listings
+		- before synchronization check
+
+		*/
+		$globalThreshold = GLOBAL_Threshold;
+		$sql = "UPDATE questions que INNER JOIN quiz qz on que.quiz_id = qz.id 
+		SET que.status = 0 
+		WHERE que.quiz_id = $quiz_id AND que.consumed > $globalThreshold";
+		$this->DB->rawSql($sql);
+		return $this->DB->connection->affected_rows;
 	}
 	
 		
 
 
 }
+
+
+/*
+
+public private
+SELECT quiz_id, entity_id, IF(entity_id IS NULL AND quiz_id IS NULL, "public", "private") AS 'SCOPE' from questions;
+
+*/

@@ -1,45 +1,34 @@
 <?php
 
 
-Event::on('load', function() {
+Event::on('quiz-inintiate', function() {
 
 	echo "this should fire when load fired <br />";
 
 });
 
 
-Event::on('load', function() {
+Event::on('quiz-submission', function() {
 
 	echo "this should fire when load fired 2 <br />";
 
 });
 
 
-Event::on('publish', function() {
+Event::on('before-list-quiz-questions', function() {
 
 	echo "update notification <br />";
 
 });
 
 
-Event::on('publish', function() {
+Event::on('new-user-creation', function() {
 
-	echo "trigger email <br />";
-
-});
-
-
-Event::on('publish', function() {
-
-	echo "update sitemap.xml <br />";
+	echo "You can now trigger new email for the user <br />";
 
 });
 
-Event::on('update', function() {
 
-	echo "post were updated <br>";
-
-});
 
 
 

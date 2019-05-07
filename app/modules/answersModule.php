@@ -263,11 +263,29 @@ class answersModule extends appCtrl {
 
 		if($this->DB->rawSql($sql))
 		{
+
+			$this->globalThresholdByAttemptID($attempt_id);
 			return $this->DB->connection->affected_rows;
 		}
 
 		return false;
 
+	}
+
+
+	public function globalThresholdByAttemptID($attempt_id)
+	{
+
+		/*
+		disable questions global status when crossed global threshold limit
+		fire when questions are submitted for answers 
+		*/
+		$globalThreshold = GLOBAL_Threshold;
+		$sql = "UPDATE questions que INNER JOIN stdanswers sa on que.id = sa.question_id 
+		SET que.status = 0 
+		WHERE sa.attempt_id = $attempt_id AND que.consumed > $globalThreshold";
+		$this->DB->rawSql($sql);
+		return $this->DB->connection->affected_rows;
 	}
 
 

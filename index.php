@@ -286,7 +286,6 @@ $route->get('/test-encoding', 'moduletestCtrl@testenc');
 
 
 
-
 $route->otherwise( function() {
 
     $data['message'] = 'Request Not found';
