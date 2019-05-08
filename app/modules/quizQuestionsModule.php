@@ -202,9 +202,21 @@ class quizQuestionsModule {
 	public function appliedQuizSections($quiz_id)
 	{
 
-
+		/*
 		$sql = "SELECT subject_id, quePerSection, points from subjects WHERE quiz_id = $quiz_id AND quePerSection > 0 AND points > 0";
+		*/
 
+
+		$sql = "SELECT que.section_id as 'subject_id', 
+			 sub.quePerSection as 'quePerSection', sub.points as 'points', count(sec.id) as 'subQueAllocated'
+			from quizquestions qq 
+			inner join questions que on que.id = qq.question_id 
+			inner join categories cat on cat.id = que.category_id 
+			inner join categories sec on sec.id = que.section_id 
+            inner join subjects sub on sub.subject_id = que.section_id 
+			where qq.quiz_id = $quiz_id AND sub.quiz_id = $quiz_id AND qq.status = 1 
+			AND que.section_id IN (SELECT subject_id from subjects where quiz_id = $quiz_id AND quePerSection > 0 AND points > 0) GROUP BY sec.id";
+		
 
 		if($subjects = $this->DB->rawSql($sql)->returnData())
 		{
@@ -251,6 +263,9 @@ class quizQuestionsModule {
 			$subjects = $this->appliedQuizSections($quiz_id);
 
 
+			$studentId = jwACL::authUserId();
+
+
 
 			$questionsArray = [];
 
@@ -266,6 +281,56 @@ class quizQuestionsModule {
 
 			$subject_id = $subj['subject_id'];
 			$queFromSection = $subj['quePerSection'];
+			$subQueAllocated = $subj['subQueAllocated'];
+
+			/*
+			Objectives	
+			----------
+			1. determine the ids I can take out get rid of from this subject loop
+			2. check if there is an existing one avaiable
+			3. 
+			*/
+
+			if($foundUSedQueIds = $this->fetchQuestionsIdsOnRetake($studentId, $quiz_id, $subject_id) )
+			{
+
+				$countQuesIds = sizeof($foundUSedQueIds);
+
+				$availablePoolSize = ($subQueAllocated - $countQuesIds);
+
+				if($queFromSection == $subQueAllocated)
+				{
+					// not filter possible no room available
+					$idsToFilerOut = 0;
+					
+				}
+				else if ($availablePoolSize >= $queFromSection ) 
+				{
+					// all the room all can be stripped out
+					$idsToFilerOut = $foundUSedQueIds;
+				}
+
+				else if ( $availablePoolSize < $queFromSection )
+				{
+					// little room available 
+					$noOfCanBeStripped  = $queFromSection - $availablePoolSize;
+					shuffle($foundUSedQueIds);
+					$idsToFilerOut = array_slice($foundUSedQueIds, 0, $noOfCanBeStripped);
+
+				}
+
+
+
+			}
+			else {
+				$idsToFilerOut = 0;
+			}
+
+
+			if($idsToFilerOut != 0)
+			{
+				$idsToFilerOut = implode($idsToFilerOut, ',');
+			}
 
 
 
@@ -282,8 +347,8 @@ class quizQuestionsModule {
 			INNER JOIN level lvl on que.level_id = lvl.id 
 			INNER JOIN type typ on typ.id = que.type_id 
 			WHERE qq.quiz_id = $quiz_id AND qq.status = 1 AND que.section_id = $subject_id  
+			AND qq.id NOT IN ('{$idsToFilerOut}') 
 			ORDER BY RAND() LIMIT $queFromSection";
-
 
 			if($questions = $this->DB->rawSql($sql)->returnData())
 			{
@@ -291,7 +356,6 @@ class quizQuestionsModule {
 					array_push($questionsArray, $item);	
 				}
 			}
-
 
 			
 			}
@@ -408,29 +472,40 @@ class quizQuestionsModule {
 	}
 
 
-	public function fetchOldQuestionsIds($studentId, $quizId, $subjectId)
+	public function fetchQuestionsIdsOnRetake($studentId, $quizId, $subjectId)
 	{
 		
-		/*
-		check if student already taken quiz
-		*/
-
 		$sql = "SELECT MAX(sa.question_id) as 'question_id' from stdattempts sta 
 				INNER JOIN enrollment en on en.id = sta.enroll_id
 				INNER JOIN stdanswers sa on sa.attempt_id = sta.id 
 				INNER JOIN questions que on que.id = sa.question_id 
 				WHERE 
-					en.student_id = 68 AND 
-    				en.quiz_id = 71 AND 
+					en.student_id = $studentId AND 
+    				en.quiz_id = $quizId AND 
     				en.attempts > 0 AND
     				que.section_id = $subjectId  
     			GROUP BY sa.question_id 
 				order by sa.question_id DESC";
-			return $this->DB->rawSql($sql)->returnData();
+			if($row = $this->DB->rawSql($sql)->returnData())
+			{
+				$idList = array();
+
+				foreach ($row as $key => $value) {
+
+					array_push($idList, $value['question_id']);
+					
+				}
+
+				return $idList;
+
+				
+			}
+
+			return false;
 
 	}
-	
-		
+
+
 
 
 }

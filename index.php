@@ -285,6 +285,9 @@ $route->get('/mediabyid/{id}', 'mediaCtrl@singleItemById');
 $route->get('/test-encoding', 'moduletestCtrl@testenc');
 
 
+$route->get('/retake-filter', 'moduletestCtrl@retakeFilter');
+
+
 
 $route->otherwise( function() {
 
