@@ -406,6 +406,29 @@ class quizQuestionsModule {
 		$this->DB->rawSql($sql);
 		return $this->DB->connection->affected_rows;
 	}
+
+
+	public function fetchOldQuestionsIds($studentId, $quizId, $subjectId)
+	{
+		
+		/*
+		check if student already taken quiz
+		*/
+
+		$sql = "SELECT MAX(sa.question_id) as 'question_id' from stdattempts sta 
+				INNER JOIN enrollment en on en.id = sta.enroll_id
+				INNER JOIN stdanswers sa on sa.attempt_id = sta.id 
+				INNER JOIN questions que on que.id = sa.question_id 
+				WHERE 
+					en.student_id = 68 AND 
+    				en.quiz_id = 71 AND 
+    				en.attempts > 0 AND
+    				que.section_id = $subjectId  
+    			GROUP BY sa.question_id 
+				order by sa.question_id DESC";
+			return $this->DB->rawSql($sql)->returnData();
+
+	}
 	
 		
 
@@ -413,9 +436,3 @@ class quizQuestionsModule {
 }
 
 
-/*
-
-public private
-SELECT quiz_id, entity_id, IF(entity_id IS NULL AND quiz_id IS NULL, "public", "private") AS 'SCOPE' from questions;
-
-*/
