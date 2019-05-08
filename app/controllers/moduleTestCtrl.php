@@ -237,19 +237,6 @@
 
 
 
-    public function retakeFilter()
-    {
-
-
-        $quiz_id = 85;
-
-        $quizQuestionModule = $this->load('module', 'quizQuestions');
-        $questions = $quizQuestionModule->listQuizPlayQuestionsDistro($quiz_id);
-        prx($questions);        
-
-
-
-    }
 
 
 

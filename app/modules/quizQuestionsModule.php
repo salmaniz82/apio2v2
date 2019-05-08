@@ -264,14 +264,9 @@ class quizQuestionsModule {
 
 			$studentId = jwACL::authUserId();
 
-
 			$questionsArray = [];
 
-
 			$counter = 1;
-
-
-
 
 			foreach ($subjects as $key => $subj) {
 
@@ -281,24 +276,16 @@ class quizQuestionsModule {
 			$queFromSection = (int) $subj['quePerSection'];
 			$subQueAllocated = (int) $subj['subQueAllocated'];
 
-			/*
-			Objectives	
-			----------
-			1. determine the ids I can take out get rid of from this subject loop
-			2. check if there is an existing one avaiable
-			3. 
-			*/
 
 			if($foundUSedQueIds = $this->fetchQuestionsIdsOnRetake($studentId, $quiz_id, $subject_id) )
 			{
 
 				$countQuesIds = (int) sizeof($foundUSedQueIds);
-
 				$availablePoolSize = (int) ($subQueAllocated - $countQuesIds);
 
-				if(($queFromSection == $subQueAllocated) || ($countQuesIds == $queFromSection))
+				if( ($queFromSection == $subQueAllocated) || ($countQuesIds == $subQueAllocated)  )
 				{
-					// not filter possible no room available
+					// all exhausted or alloacted just as required
 					$idsToFilerOut = 0;
 					
 				}
@@ -311,7 +298,7 @@ class quizQuestionsModule {
 				else if ( $availablePoolSize < $queFromSection )
 				{
 					// little room available 
-					$noOfCanBeStripped  =  ($availablePoolSize - $queFromSection);
+					$noOfCanBeStripped  =  $subQueAllocated - $queFromSection;
 					shuffle($foundUSedQueIds);
 					$idsToFilerOut = array_slice($foundUSedQueIds, 0, $noOfCanBeStripped);
 				}
@@ -325,12 +312,8 @@ class quizQuestionsModule {
 
 
 			if($idsToFilerOut != 0)
-			{
-				
+			{			
 				sort($idsToFilerOut);
-
-				// $idsToFilerOut = implode($idsToFilerOut, ',');
-
 				$idsToFilerOut = "'" . implode("','", $idsToFilerOut) . "'";
 			}
 
@@ -363,14 +346,9 @@ class quizQuestionsModule {
 				}
 			}
 
-			//echo $this->DB->showQuery($sql);
-
-			
 			}
-
 			
-			// $questionsArray['idsToFilter'] = $idsToFilerOut;
-		
+			
 			return $questionsArray;
 			
 	}
