@@ -241,23 +241,11 @@
     {
 
 
+        $quiz_id = 85;
+
         $quizQuestionModule = $this->load('module', 'quizQuestions');
-        $ids = ($quizQuestionModule->fetchQuestionsIdsOnRetake('67', '71', '80'));
-
-
-
-        shuffle($ids);
-        $idsToFilerOut = array_slice($ids, 0, 3);
-
-
-        var_dump(implode($idsToFilerOut, ','));
-
-
-
-
-
-    
-
+        $questions = $quizQuestionModule->listQuizPlayQuestionsDistro($quiz_id);
+        prx($questions);        
 
 
 

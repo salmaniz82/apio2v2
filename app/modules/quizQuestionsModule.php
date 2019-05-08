@@ -262,9 +262,7 @@ class quizQuestionsModule {
 
 			$subjects = $this->appliedQuizSections($quiz_id);
 
-
 			$studentId = jwACL::authUserId();
-
 
 
 			$questionsArray = [];
@@ -279,9 +277,9 @@ class quizQuestionsModule {
 
 
 
-			$subject_id = $subj['subject_id'];
-			$queFromSection = $subj['quePerSection'];
-			$subQueAllocated = $subj['subQueAllocated'];
+			$subject_id = (int) $subj['subject_id'];
+			$queFromSection = (int) $subj['quePerSection'];
+			$subQueAllocated = (int) $subj['subQueAllocated'];
 
 			/*
 			Objectives	
@@ -294,11 +292,11 @@ class quizQuestionsModule {
 			if($foundUSedQueIds = $this->fetchQuestionsIdsOnRetake($studentId, $quiz_id, $subject_id) )
 			{
 
-				$countQuesIds = sizeof($foundUSedQueIds);
+				$countQuesIds = (int) sizeof($foundUSedQueIds);
 
-				$availablePoolSize = ($subQueAllocated - $countQuesIds);
+				$availablePoolSize = (int) ($subQueAllocated - $countQuesIds);
 
-				if($queFromSection == $subQueAllocated)
+				if(($queFromSection == $subQueAllocated) || ($countQuesIds == $queFromSection))
 				{
 					// not filter possible no room available
 					$idsToFilerOut = 0;
@@ -306,17 +304,16 @@ class quizQuestionsModule {
 				}
 				else if ($availablePoolSize >= $queFromSection ) 
 				{
-					// all the room all can be stripped out
+					//all the room all can be stripped out
 					$idsToFilerOut = $foundUSedQueIds;
 				}
 
 				else if ( $availablePoolSize < $queFromSection )
 				{
 					// little room available 
-					$noOfCanBeStripped  = $queFromSection - $availablePoolSize;
+					$noOfCanBeStripped  =  ($availablePoolSize - $queFromSection);
 					shuffle($foundUSedQueIds);
 					$idsToFilerOut = array_slice($foundUSedQueIds, 0, $noOfCanBeStripped);
-
 				}
 
 
@@ -329,7 +326,12 @@ class quizQuestionsModule {
 
 			if($idsToFilerOut != 0)
 			{
-				$idsToFilerOut = implode($idsToFilerOut, ',');
+				
+				sort($idsToFilerOut);
+
+				// $idsToFilerOut = implode($idsToFilerOut, ',');
+
+				$idsToFilerOut = "'" . implode("','", $idsToFilerOut) . "'";
 			}
 
 
@@ -346,9 +348,13 @@ class quizQuestionsModule {
             INNER JOIN categories sec on que.section_id = sec.id 
 			INNER JOIN level lvl on que.level_id = lvl.id 
 			INNER JOIN type typ on typ.id = que.type_id 
-			WHERE qq.quiz_id = $quiz_id AND qq.status = 1 AND que.section_id = $subject_id  
-			AND qq.id NOT IN ('{$idsToFilerOut}') 
+			WHERE que.id NOT IN ({$idsToFilerOut}) AND 
+			qq.quiz_id = $quiz_id AND 
+			qq.status = 1 AND 
+			que.section_id = $subject_id  
 			ORDER BY RAND() LIMIT $queFromSection";
+
+
 
 			if($questions = $this->DB->rawSql($sql)->returnData())
 			{
@@ -357,8 +363,13 @@ class quizQuestionsModule {
 				}
 			}
 
+			//echo $this->DB->showQuery($sql);
+
 			
 			}
+
+			
+			// $questionsArray['idsToFilter'] = $idsToFilerOut;
 		
 			return $questionsArray;
 			
