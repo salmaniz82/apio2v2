@@ -131,4 +131,19 @@
 	}
 
 
+	public function quizDLSByEnrollmentId($enrollID)
+	{
+		
+		$sql = "SELECT qz.dls from enrollment en INNER JOIN quiz qz on qz.id = en.quiz_id WHERE en.id = $enrollID";
+
+		if($dls = $this->DB->rawSql($sql)->returnData())
+		{
+			return $dls[0]['dls'];
+		}
+
+		return false;
+
+	}
+
+
 }

@@ -207,7 +207,7 @@ class quizQuestionsModule {
 		*/
 
 
-		$sql = "SELECT que.section_id as 'subject_id', 
+		$sql = "SELECT que.section_id as 'subject_id', sec.name as 'subjects', 
 			 sub.quePerSection as 'quePerSection', sub.points as 'points', count(sec.id) as 'subQueAllocated'
 			from quizquestions qq 
 			inner join questions que on que.id = qq.question_id 
@@ -261,19 +261,17 @@ class quizQuestionsModule {
 	{
 
 			$subjects = $this->appliedQuizSections($quiz_id);
-
 			$studentId = jwACL::authUserId();
-
 			$questionsArray = [];
-
 			$counter = 1;
+
 
 			foreach ($subjects as $key => $subj) {
 
-
-
 			$subject_id = (int) $subj['subject_id'];
+
 			$queFromSection = (int) $subj['quePerSection'];
+
 			$subQueAllocated = (int) $subj['subQueAllocated'];
 
 
@@ -495,6 +493,144 @@ class quizQuestionsModule {
 	}
 
 
+
+	public function listQuizPlayQuestionsDLS($quiz_id, $studentId)
+	{
+
+			$subjects = $this->appliedQuizSections($quiz_id);
+			//$studentId = jwACL::authUserId();
+			$questionsArray = [];
+
+			$levels = array('easy'=> 1, 'medium'=> 2, 'difficult'=> 3);
+
+			$collections = [];
+
+			foreach ($subjects as $key => $subj) {
+
+			$collections[$subj['subjects']]['composite'] = array('easy' => [], 'medium'=> [], 'difficult'=> []);				
+
+			$collections[$subj['subjects']]['meta'] = array('easy' => [], 'medium'=> [], 'difficult'=> []);
+			
+
+			$subject_id = (int) $subj['subject_id'];
+			
+			$queFromSection = (int) $subj['quePerSection'];
+
+			$subQueAllocated = (int) $subj['subQueAllocated'];
+
+
+			if($foundUSedQueIds = $this->fetchQuestionsIdsOnRetake($studentId, $quiz_id, $subject_id) )
+			{
+
+				$countQuesIds = (int) sizeof($foundUSedQueIds);
+				$availablePoolSize = (int) ($subQueAllocated - $countQuesIds);
+
+				if( ($queFromSection == $subQueAllocated) || ($countQuesIds == $subQueAllocated)  )
+				{
+					// all exhausted or alloacted just as required
+					$idsToFilerOut = 0;
+						
+				}
+				else if ($availablePoolSize >= $queFromSection ) 
+				{
+					//all the room all can be stripped out
+					$idsToFilerOut = $foundUSedQueIds;
+				}
+
+				else if ( $availablePoolSize < $queFromSection )
+				{
+					// little room available 
+					$noOfCanBeStripped  =  $subQueAllocated - $queFromSection;
+					shuffle($foundUSedQueIds);
+					$idsToFilerOut = array_slice($foundUSedQueIds, 0, $noOfCanBeStripped);
+				}
+
+
+
+			}
+			else {
+				$idsToFilerOut = 0;
+			}
+
+
+			if($idsToFilerOut != 0)
+			{			
+				sort($idsToFilerOut);
+				$idsToFilerOut = "'" . implode("','", $idsToFilerOut) . "'";
+			}
+
+
+			// here we need to repeat it 3 times for each level and store that array based on level 
+
+			foreach ($levels as $levelLabel => $levelKeyDB) 
+			{
+
+
+				
+
+
+				$levelKeyDB;
+
+				$sql = "SELECT qq.id, qq.status as 'qqStatus', que.id as questionId, que.type_id, que.queDesc, que.optionA, que.optionB, que.optionC, que.optionD,
+				cat.name as category, 
+            	sec.name as 'subDecipline',
+				lvl.levelEN, lvl.levelAR, 
+				typ.typeEN 
+			
+				from quizquestions qq 
+				INNER JOIN questions que on que.id = qq.question_id 
+				INNER JOIN categories cat on cat.id = que.category_id 
+            	INNER JOIN categories sec on que.section_id = sec.id 
+				INNER JOIN level lvl on que.level_id = lvl.id 
+				INNER JOIN type typ on typ.id = que.type_id 
+				WHERE que.id NOT IN ({$idsToFilerOut}) AND 
+				que.level_id = $levelKeyDB AND 
+				qq.quiz_id = $quiz_id AND 
+				qq.status = 1 AND 
+				que.section_id = $subject_id  
+				ORDER BY RAND() LIMIT $queFromSection";
+
+				if($questions = $this->DB->rawSql($sql)->returnData())
+				{
+				
+					$questionCount = $this->DB->noRows;
+
+					if($levelKeyDB == 1)
+					{					
+						$collections[$subj['subjects']]['composite']['easy'] = $questions;
+						$collections[$subj['subjects']]['meta']['easy'] = $questionCount;
+					}
+
+					else if($levelKeyDB == 2)
+					{
+
+						
+						$collections[$subj['subjects']]['composite']['medium'] = $questions;
+						$collections[$subj['subjects']]['meta']['medium'] = $questionCount;
+					}
+
+					else {
+
+						$collections[$subj['subjects']]['composite']['difficult'] = $questions;
+						$collections[$subj['subjects']]['meta']['difficult'] = $questionCount;
+
+					}
+
+
+
+				}
+
+				}
+
+
+
+
+			}	
+
+				
+			return ['collections' => $collections, 'distribution' => $subjects];
+			
+	}
 
 
 }

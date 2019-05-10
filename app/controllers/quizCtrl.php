@@ -441,25 +441,28 @@
 			$enroll_id = $_POST['enroll_id'];
 		}
 
-
 		$allowedRoles = [4];
+
     	if( JwtAuth::validateToken() && in_array((int) JwtAuth::$user['role_id'], $allowedRoles) )
 		{
 
 			$enrollmentModule = $this->load('module', 'enroll');
+
 			$enrollment = $enrollmentModule->registerAttempt($enroll_id);
 			
 			$attemptModule = $this->load('module', 'attempt');
 
+			$dls = $enrollmentModule->quizDLSByEnrollmentId($enroll_id);
+
+
 			if($attempt_id = $attemptModule->initiateQuiz($enroll_id))
 			{
 				// mark entry in the enrollment for attempt
-
 				$enrollmentModule->toggleRetake($enroll_id, 0);
 				$data['message'] = "Quiz Initiated";
 				$data['attempt_id'] = $attempt_id;
+				$data['type'] = ($dls == 1) ? 'dls' : 'static';
 				$statusCode = 200;
-
 			}
 
 			else {
@@ -501,7 +504,7 @@
 			if($questions = $quizQuestionModule->listQuizPlayQuestionsDistro($quiz_id))
 			{
 				
-
+				// inject media to each question if available
 				for($i=0; $i<sizeof($questions); $i++)
 				{
 
@@ -512,7 +515,7 @@
 					
 					if($media = $quizQuestionModule->getQuestionMedia($question_id))
 					{					
-						// attach a media to questions
+						
 						$questions[$i]['media'] = $media;
 					}
 
@@ -547,6 +550,8 @@
     	teacher view of progress
     	*/
         $quiz_id = $this->getID();
+
+
         if($progress = $this->module->quizProgress($quiz_id))
         {
         	$data['attempted'] = $progress;
@@ -561,6 +566,54 @@
 
         }
         return View::responseJson($data, $statusCode);
+
+    }
+
+
+
+    public function prepareDls()
+    {
+
+  	
+    	$quiz_id = (int) Route::$params['quiz_id'];
+
+		$attempt_id = (int) Route::$params['attempt_id'];
+
+		$quizQuestionModule = $this->load('module', 'quizQuestions');
+
+		// $studentId = $this->jwtUserId();
+
+		$studentId = 68;
+
+
+
+
+		if($quiz = $this->module->getQuizInfo($quiz_id))
+		{
+
+			$statusCode = 200;
+
+			$data['quiz'] = $quiz[0];	
+
+			$data['stream'] = $quizQuestionModule->listQuizPlayQuestionsDLS($quiz_id, $studentId);
+
+
+		}
+		
+		else {
+
+			$statusCode = 500;
+			$data['message'] = "Quiz info is not available";
+
+		}	
+
+
+
+		return View::responseJson($data, $statusCode);
+
+
+
+
 
     }
 

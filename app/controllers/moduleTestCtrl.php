@@ -235,18 +235,18 @@
     }
 
 
+    public function dlstatus()
+    {
+
+        $enrollID = 168;
+
+        $enrollmentModule = $this->load('module', 'enroll');
+        $dls = $enrollmentModule->quizDLSByEnrollmentId($enrollID);
 
 
+        var_dump($r);
 
-
-
-
-
-
-
-
-
-    
+    }
 
 
 

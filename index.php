@@ -218,6 +218,9 @@ $route->post('/std-quiz-initiate', 'quizCtrl@studentQuizInitiate');
 
 $route->get('/std-quiz-play/quiz_id/{quiz_id}/attempt_id/{attempt_id}', 'quizCtrl@studentQuizData');
 
+
+$route->get('/std-quiz-play/dls/{quiz_id}/attempt_id/{attempt_id}', 'quizCtrl@prepareDls');
+
 $route->post('/std-patch-answers', 'answersCtrl@patchAnswers');
 
 
@@ -282,6 +285,14 @@ $route->get('/testmedialink/{id}', 'moduletestCtrl@testMediaLink');
 $route->get('/mediabyid/{id}', 'mediaCtrl@singleItemById');
 
 $route->get('/test-encoding', 'moduletestCtrl@testenc');
+
+
+
+$route->get('/mtest', 'moduletestCtrl@dlstatus');
+
+
+
+
 
 
 $route->otherwise( function() {
