@@ -107,13 +107,17 @@
 	{
 		if($summary = $this->module->summaryCount())
 		{
+			
 			$data['queSum'] = $summary;
 			$data['status'] = true;
 			$statusCode = 200;
+			
 		}
 		else {
+
 			$data['status'] = false;
 			$statusCode = 500;
+
 		}
 
 		View::responseJson($data, $statusCode);

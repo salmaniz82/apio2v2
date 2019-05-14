@@ -250,4 +250,32 @@
 
 
 
+    public function wsubjects()
+    {
+
+        $subjectModule = $this->load('module', 'subject');
+        $threshold = 100;
+        $entityId = 400;
+
+
+        $subjectIds = [80,81,82,83];
+
+
+
+
+
+
+        $data = $subjectModule->questionsCountSummaryOnWizard($threshold, $subjectIds, $entityId);
+
+
+        View::responseJson($data, 200);
+
+
+
+
+
+    }
+
+
+
 }

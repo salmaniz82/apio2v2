@@ -45,7 +45,7 @@
 
 	public function summaryCount()
 	{
-		$sql = "SELECT count(que.id) as 'noQues', que.id, que.category_id, que.section_id, cat.name as 'category', sec.name as 'section' from questions que
+		$sql = "SELECT count(que.id) as 'noQues', que.category_id, que.section_id, cat.name as 'category', sec.name as 'section' from questions que
 			inner join categories cat on cat.id = que.category_id
 			inner join categories sec on sec.id = que.section_id
 			GROUP BY que.category_id, que.section_id";

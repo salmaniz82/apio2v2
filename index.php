@@ -206,6 +206,10 @@ $route->get('/quiz/scorecard/{quiz_id}/{attempt_id}', 'answersCtrl@scoreCard');
 
 
 
+$route->get('/quiz-wizard-preset', 'globalListCtrl@index');
+
+
+
 
 
 
@@ -287,11 +291,10 @@ $route->get('/mediabyid/{id}', 'mediaCtrl@singleItemById');
 $route->get('/test-encoding', 'moduletestCtrl@testenc');
 
 
-
 $route->get('/mtest', 'moduletestCtrl@dlstatus');
 
 
-
+$route->get('/wsubjects', 'moduletestCtrl@wsubjects');
 
 
 

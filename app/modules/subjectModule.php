@@ -140,6 +140,41 @@ class subjectModule {
 	}
 
 
+
+
+	public function questionsCountSummaryOnWizard($threshold, $subjectIds, $entityId = null)
+	{
+
+
+		$subjectIds = "'" . implode("','", $subjectIds) . "'";
+
+
+		$sql = "SELECT subject_id, subject, MAX(questions) as 'questions' FROM (
+    
+		SELECT que.section_id as 'subject_id', sub.name as 'subject', count(que.id) as 'questions' from questions que 
+			INNER JOIN categories sub on sub.id = que.section_id 
+			WHERE status = 1 AND que.quiz_id IS NULL AND (que.entity_id IS NULL OR que.entity_id = $entityId) 
+			AND que.consumed < $threshold 
+			GROUP BY que.section_id
+    		UNION  
+			SELECT cat.id as 'subject_id', cat.name as 'subject', 0 as 'questions' from categories cat    
+		) results 
+
+		WHERE subject_id IN ({$subjectIds}) 
+		GROUP BY subject_id";
+
+
+		if($data =  $this->DB->rawSql($sql)->returnData())
+		{
+			return $data;	
+		}
+
+		return false;
+
+
+	}
+
+
 }
 
 

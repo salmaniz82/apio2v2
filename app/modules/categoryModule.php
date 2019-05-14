@@ -10,7 +10,7 @@
 	} 
 
 
-	public function list()
+	public function getList()
 	{
 		if(!$catList  = $this->DB->listall()->returnData())
 		{
