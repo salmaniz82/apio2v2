@@ -157,8 +157,14 @@
 
 
 
+    public function testddx()
+    {
+        echo "working test ddx";
+    }
 
-    public function testQuizPlayQuestion()
+
+
+    public function testquizplayquestions()
     {
 
         $quiz_id = $this->getID();
@@ -172,7 +178,14 @@
 
             }
 
-           View::responseJson($data, 200);
+            else {
+
+
+                return var_dump($quizQuestionModule->DB);
+
+            }
+
+           return View::responseJson($data, 200);
 
     }
 
@@ -250,31 +263,6 @@
 
 
 
-    public function wsubjects()
-    {
-
-        $subjectModule = $this->load('module', 'subject');
-        $threshold = 100;
-        $entityId = 400;
-
-
-        $subjectIds = [80,81,82,83];
-
-
-
-
-
-
-        $data = $subjectModule->questionsCountSummaryOnWizard($threshold, $subjectIds, $entityId);
-
-
-        View::responseJson($data, 200);
-
-
-
-
-
-    }
 
 
 

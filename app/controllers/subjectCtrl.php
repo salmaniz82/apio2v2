@@ -61,4 +61,49 @@
 	}
 
 
+
+    public function wsubjects()
+    {
+
+
+    	/*
+
+    	usage : Method POST
+    	body
+    	header : token : authtoken
+		body exams	
+    	{
+			"threshold" : 10,
+			"subject_ids" : [80,81,82]
+		}
+
+    	*/
+
+        $entityId = jwACL::authUserId();
+
+        $threshold = $_POST['threshold'];
+
+        $subjectIds = $_POST['subject_ids'];
+
+        if($distro = $this->module->questionsCountSummaryOnWizard($threshold, $subjectIds, $entityId))
+        {
+           
+            $data['distro'] = $distro;    
+            $data['status'] = true;
+            $statusCode = 200;
+        }
+
+        else {
+
+            $data['message'] = 'Unable to fetch distribution of chosen subjects';    
+            $statusCode = 500;
+
+        }
+
+        return View::responseJson($data, $statusCode);
+
+
+    }
+
+
 }

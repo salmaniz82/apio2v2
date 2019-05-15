@@ -9,8 +9,9 @@ $route = new Route();
 
 $routeList = false;
 
-
+/*
 sleep(1);
+*/
 
 
 
@@ -272,7 +273,7 @@ $route->put('/enroll/retake/{id}', 'enrollmentCtrl@toggleRetake');
 
 
 
-$route->get('/testQuizPlay/{id}', 'moduletestCtrl@testQuizPlayQuestion');
+$route->get('/testplay/{id}', 'moduleTestCtrl@testquizplayquestions');
 
 
 $route->get('/media', 'mediaCtrl@index');
@@ -294,7 +295,7 @@ $route->get('/test-encoding', 'moduletestCtrl@testenc');
 $route->get('/mtest', 'moduletestCtrl@dlstatus');
 
 
-$route->get('/wsubjects', 'moduletestCtrl@wsubjects');
+$route->post('/quizwizardsubjects', 'subjectCtrl@wsubjects');
 
 
 

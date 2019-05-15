@@ -490,8 +490,9 @@
 	{
 
 		$quiz_id = (int) Route::$params['quiz_id'];
-		$attempt_id = (int) Route::$params['attempt_id'];
 
+		$attempt_id = (int) Route::$params['attempt_id'];
+		
 		$quizQuestionModule = $this->load('module', 'quizQuestions');
 
 
@@ -560,7 +561,7 @@
         }
         else {
 
-
+        	$data['message'] = "No attempts found for this quiz yet";
         	$data['status'] = false;
         	$statusCode = 500;
 

@@ -43,18 +43,20 @@ class subjectModule {
 
 		$sql = "SELECT quiz_id, category_id, subject_id, category, subjects, MAX(questions) as 'questions', points, quePerSection  from 
 		( 
-		
-		SELECT qq.quiz_id, que.category_id, que.section_id as 'subject_id', cat.name as 'category', sec.name as 'subjects', count(sec.id) as 'questions',
-			sub.points as 'points', sub.quePerSection as 'quePerSection' 
+		SELECT  qq.quiz_id, que.category_id, que.section_id as subject_id, 
+			cat.name as 'category', sec.name as 'subjects', count(*) as 'questions', sub.points, sub.quePerSection  
 			from quizquestions qq 
 			inner join questions que on que.id = qq.question_id 
 			inner join categories cat on cat.id = que.category_id 
 			inner join categories sec on sec.id = que.section_id 
             inner join subjects sub on sub.subject_id = que.section_id 
 			where qq.quiz_id = $quiz_id AND sub.quiz_id = $quiz_id AND qq.status = 1 
-			AND que.section_id IN (SELECT subject_id from subjects where quiz_id = $quiz_id) GROUP BY sec.id
+			AND que.section_id IN (SELECT subject_id from subjects where quiz_id = $quiz_id) 
+            GROUP BY que.section_id, cat.name, sec.name, qq.quiz_id, que.category_id, sub.points, sub.quePerSection
+
 			UNION 
-		SELECT qz.id as 'quiz_id', qz.category_id, sub.subject_id, cat.name as 'category', sec.name as 'subjects', 0 as questions,
+
+			SELECT qz.id as 'quiz_id', qz.category_id, sub.subject_id, cat.name as 'category', sec.name as 'subjects', 0 as questions,
 			sub.points as 'points', sub.quePerSection as 'quePerSection'  
 			from subjects sub 
 			INNER JOIN quiz qz on qz.id = sub.quiz_id 
@@ -62,7 +64,7 @@ class subjectModule {
 			INNER JOIN categories sec on sec.id = sub.subject_id 
 			WHERE qz.id = $quiz_id 
 
-		) results GROUP BY subject_id";
+		) results GROUP BY quiz_id, category_id, subject_id, category, subjects, points, quePerSection";
 
 		 if($data = $this->DB->rawSql($sql)->returnData())
 		 {
@@ -146,22 +148,23 @@ class subjectModule {
 	{
 
 
-		$subjectIds = "'" . implode("','", $subjectIds) . "'";
+			$subjectIds = "'" . implode("','", $subjectIds) . "'";
 
-
-		$sql = "SELECT subject_id, subject, MAX(questions) as 'questions' FROM (
-    
-		SELECT que.section_id as 'subject_id', sub.name as 'subject', count(que.id) as 'questions' from questions que 
+			$sql = "SELECT subject_id, subject, MAX(questions) as 'questions' FROM ( 
+                
+            SELECT que.section_id as 'subject_id', sub.name as 'subject', count(que.id) as 'questions' from questions que 
 			INNER JOIN categories sub on sub.id = que.section_id 
 			WHERE status = 1 AND que.quiz_id IS NULL AND (que.entity_id IS NULL OR que.entity_id = $entityId) 
-			AND que.consumed < $threshold 
+			AND que.consumed > $threshold  
+            AND que.section_id IN ({$subjectIds})  
 			GROUP BY que.section_id
-    		UNION  
-			SELECT cat.id as 'subject_id', cat.name as 'subject', 0 as 'questions' from categories cat    
-		) results 
-
-		WHERE subject_id IN ({$subjectIds}) 
-		GROUP BY subject_id";
+                
+            UNION
+			
+            SELECT cat.id as 'subject_id', cat.name as 'subject', 0 as 'questions' from categories cat
+            WHERE cat.id IN ($subjectIds)    
+			
+            ) results GROUP BY subject_id, subject";
 
 
 		if($data =  $this->DB->rawSql($sql)->returnData())

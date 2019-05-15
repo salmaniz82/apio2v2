@@ -41,7 +41,7 @@ class quizQuestionsModule {
 
 			*/
 
-		$sql = "INSERT INTO quizQuestions (quiz_id, question_id)
+		$sql = "INSERT INTO quizquestions (quiz_id, question_id)
 			SELECT qz.id as quiz_id, que.id as question_id from quiz qz
 			INNER JOIN questions que on qz.category_id = que.category_id 
 			WHERE qz.id = $quiz_id AND que.status = 1 AND (que.quiz_id = $quiz_id OR que.quiz_id IS NULL) 
@@ -205,17 +205,37 @@ class quizQuestionsModule {
 		/*
 		$sql = "SELECT subject_id, quePerSection, points from subjects WHERE quiz_id = $quiz_id AND quePerSection > 0 AND points > 0";
 		*/
-
-
-		$sql = "SELECT que.section_id as 'subject_id', sec.name as 'subjects', 
-			 sub.quePerSection as 'quePerSection', sub.points as 'points', count(sec.id) as 'subQueAllocated'
-			from quizquestions qq 
-			inner join questions que on que.id = qq.question_id 
-			inner join categories cat on cat.id = que.category_id 
-			inner join categories sec on sec.id = que.section_id 
-            inner join subjects sub on sub.subject_id = que.section_id 
-			where qq.quiz_id = $quiz_id AND sub.quiz_id = $quiz_id AND qq.status = 1 
-			AND que.section_id IN (SELECT subject_id from subjects where quiz_id = $quiz_id AND quePerSection > 0 AND points > 0) GROUP BY sec.id";
+				
+			$sql = "SELECT
+			    que.section_id AS 'subject_id',
+			    sec.name AS 'subjects',
+			    sub.quePerSection AS 'quePerSection',
+			    sub.points AS 'points',
+			    COUNT(*) AS 'subQueAllocated'
+			FROM
+			    quizquestions qq
+			INNER JOIN questions que ON
+			    que.id = qq.question_id
+			INNER JOIN categories cat ON
+			    cat.id = que.category_id
+			INNER JOIN categories sec ON
+			    sec.id = que.section_id
+			INNER JOIN subjects sub ON
+			    sub.subject_id = que.section_id
+			WHERE
+			    qq.quiz_id = $quiz_id AND sub.quiz_id = $quiz_id AND qq.status = 1 AND que.section_id IN(
+			    SELECT
+			        subject_id
+			    FROM
+			        subjects
+			    WHERE
+			        quiz_id = $quiz_id AND quePerSection > 0 AND points > 0
+			)
+			GROUP BY
+			    que.section_id,
+			    sec.name,
+			    sub.quePerSection,
+			    sub.points";
 		
 
 		if($subjects = $this->DB->rawSql($sql)->returnData())
