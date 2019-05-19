@@ -81,7 +81,9 @@
 
         $entityId = jwACL::authUserId();
 
-        $threshold = $_POST['threshold'];
+        $threshold = (isset($_POST['threshold'])) ? $_POST['threshold'] : "10000";
+
+
 
         $subjectIds = $_POST['subject_ids'];
 
@@ -95,7 +97,8 @@
 
         else {
 
-            $data['message'] = 'Unable to fetch distribution of chosen subjects';    
+            $data['message'] = 'Unable to fetch distribution of chosen subjects';
+            $data['debug'] = $this->module->DB;
             $statusCode = 500;
 
         }

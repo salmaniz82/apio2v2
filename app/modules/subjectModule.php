@@ -155,7 +155,7 @@ class subjectModule {
             SELECT que.section_id as 'subject_id', sub.name as 'subject', count(que.id) as 'questions' from questions que 
 			INNER JOIN categories sub on sub.id = que.section_id 
 			WHERE status = 1 AND que.quiz_id IS NULL AND (que.entity_id IS NULL OR que.entity_id = $entityId) 
-			AND que.consumed > $threshold  
+			AND que.consumed < $threshold  
             AND que.section_id IN ({$subjectIds})  
 			GROUP BY que.section_id
                 

@@ -9,9 +9,11 @@ $route = new Route();
 
 $routeList = false;
 
+
 /*
 sleep(1);
 */
+
 
 
 
@@ -209,10 +211,7 @@ $route->get('/quiz/scorecard/{quiz_id}/{attempt_id}', 'answersCtrl@scoreCard');
 
 $route->get('/quiz-wizard-preset', 'globalListCtrl@index');
 
-
-
-
-
+$route->post('/quizwizardsubjects', 'subjectCtrl@wsubjects');
 
 
 /* STUDENT QUIZ LIST */
@@ -294,8 +293,6 @@ $route->get('/test-encoding', 'moduletestCtrl@testenc');
 
 $route->get('/mtest', 'moduletestCtrl@dlstatus');
 
-
-$route->post('/quizwizardsubjects', 'subjectCtrl@wsubjects');
 
 
 

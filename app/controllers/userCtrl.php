@@ -18,6 +18,10 @@
 		$data['status'] = true;
 		$statusCode = 200;
 
+		$roleModules = $this->load('module', 'role');
+
+		$data['roles'] = $roleModules->returnAllRoles();
+
 		View::responseJson($data, $statusCode);
 
 	}
@@ -35,7 +39,8 @@
 
 			// if role is not give then it must be a student
 			$keys = array('name', 'email', 'password');
-			$dataPayload = sanitize($keys);
+
+			$dataPayload = $this->module->DB->sanitize($keys);
 
 			if(!isset($_POST['role_id']))
 			{
@@ -59,6 +64,10 @@
 					$data['message'] = "Registration User Created Successfully";
 					$data['permissions'] = ($assignedPermissions) ? 'Permission Assigned' : 'Cannot assign default permission';
 					$data['status'] = true;
+
+					$data['lastCreatedUser'] = $this->module->userById($last_id);
+
+
 				}
 				else 
 				{
