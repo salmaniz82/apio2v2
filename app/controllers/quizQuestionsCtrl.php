@@ -41,7 +41,9 @@
 
 		$this->module->globalThresholdByQuizId($quiz_id);
 
-		if($affectedRows = $this->module->allocateQuestionsByQuizId($quiz_id))
+		$entity_id = $this->jwtUserId();
+
+		if($affectedRows = $this->module->allocateQuestionsByQuizId($quiz_id, $entity_id))
 		{
 			
 
@@ -113,8 +115,10 @@
 
 		$this->module->globalThresholdByQuizId($quiz_id);
 
+		$entity_id = $this->jwtUserId();
 
-		if($newQuesAvailable = $this->module->synchronizeCheck($quiz_id))
+
+		if($newQuesAvailable = $this->module->synchronizeCheck($quiz_id, $entity_id))
 		{
 			$data['queIDs'] = $newQuesAvailable[0]['question_id'];
 			$data['noQues'] = $newQuesAvailable[0]['quecount'];

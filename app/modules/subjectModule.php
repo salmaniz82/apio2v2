@@ -90,7 +90,7 @@ class subjectModule {
 			$quePerSection = $value['quePerSection'];
 			$points = $value['points'];
 			$subject_id = $value['subject_id']; 
-			$quiz_id = $value['quiz_id'];
+			$quiz_id = $quiz_id;
 			$sql = "UPDATE subjects SET quePerSection = $quePerSection, points = $points WHERE quiz_id = $quiz_id AND subject_id = $subject_id";
 			if($this->DB->rawSql($sql))
 			{
@@ -150,9 +150,9 @@ class subjectModule {
 
 			$subjectIds = "'" . implode("','", $subjectIds) . "'";
 
-			$sql = "SELECT subject_id, subject, MAX(questions) as 'questions' FROM ( 
+			$sql = "SELECT subject_id, subject, MAX(questions) as 'questions', 0 as 'quePerSection', 0 as 'points' FROM ( 
                 
-            SELECT que.section_id as 'subject_id', sub.name as 'subject', count(que.id) as 'questions' from questions que 
+            SELECT que.section_id as 'subject_id', sub.name as 'subject', count(que.id) as 'questions', 0 as 'quePerSection', 0 as 'points' from questions que 
 			INNER JOIN categories sub on sub.id = que.section_id 
 			WHERE status = 1 AND que.quiz_id IS NULL AND (que.entity_id IS NULL OR que.entity_id = $entityId) 
 			AND que.consumed < $threshold  
@@ -161,7 +161,7 @@ class subjectModule {
                 
             UNION
 			
-            SELECT cat.id as 'subject_id', cat.name as 'subject', 0 as 'questions' from categories cat
+            SELECT cat.id as 'subject_id', cat.name as 'subject', 0 as 'questions', 0 as 'quePerSection', 0 as 'points' from categories cat
             WHERE cat.id IN ($subjectIds)    
 			
             ) results GROUP BY subject_id, subject";

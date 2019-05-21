@@ -620,6 +620,76 @@
 
 
 
+    public function saveWithWizard()
+    {
+
+
+
+
+		$keys = array(
+			'title', 'category_id', 'minScore', 'maxScore', 'startDateTime', 'endDateTime', 'noques', 'duration',
+			'threshold', 'dls', 'uniqueOnRetake', 'showScore', 'showResult', 'showGrading', 'showGPA'
+		);
+
+		/*
+
+		: vm.nQuiz.thrshold,
+                 : vm.nQuiz.dls,
+                : vm.nQuiz.reTakeUnique,
+                : vm.nQuiz.scoreVisible,
+                : vm.nQuiz.showResults,
+                : vm.nQuiz.showGradings,
+                 : vm.nQuiz.showGPA,
+
+		*/
+
+
+		$dataPayload = $this->module->DB->sanitize($keys);
+
+
+		$dataPayload['status'] = 0;
+		$dataPayload['enrollment'] = 0;
+		$dataPayload['user_id'] = $this->jwtUserId();
+
+		$decipline = $_POST['cleanDesp'];
+		$subDecipline = $_POST['cleanSubDesp'];
+
+		if($res = $this->module->addQuiz($dataPayload))
+		{
+			
+			$statusCode = 200;
+			$data['last_id'] = $res;
+
+			$categoryModule = $this->load('module', 'category');
+        	$subDescIds = $categoryModule->verifySubDeciplines($decipline, $subDecipline);
+        	$quiz_id = $res;
+        	// insert sub decipline with ids
+
+        	$subjectModule = $this->load('module', 'subject');
+        	
+        	if($subjectModule->saveQuizSubjects($quiz_id, $subDescIds))
+        	{
+        		$data['message'] = "New Quiz added with subjects";
+        	}
+        	else {
+        		$data['message'] = "New Quiz failed to save subjects";	
+        	}
+
+		}
+		else {
+
+			$data['message'] = "New Quiz added";
+			$data['debug'] = $res;
+			$statusCode = 500;
+
+		}
+
+		return View::responseJson($data, $statusCode);
+
+    }
+
+
+
 
 
 

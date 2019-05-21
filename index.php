@@ -17,6 +17,8 @@ sleep(1);
 
 
 
+
+
 $route->get('/', function() {
 	
 	$data = "Welcome to IO2 v3 API <br>";
@@ -186,6 +188,11 @@ $route->get('/quiz', 'quizCtrl@index');
 $route->get('/quiz/{id}', 'quizCtrl@single');
 
 $route->post('/quiz', 'quizCtrl@save');
+
+$route->post('/quiz/wizard', 'quizCtrl@saveWithWizard');
+
+
+
 
 $route->get('/quiz-question-validity/{id}', 'quizCtrl@checkValidityCount');
 

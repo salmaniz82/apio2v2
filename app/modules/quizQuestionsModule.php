@@ -29,7 +29,7 @@ class quizQuestionsModule {
 
 
 
-	public function allocateQuestionsByQuizId($quiz_id)
+	public function allocateQuestionsByQuizId($quiz_id, $entity_id)
 	{
 
 		/*
@@ -45,6 +45,7 @@ class quizQuestionsModule {
 			SELECT qz.id as quiz_id, que.id as question_id from quiz qz
 			INNER JOIN questions que on qz.category_id = que.category_id 
 			WHERE qz.id = $quiz_id AND que.status = 1 AND (que.quiz_id = $quiz_id OR que.quiz_id IS NULL) 
+			AND (que.entity_id = $entity_id OR que.entity_id IS NULL)
 			AND que.consumed <= qz.threshold  
 			AND que.section_id IN (SELECT subject_id from subjects where quiz_id = $quiz_id)";
 
@@ -73,7 +74,7 @@ class quizQuestionsModule {
 	}
 
 
-	public function synchronizeCheck($quiz_id)
+	public function synchronizeCheck($quiz_id, $entity_id = 0)
 	{
 		/*
 			pick only non matching rows from questions which are not in quizquestions
@@ -81,6 +82,7 @@ class quizQuestionsModule {
 		$sql = "SELECT GROUP_CONCAT(que.id) as question_id, count(que.id) as quecount from quiz qz
 				INNER JOIN questions que on qz.category_id = que.category_id 
 				WHERE qz.id = $quiz_id AND que.status = 1 AND (que.quiz_id = $quiz_id OR que.quiz_id IS NULL) 
+				AND (que.entity_id = $entity_id OR que.entity_id IS NULL) 
 				AND que.consumed <= qz.threshold 
 				AND que.section_id IN (SELECT subject_id from subjects where quiz_id = $quiz_id) 
     			AND que.id NOT IN (SELECT question_id from quizquestions where quiz_id = $quiz_id)";
