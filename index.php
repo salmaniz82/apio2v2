@@ -10,9 +10,9 @@ $route = new Route();
 $routeList = false;
 
 
-/*
+
 sleep(1);
-*/
+
 
 
 
@@ -251,7 +251,7 @@ $route->post('/quiz-question-sycnronize', 'quizQuestionsCtrl@processSynchronize'
 
 
 
-$route->get('/questions', 'questionsCtrl@index');
+$route->get('/questions?', 'questionsCtrl@index');
 
 
 $route->post('/questions', 'questionsCtrl@save');
@@ -296,6 +296,18 @@ $route->get('/test-encoding', 'moduletestCtrl@testenc');
 
 
 $route->get('/mtest', 'moduletestCtrl@dlstatus');
+
+
+$route->get('/checktimezone', function() {
+
+	/*
+	echo "PHP datetime" . Date('Y-m-d H:i:s');
+	$db = new Database();
+	$datetimeDB = $db->rawSql("SELECT NOW() AS currentdatetime")->returnData();	
+	var_dump($datetimeDB);
+	*/
+
+});
 
 
 

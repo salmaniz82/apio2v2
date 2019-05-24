@@ -16,11 +16,35 @@
 	public function listall()
 	{
 
-		$types = $this->DB->listall()->returnData();
+		$sql = "SELECT que.id as 'question_id', que.status as 'status', que.queDesc, que.optionA, que.optionB, que.optionC, que.optionD,
+			que.consumed as 'hits',  
+			cat.name as category, sub.name as 'subject', que.section_id as 'subject_id',   
+			lvl.levelEN, lvl.levelAR, 
+			typ.typeEN, 
+			que.answer,
 
-		if($types != null)
+			(CASE 
+            WHEN que.entity_id IS NULL AND que.quiz_id IS NULL 
+             THEN 'public' 
+             WHEN que.entity_id IS NULL AND que.quiz_id IS NOT NULL 
+             then 'private'
+             ELSE 'local'
+             end ) as 'scope' 
+
+			from questions que 
+			
+			INNER JOIN categories cat on cat.id = que.category_id 
+			INNER JOIN categories sub on sub.id = que.section_id 
+			INNER JOIN level lvl on que.level_id = lvl.id 
+			INNER JOIN type typ on typ.id = que.type_id 
+			ORDER BY que.status DESC, que.consumed DESC";
+
+
+		$data = $this->DB->rawSql($sql)->returnData();
+
+		if($data != null)
 		{
-			return $types;
+			return $data;
 		}
 		else {
 			return false;

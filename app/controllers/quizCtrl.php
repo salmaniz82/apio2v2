@@ -84,6 +84,13 @@
 
 	public function save()
 	{
+
+		if(!jwACL::isLoggedIn()) 
+			return $this->uaReponse();	
+		
+
+		if(!jwACL::has('add-quiz')) 
+			return $this->accessDenied();
 		
 
 		$keys = array('title', 'category_id', 'minScore', 'maxScore', 'startDateTime', 'endDateTime', 'noques', 'duration');
@@ -623,6 +630,14 @@
     public function saveWithWizard()
     {
 
+
+
+    	if(!jwACL::isLoggedIn()) 
+			return $this->uaReponse();	
+		
+
+		if(!jwACL::has('add-quiz')) 
+			return $this->accessDenied();
 
 
 

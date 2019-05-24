@@ -12,7 +12,14 @@
 
 	public function index()
 	{
-		$data = $this->module->listall();
+		if($questions = $this->module->listall())
+		{
+			$data['questions'] = $questions;
+		}
+
+		else {
+			$data['debug'] = $this->module->DB;
+		}
 		View::responseJson($data, 200);
 	}
 
