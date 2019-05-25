@@ -77,6 +77,14 @@
 	public function save()
 	{
 
+		if(!jwACL::isLoggedIn()) 
+			return $this->uaReponse();	
+		
+		if(!jwACL::has('category-add')) 
+			return $this->accessDenied();
+
+
+
 		$crossTail = false;
 
 		if(!isset($_POST['pcat_id']))
@@ -159,6 +167,12 @@
 	public function update()
 	{
 
+		if(!jwACL::isLoggedIn()) 
+			return $this->uaReponse();	
+		
+		if(!jwACL::has('category-edit')) 
+			return $this->accessDenied();
+
 
 		$id = $this->getID();
 		$_POST = Route::$_PUT;
@@ -229,6 +243,12 @@
 
 	public function destroy()
 	{
+
+		if(!jwACL::isLoggedIn()) 
+			return $this->uaReponse();	
+		
+		if(!jwACL::has('category-delete')) 
+			return $this->accessDenied();
 
 		$id = $this->getID();
 

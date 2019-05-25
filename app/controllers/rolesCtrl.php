@@ -12,7 +12,10 @@
 
 	public function index()
 	{
-		$data = $this->module->returnAllRoles();
+		
+		$role_id = $this->jwtRoleId();
+
+		$data = $this->module->returnAllRoles($role_id);
 
 		View::responseJson($data, 200);
 	}

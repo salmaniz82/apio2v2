@@ -636,7 +636,7 @@
 			return $this->uaReponse();	
 		
 
-		if(!jwACL::has('add-quiz')) 
+		if(!jwACL::has('quiz-add')) 
 			return $this->accessDenied();
 
 

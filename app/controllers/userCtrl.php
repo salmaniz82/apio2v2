@@ -14,15 +14,22 @@
 	public function index()
 	{
 
-		$data['users'] = $this->module->allUsers();
-		$data['status'] = true;
-		$statusCode = 200;
+		if($data['users'] = $this->module->allUsers())
+		{
+			
+			$data['status'] = true;
+			$statusCode = 200;
+		}
+		else {
+			$data['message'] = "No Users Found";
+			$statusCode = 206;
+		}
 
 		$roleModules = $this->load('module', 'role');
+		$data['roles'] = $roleModules->returnAllRoles($this->jwtRoleId());
+		
 
-		$data['roles'] = $roleModules->returnAllRoles();
-
-		View::responseJson($data, $statusCode);
+		return View::responseJson($data, $statusCode);
 
 	}
 
@@ -37,17 +44,30 @@
 	public function save()
 	{
 
+
 			// if role is not give then it must be a student
 			$keys = array('name', 'email', 'password');
-
 			$dataPayload = $this->module->DB->sanitize($keys);
+
+			if(jwACL::isLoggedIn())
+			{
+				// some authenticated user is creating the user to it must have a created_by user id with it.
+				$dataPayload['created_by'] = jwACL::authUserId();				
+			}
 
 			if(!isset($_POST['role_id']))
 			{
 				$dataPayload['role_id'] = 4;
 			}
 			else{
+
 				$dataPayload['role_id'] = $_POST['role_id'];
+
+				$assignContributor = ($dataPayload['role_id'] == 3) ? true : false;
+				
+					 
+				
+
 			}
 	
 
@@ -55,6 +75,18 @@
 			{
 				if($last_id = $this->module->addNewUser($dataPayload) )
 				{
+
+					if($assignContributor)
+					{
+						$contributorModule = $this->load('module', 'contributor');
+
+						$assignData = array(
+							'contributor_id' => $last_id,
+							'entity_id' => jwACL::authUserId()
+						);						
+
+						$contributorModule->assignContributor($assignData);
+					}
 					
 
 					$userPermissionModule = $this->load('module', 'userpermissions');
@@ -167,6 +199,9 @@
 	public function registerEnroll()
 	{
 
+
+
+
 		$quiz_id = $_POST['examID'];
 
 		if(!isset($_POST['role_id']))
@@ -203,6 +238,11 @@
 
 			if(!$this->module->emailExists($dataPayload['email']))
 			{
+
+				if(jwACL::isLoggedIn())
+				{
+					$dataPayload['created_by'] = jwACL::authUserId();				
+				}
 				
 				if($last_id = $this->module->addNewUser($dataPayload) )
 				{
@@ -253,7 +293,7 @@
 		if(!jwACL::isLoggedIn()) 
 			return $this->uaReponse();	
 		
-		if(!jwACL::has('delete-user')) 
+		if(!jwACL::has('user-delete')) 
 			return $this->accessDenied();
 
 

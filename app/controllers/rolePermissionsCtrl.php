@@ -29,8 +29,9 @@
 		}
 			$roleModule = $this->load('module', 'role');
 			$permssionModule = $this->load('module', 'permissions');
+			
 			$data['allPermissions'] = $permssionModule->returnAllPermissions();
-			$data['allRoles'] = $roleModule->returnAllRoles();
+			$data['allRoles'] = $roleModule->returnAllRoles($this->jwtRoleId());
 
 
 		return View::responseJson($data, $statusCode);

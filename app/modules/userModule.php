@@ -13,9 +13,19 @@ class userModule extends appCtrl{
 
 	public function allUsers()
 	{
+		
+		
+		$user_id = jwACL::authUserId();
+		$role = jwACL::authRole();		
+
 		$sql = "SELECT users.id, role_id, roles.role as 'role', name, email,  
 			isLocked, lockedDateTime, loginAttempts, status from users 
 			INNER JOIN roles on users.role_id = roles.id ";	
+
+			if($role != 'admin') 
+			{
+				$sql .= " WHERE users.created_by = $user_id ";
+			}
 
 		$user = $this->DB->rawSql($sql)->returnData();
 
@@ -243,12 +253,12 @@ class userModule extends appCtrl{
 		{
 			return true;
 		}
-
-
 		return false;
 
-
 	}
+
+
+	
 
 
 }

@@ -12,25 +12,49 @@
 
 	public function index()
 	{
+		
+		
 		if($questions = $this->module->listall())
 		{
 			$data['questions'] = $questions;
+			$statusCode = 200;
 		}
 
 		else {
+		
 			$data['debug'] = $this->module->DB;
+			$data['message'] = "No questions found please add some";
+			$statusCode = 204;
 		}
-		View::responseJson($data, 200);
+
+
+		return View::responseJson($data, $statusCode);
+
+
 	}
 
 
 	public function save()
 	{
 
+
 		$keys = array('category_id', 'section_id', 'level_id', 'type_id', 'queDesc', 'optionA', 'optionB', 'optionC', 'optionD', 'answer');
 		$dataPayload = $this->module->DB->sanitize($keys);
 		$dataPayload['user_id'] = $this->jwtUserId();
 		$dataPayload['status'] = 1;
+
+
+		if(jwACL::authRole() == 'contributor')
+		{
+			$contributorModule = $this->load('module', 'contributor');
+			$entity_id = $contributorModule->pluckEntity_id($this->jwtUserId());
+			$dataPayload['entity_id'] = $entity_id;
+		}
+
+		else if(jwACL::authRole() == 'entity')
+		{
+			$dataPayload['entity_id'] = $this->jwtUserId();
+		}
 
 
 		if(isset($_POST['quiz_id']))

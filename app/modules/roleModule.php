@@ -13,9 +13,21 @@ class roleModule {
 	}
 
 
-	public function returnAllRoles()
+	public function returnAllRoles($role_id)
 	{
-		return $roles =  $this->DB->listall()->returnData();
+		if($role_id == 1)
+		{
+			return $roles =  $this->DB->listall()->returnData();	
+		}
+
+		else {
+
+			$sql = "SELECT * FROM roles where id IN ('3', '4')";
+
+			return $this->DB->rawSql($sql)->returnData();
+
+		}
+		
 	}
 
 
