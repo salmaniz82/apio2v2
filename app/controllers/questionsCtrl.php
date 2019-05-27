@@ -49,17 +49,28 @@
 			$contributorModule = $this->load('module', 'contributor');
 			$entity_id = $contributorModule->pluckEntity_id($this->jwtUserId());
 			$dataPayload['entity_id'] = $entity_id;
+			$dataPayload['scope'] = 'private';
 		}
 
 		else if(jwACL::authRole() == 'entity')
 		{
+			
 			$dataPayload['entity_id'] = $this->jwtUserId();
+
+			if(!isset($_POST['quiz_id']))
+			{
+				$dataPayload['scope'] = 'private';		
+			}
+
+
 		}
 
 
 		if(isset($_POST['quiz_id']))
 		{
 			$dataPayload['quiz_id'] = $_POST['quiz_id'];
+
+			$dataPayload['scope'] = 'linked';
 		}
 
 

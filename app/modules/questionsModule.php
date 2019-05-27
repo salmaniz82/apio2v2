@@ -26,13 +26,7 @@
 			typ.typeEN, 
 			que.answer,   
 
-			(CASE 
-            WHEN que.entity_id IS NULL AND que.quiz_id IS NULL 
-             THEN 'public' 
-             WHEN que.entity_id IS NULL AND que.quiz_id IS NOT NULL 
-             then 'private'
-             ELSE 'local'
-             end ) as 'scope' 
+			que.scope as 'scope' 
 
 			from questions que 
 			

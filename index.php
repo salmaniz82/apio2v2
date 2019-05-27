@@ -16,7 +16,7 @@ sleep(1);
 
 $route->get('/', function() {
 	
-	$data = "Welcome to IO2 v3 API <br>";
+	$data = "Welcome to IO2 v3 API";
 	view::responseJson($data, 200);
 
 });
@@ -300,23 +300,20 @@ $route->get('/checktimezone', function() {
 	$db = new Database();
 	$datetimeDB = $db->rawSql("SELECT NOW() AS currentdatetime")->returnData();	
 	var_dump($datetimeDB);
+		
+	git ls-files | xargs wc -l	
+
 	*/
 
 	$timezone_offset_minutes = 300;  // $_GET['timezone_offset_minutes']
-
 	// Convert minutes to seconds
 	$timezone_name = timezone_name_from_abbr("", $timezone_offset_minutes*60, false);
-
 	// Asia/Kolkata
 	echo $timezone_name;
 
 	/*
 		date_default_timezone_set($timezone_name);
 	*/
-
-
-
-
 
 });
 

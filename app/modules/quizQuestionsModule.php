@@ -108,13 +108,7 @@ class quizQuestionsModule {
 			typ.typeEN, 
 			que.answer,
 
-			(CASE 
-            WHEN que.entity_id IS NULL AND que.quiz_id IS NULL 
-             THEN 'public' 
-             WHEN que.entity_id IS NULL AND que.quiz_id = qq.quiz_id   
-             then 'private'
-             ELSE 'local'
-             end ) as 'scope' 
+			que.scope as 'scope' 
 
 			from quizquestions qq 
 			INNER JOIN questions que on que.id = qq.question_id 
@@ -163,13 +157,7 @@ class quizQuestionsModule {
 			typ.typeEN, 
 			que.answer,
 
-			(CASE 
-            WHEN que.entity_id IS NULL AND que.quiz_id IS NULL 
-             THEN 'public' 
-             WHEN que.entity_id IS NULL AND que.quiz_id = qq.quiz_id   
-             then 'private'
-             ELSE 'local'
-             end ) as 'scope' 
+			que.scope as 'scope' 
 
 
 			from quizquestions qq 
