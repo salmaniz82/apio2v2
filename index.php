@@ -295,6 +295,37 @@ $route->get('/mtest', 'moduletestCtrl@dlstatus');
 
 $route->get('/checktimezone', function() {
 
+	function isValidTimezone($timezone) {
+  		return in_array($timezone, timezone_identifiers_list());
+	}
+
+	var_dump(isValidTimezone('Asia/Karachi'));
+
+	die();
+
+
+
+
+
+	$db = new Database();
+
+	$dbDate = $db->rawSql("SELECT attempted_at as dt from stdattempts where id = '345'")->returnData();
+
+	echo "mysql date time <br>";
+
+	echo $dbDate[0]['dt'];
+
+	echo "php date time";
+
+	echo Date('Y-m-d H:i:s');
+
+
+	die();
+
+	prx($_SERVER);
+
+	
+
 	/*
 	echo "PHP datetime" . Date('Y-m-d H:i:s');
 	$db = new Database();
@@ -314,6 +345,9 @@ $route->get('/checktimezone', function() {
 	/*
 		date_default_timezone_set($timezone_name);
 	*/
+
+
+	
 
 });
 
