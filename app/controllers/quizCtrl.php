@@ -468,6 +468,18 @@
 				$enrollmentModule->toggleRetake($enroll_id, 0);
 				$data['message'] = "Quiz Initiated";
 				$data['attempt_id'] = $attempt_id;
+				
+				$data['usedXTimes'] = $attemptModule->getXTimesUsed($attempt_id);
+
+
+				if($data['usedXTimes'] > 0)
+				{
+				
+					$data['warning_message'] = "Very Smart!, Duration of this attempt has expired";
+
+				}
+
+
 				$data['type'] = ($dls == 1) ? 'dls' : 'static';
 				$statusCode = 200;
 			}
@@ -499,8 +511,18 @@
 		$quiz_id = (int) Route::$params['quiz_id'];
 
 		$attempt_id = (int) Route::$params['attempt_id'];
+
+
+		$attemptModule = $this->load('module', 'attempt');
+
+
+		$attemptModule->incrementUsageXTimes($attempt_id);
+
+
 		
 		$quizQuestionModule = $this->load('module', 'quizQuestions');
+
+
 
 
 		if($quiz = $this->module->getQuizInfo($quiz_id))
@@ -530,6 +552,9 @@
 				}
 
 				$data['questions'] = $this->encodeData($questions);
+
+
+				$data['usageXTimes'] = $attemptModule->getXTimesUsed($attempt_id);
 
 
 			}
