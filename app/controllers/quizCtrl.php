@@ -552,7 +552,9 @@
 				}
 
 				$data['questions'] = $this->encodeData($questions);
+			
 
+				$attemptModule->toggleActive($attempt_id, "1");
 
 				$data['usageXTimes'] = $attemptModule->getXTimesUsed($attempt_id);
 
@@ -644,10 +646,6 @@
 
 		return View::responseJson($data, $statusCode);
 
-
-
-
-
     }
 
 
@@ -725,6 +723,33 @@
 		}
 
 		return View::responseJson($data, $statusCode);
+
+    }
+
+
+
+    public function currentAct()
+    {
+
+
+    	$attemptModule = $this->load('module', 'attempt');
+    	$entity_id = jwACL::authUserId();
+
+    	if($activity = $attemptModule->activeMonitoring($entity_id))
+    	{
+    		$data['actvity'] = $activity;
+    		$statusCode = 200;   			
+    	}
+
+    	else {
+
+			$statusCode = 204;    		
+    		$data['message'] = "No Current Activities";
+    	}
+
+
+
+    	return View::responseJson($data, $statusCode);
 
     }
 

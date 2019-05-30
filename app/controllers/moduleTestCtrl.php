@@ -262,6 +262,26 @@
     }
 
 
+    public function toggleActiveAttempt()
+    {
+        
+
+        $attemptModule = $this->load('module', 'attempt');
+
+
+        if($attemptModule->toggleActive(393, "0"))
+        {
+            echo "done supposely";
+        }
+
+        else {
+            ddx($attemptModule->DB);
+        }
+
+
+    }
+
+
 
 
 

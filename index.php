@@ -10,8 +10,10 @@ $route = new Route();
 $routeList = false;
 
 
+/*
+sleep(2);
+*/
 
-sleep(1);
 
 
 $route->get('/', function() {
@@ -291,6 +293,11 @@ $route->get('/test-encoding', 'moduletestCtrl@testenc');
 
 
 $route->get('/mtest', 'moduletestCtrl@dlstatus');
+
+
+$route->get('/activeAct', 'quizCtrl@currentAct');
+
+
 
 
 $route->get('/checktimezone', function() {

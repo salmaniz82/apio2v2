@@ -101,4 +101,53 @@ class attemptModule {
 		
 	}
 
+	public function toggleActive($attemptID, $status)
+	{
+
+		$data['is_active'] = $status;
+
+
+		if($this->DB->update($data, $attemptID))
+		{
+			return true;
+		}
+
+		return false;
+
+	}
+
+
+
+	public function activeMonitoring($entity_id)
+	{
+
+		$sql = "SELECT
+	    qz.id AS quizID,
+	    qz.title, 
+	    U.name, 
+	    qz.duration,
+	    qz.noQues, en.id AS enrollID,
+	    sta.id AS attemptID,
+	    sta.usedxtimes AS 'usedX',
+	    sta.attempted_at, DATE_ADD(sta.attempted_at, INTERVAL + qz.duration MINUTE) AS 'ending_at',
+	    TIMESTAMPDIFF(MINUTE,NOW(), DATE_ADD(sta.attempted_at, INTERVAL + qz.duration MINUTE)) as 'remainingTime' 
+		FROM
+	    stdattempts sta 
+	    INNER JOIN enrollment en on en.id = sta.enroll_id 
+	    INNER JOIN users u on u.id = en.student_id 
+	    INNER JOIN quiz qz on qz.id = en.quiz_id WHERE sta.attempted_at >= DATE(DATE_SUB(NOW(), INTERVAL 1 DAY)) AND sta.is_active = 1
+		AND qz.user_id = $entity_id";
+
+
+	    if($rows = $this->DB->rawSql($sql)->returnData())
+	    {
+	    	return $rows;
+	    }
+
+	    	return false;
+
+
+
+	}
+
 }

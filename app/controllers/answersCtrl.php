@@ -21,6 +21,11 @@ class answersCtrl extends appCtrl
 		$dataset['cols'] = array('attempt_id', 'question_id', 'answer');
 		$dataset['vals'] = $payload;
 
+
+		$attemptModule = $this->load('module', 'attempt');
+
+		$attemptModule->toggleActive($attempt_id, "0");
+
 		if($this->module->patchBulkAnswers($dataset))
 		{
 			
