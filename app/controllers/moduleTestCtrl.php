@@ -262,20 +262,38 @@
     }
 
 
-    public function toggleActiveAttempt()
+    public function teststartact()
     {
         
 
-        $attemptModule = $this->load('module', 'attempt');
+        $activityModule = $this->load('module', 'activity');
 
 
-        if($attemptModule->toggleActive(393, "0"))
+        $dataPayload = array('attempt_id'=> 401, 'question_id'=> '501', 'questionIndex'=> 2, 'answer'=> 'b', 'atype'=> 'a');
+
+
+        $keys = array('attempt_id', 'question_id', 'questionIndex', 'answer', 'atype');
+
+
+
+
+
+        if($activityModule->activityHandler($dataPayload))
+        {
+            
+            
+        }
+
+        
+
+
+        if($activityModule->isFirst(401))
         {
             echo "done supposely";
         }
 
         else {
-            ddx($attemptModule->DB);
+            ddx($activityModule->DB);
         }
 
 

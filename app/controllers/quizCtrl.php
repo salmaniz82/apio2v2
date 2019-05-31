@@ -455,9 +455,11 @@
 
 			$enrollmentModule = $this->load('module', 'enroll');
 
-			$enrollment = $enrollmentModule->registerAttempt($enroll_id);
-			
+			$activityModule = $this->load('module', 'activity');
+
 			$attemptModule = $this->load('module', 'attempt');
+
+			$enrollment = $enrollmentModule->registerAttempt($enroll_id);
 
 			$dls = $enrollmentModule->quizDLSByEnrollmentId($enroll_id);
 
@@ -470,6 +472,12 @@
 				$data['attempt_id'] = $attempt_id;
 				
 				$data['usedXTimes'] = $attemptModule->getXTimesUsed($attempt_id);
+
+
+				$attemptModule->toggleActive($attempt_id, "1");
+
+
+				$activityModule = $activityModule->startNewActivity($attempt_id);
 
 
 				if($data['usedXTimes'] > 0)
@@ -487,6 +495,7 @@
 			else {
 
 				$data['message'] = "Quiz Failed to initialize";
+				$data['debug'] = $attemptModule->DB;
 				$statusCode = 500;
 
 			}
@@ -512,17 +521,11 @@
 
 		$attempt_id = (int) Route::$params['attempt_id'];
 
-
 		$attemptModule = $this->load('module', 'attempt');
 
-
 		$attemptModule->incrementUsageXTimes($attempt_id);
-
-
-		
+	
 		$quizQuestionModule = $this->load('module', 'quizQuestions');
-
-
 
 
 		if($quiz = $this->module->getQuizInfo($quiz_id))
@@ -554,7 +557,7 @@
 				$data['questions'] = $this->encodeData($questions);
 			
 
-				$attemptModule->toggleActive($attempt_id, "1");
+				// $attemptModule->toggleActive($attempt_id, "1");
 
 				$data['usageXTimes'] = $attemptModule->getXTimesUsed($attempt_id);
 

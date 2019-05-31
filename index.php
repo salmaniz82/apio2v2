@@ -298,6 +298,9 @@ $route->get('/mtest', 'moduletestCtrl@dlstatus');
 $route->get('/activeAct', 'quizCtrl@currentAct');
 
 
+$route->post('/recordActivity', 'answersCtrl@activityHandler');
+
+
 
 
 $route->get('/checktimezone', function() {

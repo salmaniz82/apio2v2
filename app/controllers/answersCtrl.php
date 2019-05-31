@@ -138,4 +138,25 @@ class answersCtrl extends appCtrl
 
 	}
 
+
+
+	public function activityHandler()
+	{
+
+
+		$activityModule = $this->load('module', 'activity');
+
+        $keys = array('attempt_id', 'question_id', 'questionIndex', 'answer', 'atype');
+
+        $dataPayload = $activityModule->DB->sanitize($keys);
+
+        $activityModule->activityHandler($dataPayload);
+
+        $data['message'] = "no contents needed";
+
+        return View::responseJson($data, 204);
+
+	}
+
+
 }
