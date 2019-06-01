@@ -220,7 +220,11 @@
 		$sql = "SELECT qz.id as 'quizId', sta.id as 'attemptId', std.id as 'student_id', en.id as 'enroll_id',  std.name, std.email,  qz.title, qz.category_id, qz.maxScore, qz.minScore, qz.duration, 
 		qz.noques, qz.user_id, en.attempts, en.retake,  sta.attempted_at as attempted_at, sta.score as 'score',
 
-		((sta.score * 100) / qz.maxScore) as 'per' 
+		((sta.score * 100) / qz.maxScore) as 'per',
+
+		(SELECT gd.grade from grading gd WHERE ((sta.score * 100) / qz.maxScore) BETWEEN gd.spmin AND gd.spmax LIMIT 1 ) as grade,  
+ 
+        (SELECT gd.gpa from grading gd WHERE ((sta.score * 100) / qz.maxScore) BETWEEN gd.spmin AND gd.spmax LIMIT 1) as gpa   
 		
 		FROM quiz qz 
 		INNER JOIN enrollment en on en.quiz_id = qz.id 

@@ -10,9 +10,13 @@ $route = new Route();
 $routeList = false;
 
 
-/*
-sleep(2);
-*/
+
+if(SITE_URL == 'http://api.io2v3.dvp/')
+{
+	sleep(1);		
+}
+
+
 
 
 
@@ -22,6 +26,9 @@ $route->get('/', function() {
 	view::responseJson($data, 200);
 
 });
+
+
+$route->get('/dashboard', 'dashboardCtrl@router');
 
 
 $route->get('/routes', function() {
@@ -360,6 +367,9 @@ $route->get('/checktimezone', function() {
 	
 
 });
+
+
+
 
 
 

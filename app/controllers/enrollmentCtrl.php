@@ -61,19 +61,19 @@
 			$dateScheduled = $_POST['dtsScheduled'];
 		}
 		else {
-			$dateScheduled = NULL;		
+			$dateScheduled = $this->Dt_24();
 		}
 
-		/*			
+					
 		if(!$quizModule->validateEnrollmentRange($quiz_id, $dateScheduled))
 		{
-			$data['message'] = "Enrollment and Scheduled dates must be in range of Quiz startDatetime | endDateTime ";
+			$data['message'] = "Enrollment out of range from Quiz startDatetime | endDateTime ";
 			$statusCode = 406;
 			$data['status'] = false;
 			return View::responseJson($data, $statusCode);
 			die();
 		}
-		*/
+		
 		
 
 
