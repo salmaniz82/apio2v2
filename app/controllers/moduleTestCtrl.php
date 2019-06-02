@@ -266,36 +266,15 @@
     {
         
 
-        $activityModule = $this->load('module', 'activity');
+        $activityModule = $this->load('module', 'attempt');
 
 
-        $dataPayload = array('attempt_id'=> 401, 'question_id'=> '501', 'questionIndex'=> 2, 'answer'=> 'b', 'atype'=> 'a');
+        $attempt_id = 419;
+
+        $data = $activityModule->pluckEntityIDFromAttempt_id($attempt_id);    
 
 
-        $keys = array('attempt_id', 'question_id', 'questionIndex', 'answer', 'atype');
-
-
-
-
-
-        if($activityModule->activityHandler($dataPayload))
-        {
-            
-            
-        }
-
-        
-
-
-        if($activityModule->isFirst(401))
-        {
-            echo "done supposely";
-        }
-
-        else {
-            ddx($activityModule->DB);
-        }
-
+        var_dump($data);
 
     }
 

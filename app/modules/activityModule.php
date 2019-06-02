@@ -148,6 +148,20 @@ class activityModule {
 	}
 
 
+	public function pluckEntityIDFromAttempt_id($attempt_id)
+	{
+
+		$sql = "SELECT qz.user_id as entity_id from quiz qz 
+				INNER JOIN enrollment en on en.quiz_id = qz.id 
+				INNER JOIN stdattempts sta on sta.enroll_id = en.id WHERE sta.id = $attempt_id LIMIT 1";
+
+				$row = $this->DB->rawSql($sql)->returnData();
+
+				return $row[0]['entity_id'];
+
+	}
+
+
 
 
 

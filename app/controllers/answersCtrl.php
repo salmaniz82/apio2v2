@@ -148,12 +148,30 @@ class answersCtrl extends appCtrl
 
         $keys = array('attempt_id', 'question_id', 'questionIndex', 'answer', 'atype');
 
+        $attempt_id = $_POST['attempt_id'];
+
+        $entity_id = $activityModule->pluckEntityIDFromAttempt_id($attempt_id);
+
         $dataPayload = $activityModule->DB->sanitize($keys);
+        
 
-        $activityModule->activityHandler($dataPayload);
+        if($activityModule->activityHandler($dataPayload))
+        {
+        	// write to a file
 
-        $data['message'] = "no contents needed";
+        	$FileName = ABSPATH."pooling/activities/activity_"."{$entity_id}".".json";
 
+        	$dataFilePath = $FileName;
+
+        	$data_source_file = fopen($dataFilePath, "w");
+
+        	fwrite($data_source_file, json_encode($dataPayload));
+
+			fclose($data_source_file);
+
+        }
+
+        $data['message'] = 'done';
         return View::responseJson($data, 204);
 
 	}

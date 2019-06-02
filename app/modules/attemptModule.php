@@ -130,13 +130,22 @@ class attemptModule {
 	    sta.id AS attemptID,
 	    sta.usedxtimes AS 'usedX',
 	    sta.created_at, DATE_ADD(sta.created_at, INTERVAL + qz.duration MINUTE) AS 'ending_at',
-	    TIMESTAMPDIFF(MINUTE,NOW(), DATE_ADD(sta.created_at, INTERVAL + qz.duration MINUTE)) as 'remainingTime' 
+	    TIMESTAMPDIFF(MINUTE,NOW(), DATE_ADD(sta.created_at, INTERVAL + qz.duration MINUTE)) as 'remainingTime',
+
+	    COUNT(CASE WHEN act.atype = 'm' THEN act.atype END) AS marked,
+  		COUNT(CASE WHEN act.atype = 'a' THEN act.atype END) AS answered,
+  		COUNT(*) AS position 
+
+
 		FROM
 	    stdattempts sta 
 	    INNER JOIN enrollment en on en.id = sta.enroll_id 
 	    INNER JOIN users u on u.id = en.student_id 
-	    INNER JOIN quiz qz on qz.id = en.quiz_id WHERE sta.created_at >= DATE(DATE_SUB(NOW(), INTERVAL 1 DAY)) AND sta.is_active = 1
-		AND qz.user_id = $entity_id";
+	    INNER JOIN quiz qz on qz.id = en.quiz_id 
+	    INNER JOIN activity act on act.attempt_id = sta.id 
+	    WHERE NOW() < DATE_ADD(sta.created_at, INTERVAL qz.duration MINUTE) AND sta.is_active = 1 
+		AND qz.user_id = $entity_id 
+		GROUP BY qz.id, qz.title, u.name, qz.duration, qz.noQues, en.id, sta.id, sta.usedxtimes, sta.created_at";
 
 
 	    if($rows = $this->DB->rawSql($sql)->returnData())
@@ -147,6 +156,9 @@ class attemptModule {
 	    	return false;
 
 	}
+
+
+	
 
 	
 

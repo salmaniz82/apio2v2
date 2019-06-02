@@ -30,6 +30,8 @@ $route->get('/', function() {
 
 $route->get('/dashboard', 'dashboardCtrl@router');
 
+$route->get('/dasboard/activity?', 'dashboardCtrl@activity');
+
 
 $route->get('/routes', function() {
 
@@ -308,6 +310,9 @@ $route->get('/activeAct', 'quizCtrl@currentAct');
 $route->post('/recordActivity', 'answersCtrl@activityHandler');
 
 
+$route->get('/mtestroute', 'moduletestCtrl@teststartact');
+
+
 
 
 $route->get('/checktimezone', function() {
@@ -363,6 +368,13 @@ $route->get('/checktimezone', function() {
 		date_default_timezone_set($timezone_name);
 	*/
 
+
+	
+
+});
+
+
+$route->get('/checkfile', function() {
 
 	
 
