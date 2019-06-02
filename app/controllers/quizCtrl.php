@@ -466,7 +466,20 @@
 
 			if($attempt_id = $attemptModule->initiateQuiz($enroll_id))
 			{
+				
 				// mark entry in the enrollment for attempt
+
+
+				// start stamp the activity to a json file
+
+				/*
+				i need the entity id to get to that file
+				*/
+
+				
+
+				// end stamp activity to a a json file
+
 				$enrollmentModule->toggleRetake($enroll_id, 0);
 				$data['message'] = "Quiz Initiated";
 				$data['attempt_id'] = $attempt_id;
@@ -476,8 +489,24 @@
 
 				$attemptModule->toggleActive($attempt_id, "1");
 
-
 				$activityModule = $activityModule->startNewActivity($attempt_id);
+
+
+				$activityModule = $this->load('module', 'activity');
+
+				$entity_id = $activityModule->pluckEntityIDFromAttempt_id($attempt_id);
+
+				$FileName = ABSPATH."pooling/activities/activity_"."{$entity_id}".".json";
+
+        		$dataFilePath = $FileName;
+
+        		$data_source_file = fopen($dataFilePath, "w");
+
+        		$dataContents['message'] = "new quiz has been initiated";
+
+        		fwrite($data_source_file, json_encode($dataContents));
+
+				fclose($data_source_file);
 
 
 				if($data['usedXTimes'] > 0)

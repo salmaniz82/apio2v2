@@ -86,6 +86,8 @@
     		$data['actvity'] = $activity;  			
     	}
 
+    	$data['message']  = "dashboard";
+
 		return View::responseJson($data, 200);
 	}
 
@@ -100,6 +102,14 @@
 		$activity = $this->attemptModule->activeMonitoring($entity_id);
 
 		$dataFilePath = ABSPATH."pooling/activities/activity_{$entity_id}.json";
+
+		if(!file_exists($dataFilePath))
+		{
+
+			$handle = fopen($dataFilePath, 'w');
+			fclose($handle);
+
+		}
 
 		//$data_source_file = fopen($dataFilePath, "w");
 
