@@ -17,6 +17,8 @@ class answersCtrl extends appCtrl
 		
 		$payload = $_POST['answers'];
 
+		$user_id = $this->jwtUserId();
+
 		$attempt_id = $payload[0]['attempt_id'];
 		$dataset['cols'] = array('attempt_id', 'question_id', 'answer');
 		$dataset['vals'] = $payload;
@@ -47,6 +49,33 @@ class answersCtrl extends appCtrl
 			$data['consumed'] = $queCounter;
 			$statusCode = 200;
 			$data['status'] = true;
+
+
+			$activityModule = $this->load('module', 'activity');
+
+			$entity_id = $activityModule->pluckEntityIDFromAttempt_id($attempt_id);
+
+			$FileName = ABSPATH."pooling/activities/activity_"."{$entity_id}".".json";
+
+        	$dataFilePath = $FileName;
+
+        	$data_source_file = fopen($dataFilePath, "w");
+
+			$dataPayload['message'] = "quiz finished";	        	
+
+        	fwrite($data_source_file, json_encode($dataPayload));
+
+			fclose($data_source_file);
+
+			$studentFilePath = ABSPATH."pooling/stdquiz/candidate_"."{$user_id}".".json";
+
+			$stdSourceFile = fopen($studentFilePath, "w");
+
+			fwrite($stdSourceFile, json_encode($dataPayload));
+
+			fclose($stdSourceFile);				
+
+			
 		}
 
 		else 

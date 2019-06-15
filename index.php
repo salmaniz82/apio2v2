@@ -231,6 +231,12 @@ $route->post('/quizwizardsubjects', 'subjectCtrl@wsubjects');
 
 $route->get('/std-quiz-list', 'quizCtrl@studentQuizListHandler');
 
+
+$route->get('/std-quiz-polling?', 'quizCtrl@pollingonfinish');
+
+
+
+
 $route->post('/std-quiz-initiate', 'quizCtrl@studentQuizInitiate');
 
 $route->get('/std-quiz-play/quiz_id/{quiz_id}/attempt_id/{attempt_id}', 'quizCtrl@studentQuizData');

@@ -195,7 +195,7 @@
 	}
 
 
-	public function studentQuizListHandler()
+	public function studentQuizListHandler($timestamp = null)
 	{
 
 
@@ -236,6 +236,12 @@
 
 				$statusCode = 200;				
 
+			}
+
+
+			if(isset($timestamp))
+			{
+				$data['timestamp'] = $timestamp;
 			}
 
 
@@ -591,6 +597,9 @@
 				$data['usageXTimes'] = $attemptModule->getXTimesUsed($attempt_id);
 
 
+				
+
+
 			}
 
 		}
@@ -782,6 +791,67 @@
 
 
     	return View::responseJson($data, $statusCode);
+
+    }
+
+    public function pollingonfinish()
+    {
+
+    	set_time_limit(0);
+
+    	$user_id = $this->jwtUserId();
+
+    	$dataFilePath = ABSPATH."pooling/stdquiz/candidate_{$user_id}.json";
+
+
+    	if(!file_exists($dataFilePath))
+		{
+
+			$handle = fopen($dataFilePath, 'w');
+			fclose($handle);
+
+		}
+
+
+		while(true)
+		{
+
+			$last_ajax_call = ( isset($_GET['timestamp']) && $_GET['timestamp'] != 0 ) ? (int)$_GET['timestamp'] : null;
+
+			clearstatcache();
+
+			$last_change_in_data_file = filemtime($dataFilePath);
+
+			if ($last_ajax_call == null || $last_change_in_data_file > $last_ajax_call) 
+			{
+
+
+				// fetch the latest record and then send it back	
+
+				
+
+				///this->studentQuizData($last_change_in_data_file);
+
+				
+				return $this->studentQuizListHandler($last_change_in_data_file);
+
+				View::responseJson($data, 200);
+				
+				break;
+
+			}
+			else {
+
+				sleep(1);
+
+				continue;
+
+			}
+
+
+		}
+
+
 
     }
 
