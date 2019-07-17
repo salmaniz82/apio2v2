@@ -331,10 +331,6 @@ $route->get('/checktimezone', function() {
 
 	die();
 
-
-
-
-
 	$db = new Database();
 
 	$dbDate = $db->rawSql("SELECT attempted_at as dt from stdattempts where id = '345'")->returnData();
@@ -380,11 +376,33 @@ $route->get('/checktimezone', function() {
 });
 
 
-$route->get('/checkfile', function() {
 
-	
 
-});
+$route->get('/batch/details/{id}', 'batchCtrl@batchDetails');
+
+$route->get('/batches', 'batchCtrl@batchList');
+
+$route->post('/batches', 'batchCtrl@save');
+
+$route->get('/batches/{id}', 'batchCtrl@batchItems');
+
+$route->get('/batches/elig/quiz', 'batchCtrl@listEligibleQuiz');
+
+
+$route->get('/batches/candidate/overview/{id}/{candiateId}', 'batchCtrl@progressOverview');
+
+
+$route->get('/batches/tagged/canidates/{id}', 'batchCtrl@taggedCanidates');
+
+
+$route->post('/batches/enrollprocess/{id}', 'batchCtrl@enrollProcedure');
+
+
+
+
+
+
+
 
 
 

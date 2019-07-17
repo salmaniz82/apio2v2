@@ -279,6 +279,20 @@
     }
 
 
+    public function batchtest()
+    {
+        
+        $batchModule = $this->load('module', 'batch');
+
+        $data = $batchModule->candParticipation(1);
+
+
+        View::responseJson($data, 200);
+
+
+    }
+
+
 
 
 
