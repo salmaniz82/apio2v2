@@ -142,6 +142,7 @@ $route->get('/permissions', 'permissionsCtrl@index');
 
 $route->post('/permissions', 'permissionsCtrl@save');
 
+
 /* ROLE PERMISSIONS */
 
 $route->get('/role-permissions', 'rolePermissionsCtrl@index');

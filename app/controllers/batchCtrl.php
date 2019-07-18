@@ -75,7 +75,7 @@
 
 		else {
 
-			$data['message'] = "There are no eligible quiz available";
+			$data['message'] = "There are no eligible quiz available for batch processing";
 			$statusCode = 404;
 
 		}

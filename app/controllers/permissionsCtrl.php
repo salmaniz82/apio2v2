@@ -38,20 +38,17 @@
 		if(isset($_POST['name']) && $_POST['name'] != null)
 		{
 
-				$dataPayload['name'] = slugify($_POST['name']);
+				// $dataPayload['name'] = slugify($_POST['name']);
 
+				$dataPayload['name'] = trim($_POST['name']);
 
 				if($this->module->checkDuplicate($dataPayload['name']))
 				{
 
 					$data['message'] = "Permission Already Exists";
 					$statusCode = 406;
-
 					return View::responseJson($data, $statusCode);
-
 				}
-
-
 
 				if($last_id = $this->module->insert($dataPayload))
 				{
