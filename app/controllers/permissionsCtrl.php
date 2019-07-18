@@ -75,4 +75,58 @@
 	}
 
 
+	public function delete()
+	{
+
+
+		if(!jwACL::isLoggedIn()) 
+			return $this->uaReponse();	
+
+		
+		
+		if(!jwACL::has('permission-remove')) 
+			return $this->accessDenied();
+
+
+		
+		if(!$id = (int) $this->getID())
+		{
+
+			$data['message'] = "Expecting Permission ID to be removed";
+			$statusCode = 406;
+			return View::responseJson($data, $statusCode);		
+			die();					
+		}
+
+
+		if(!$this->module->getById($id))
+		{
+			$data['message'] = "Permission does not exists";
+			$statusCode = 406;
+			return View::responseJson($data, $statusCode);		
+			die();					
+		}
+
+
+		if($this->module->isLinkedPermissionCheck($id))
+		{
+			$data['message'] = "Linked or Non-Orphan Permissions cannot be removed";
+			$statusCode = 406;
+			return View::responseJson($data, $statusCode);		
+			die();			
+		}
+
+
+		if($this->module->destroy($id))
+		{
+			$data['message'] = "Permission Removed Successfully";
+			$statusCode = 200;
+			return View::responseJson($data, $statusCode);		
+			die();
+		}
+
+
+	}
+
+
 }

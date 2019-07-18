@@ -68,4 +68,37 @@ class permissionsModule {
 	
 	}
 
+
+	public function isLinkedPermissionCheck($permissionId)
+	{
+
+
+		$sql = "SELECT per.id from permissions per 
+				INNER JOIN userpermissions uper on uper.permission_id = per.id 
+				INNER JOIN users u on u.id = uper.user_id 
+				INNER JOIN rolepermissions rp on rp.role_id = u.role_id
+				WHERE rp.permission_id = $permissionId OR uper.permission_id = $permissionId LIMIT 1";
+
+
+				if($this->DB->rawSql($sql)->returnData())
+				{
+					return true;
+				}
+
+				return false;
+
+	}
+
+
+
+	public function destroy($id)
+	{
+		if($this->DB->delete($id))
+		{
+			return true;
+		}
+
+		return false;
+	}
+
 }
