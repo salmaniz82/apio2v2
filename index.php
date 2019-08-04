@@ -215,6 +215,10 @@ $route->get('/quiz-question-validity/{id}', 'quizCtrl@checkValidityCount');
 $route->put('/quiz-enrollment-toggle/{id}', 'quizCtrl@enrollToggle');
 
 
+$route->put('/quiz-status-toggle/{id}', 'quizCtrl@statusToggle');
+
+
+
 $route->get('/quiz/progress/{id}', 'quizCtrl@quizProgress');
 
 $route->get('/quiz/subjects/{id}', 'subjectCtrl@index');
@@ -406,14 +410,12 @@ $route->post('/batches/enrollprocess/{id}', 'batchCtrl@enrollProcedure');
 
 
 
+/* TESTING ROUTES */
+
+$route->get('/allocateTest', 'moduletestCtrl@testAllocation');
 
 
-
-
-
-
-
-
+$route->get('/subAlloTest', 'moduletestCtrl@subjectAllocation');
 
 
 

@@ -293,6 +293,37 @@
     }
 
 
+    public function testAllocation()
+    {
+
+
+        $quiz_id = 105;
+        $entity_id = 80;
+
+        $quizQuestionModule = $this->load('module', 'quizQuestions');
+
+       echo $quizQuestionModule->allocateQuestionsByQuizId($quiz_id, $entity_id);
+
+
+    }
+
+
+    public function subjectAllocation()
+    {
+        
+        $quiz_id = 128;
+        $entity_id = 80;
+
+        $quizQuestionModule = $this->load('module', 'quizQuestions');
+
+
+        $data = $quizQuestionModule->synchronizeCheck($quiz_id, $entity_id);
+
+
+        echo $data;
+
+
+    }
 
 
 

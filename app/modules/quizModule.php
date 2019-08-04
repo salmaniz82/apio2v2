@@ -85,9 +85,9 @@
 		{
 			return $lastId;
 		}
-		else {
-			return $this->DB;
-		}
+		
+
+		return false;
 
 	}
 
@@ -167,7 +167,7 @@
 
 
 
-	public function udpate($dataPayload, $id)
+	public function update($dataPayload, $id)
 	{
 		if($this->DB->update($dataPayload, $id))
 		{
@@ -301,6 +301,21 @@
 		else {
 			return false;
 		}
+
+	}
+
+
+	public function pluckMaxAllocationSize($quiz_id)
+	{
+
+		$maxSize = $this->DB->pluck('maxAllocation')->Where("id = '".$quiz_id."'");
+
+		if($maxSize)
+		{
+			return $maxSize;
+		}
+
+		return false;
 
 	}
 

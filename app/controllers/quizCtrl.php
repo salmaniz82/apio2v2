@@ -336,9 +336,6 @@
 		$quiz_id = $this->getID();
 		$_POST = Route::$_PUT;
 
-		
-
-
 		$validity = $this->module->quizQuestionEligible($quiz_id);
 
 		$statusValidity = $validity[0]['validity'];
@@ -411,11 +408,46 @@
 	}
 
 
+
+	public function statusToggle()
+	{
+		
+		
+		$quiz_id = $this->getID();
+		$_POST = Route::$_PUT;
+
+
+		$dataPayload['status'] = $_POST['status'];
+
+
+		if($this->module->update($dataPayload, $quiz_id))
+		{
+
+			$data['message'] = ($dataPayload['status'] == 1) ? 'Status Enabled' : 'Status Disabled';
+			$statusCode  = 200;
+			$data['qstatus'] = $dataPayload['status'];
+
+		}
+
+		else {
+				$data['message'] = "Unable to update quiz status";
+				$data['qstatus'] = $dataPayload['status'];
+				$statusCode  = 500;
+
+		}
+
+
+		return View::responseJson($data, $statusCode);
+
+
+	}
+
+
 	public function enrollmentToggleHandler($dataPayload, $quiz_id)
 	{
 
 
-		if($this->module->udpate($dataPayload, $quiz_id))
+		if($this->module->update($dataPayload, $quiz_id))
 		{
 			$data['message'] = ($dataPayload['enrollment'] == 1) ? 'Enrollment Enabled' : 'Enrollment Disabled';
 			$statusCode  = 200;
@@ -668,8 +700,8 @@
 		{
 
 			$statusCode = 200;
-
 			$data['quiz'] = $quiz[0];	
+			//$data['stream'] = $this->encodeData($quizQuestionModule->listQuizPlayQuestionsDLS($quiz_id, $studentId));
 
 			$data['stream'] = $quizQuestionModule->listQuizPlayQuestionsDLS($quiz_id, $studentId);
 
@@ -694,47 +726,123 @@
     public function saveWithWizard()
     {
 
+    	/*
+
+    	JSON BODY
+    		{
+		
+		"title": "Pass Validation",
+		"category_id": "54",
+		"cleanDesp": ["79"],
+		"cleanSubDesp": ["82", "81", "80"],
+		
+		"duration": "30",
+
+		"startDateTime": "2019-07-20 20:19",
+		"endDateTime": "2019-07-31 20:19",
+		"maxAllocation": "3",
+
+		"maxScore": "100",
+		"minScore": "70",
+		"noques": "10",
+		
+		
+		"threshold": "500",
+
+		"uniqueOnRetake": "1",
+		"showGPA": "1",
+		"showGrading": "1",
+		"showResult": "1",
+		"showScore": "1",
+		"dls": "0"
+
+		}
+
+    	*/
+
+
+    	/*
+
+    "title": "this must fail",
+    "category_id": "54",
+    "cleanDesp": ["79"],
+    "cleanSubDesp": ["80","81","82"],
+    "duration": "30",
+    "startDateTime": "2019-07-21 16:48",
+    "endDateTime": "2019-07-31 16:48",
+
+    "maxScore": "100",
+    "minScore": "70",
+
+    "maxAllocation": "4"
+    
+    "noques": "100",
+    "threshold": 500,
+    "dls": 0,
+    "uniqueOnRetake": "1",
+    "showScore": 0,
+    "showResult": "1",
+    "showGrading": "1",
+    "showGPA": "1",
+    
+
+    	*/
+
+
 
 
     	if(!jwACL::isLoggedIn()) 
 			return $this->uaReponse();	
 		
-
 		if(!jwACL::has('quiz-add')) 
 			return $this->accessDenied();
 
 
-
 		$keys = array(
 			'title', 'category_id', 'minScore', 'maxScore', 'startDateTime', 'endDateTime', 'noques', 'duration',
-			'threshold', 'dls', 'uniqueOnRetake', 'showScore', 'showResult', 'showGrading', 'showGPA'
+			'threshold', 'dls', 'uniqueOnRetake', 'showScore', 'showResult', 'showGrading', 'showGPA', 'maxAllocation'
 		);
 
-		/*
-
-		: vm.nQuiz.thrshold,
-                 : vm.nQuiz.dls,
-                : vm.nQuiz.reTakeUnique,
-                : vm.nQuiz.scoreVisible,
-                : vm.nQuiz.showResults,
-                : vm.nQuiz.showGradings,
-                 : vm.nQuiz.showGPA,
-
-		*/
+		foreach ($keys as $key => $value) {
 
 
+			if(!isset($_POST[$keys[$key]]))
+			{
+
+				$data['message'] = $value . " is required field";
+
+				$statusCode = 406;
+
+				return View::responseJson($data, $statusCode);
+
+				die();
+
+			}
+			
+		}
+
+
+
+		
+		
 		$dataPayload = $this->module->DB->sanitize($keys);
+		$dataPayload['maxAllocation'] = (int) $dataPayload['noques'] * (int) $dataPayload['maxAllocation'];
+		
 
 
-		$dataPayload['status'] = 0;
+		$dataPayload['status'] = 1;
 		$dataPayload['enrollment'] = 0;
 		$dataPayload['user_id'] = $this->jwtUserId();
 
 		$decipline = $_POST['cleanDesp'];
 		$subDecipline = $_POST['cleanSubDesp'];
 
+
+		
+
 		if($res = $this->module->addQuiz($dataPayload))
 		{
+			
 			
 			$statusCode = 200;
 			$data['last_id'] = $res;
@@ -753,17 +861,18 @@
         	else {
         		$data['message'] = "New Quiz failed to save subjects";	
         	}
-
+        	
 		}
 		else {
 
-			$data['message'] = "New Quiz added";
-			$data['debug'] = $res;
+			$data['message'] = "Fail Quiz Cannot be saved";
 			$statusCode = 500;
 
 		}
 
 		return View::responseJson($data, $statusCode);
+
+		
 
     }
 

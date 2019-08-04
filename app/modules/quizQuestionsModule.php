@@ -1,5 +1,5 @@
 <?php 
-class quizQuestionsModule {
+class quizQuestionsModule extends appCtrl {
 
 
 	public $DB;
@@ -32,14 +32,14 @@ class quizQuestionsModule {
 	public function allocateQuestionsByQuizId($quiz_id, $entity_id)
 	{
 
+
 		/*
+		- get maxXFactor by xAllocation / noques  
+		- get subjectsId and their quePerSection
+		- sectionLimit = quePerSection * maxXFactor 
+		*/
 
-		$sql = "INSERT INTO quizQuestions (quiz_id, question_id)
-			SELECT qz.id as quiz_id, que.id as question_id from quiz qz
-			INNER JOIN questions que on qz.category_id = que.category_id 
-			WHERE qz.id = $quiz_id AND que.status = 1 AND (que.quiz_id = $quiz_id OR que.quiz_id IS NULL)";
-
-			*/
+		/*
 
 		$sql = "INSERT INTO quizquestions (quiz_id, question_id)
 			SELECT qz.id as quiz_id, que.id as question_id from quiz qz
@@ -47,7 +47,40 @@ class quizQuestionsModule {
 			WHERE qz.id = $quiz_id AND que.status = 1 AND (que.quiz_id = $quiz_id OR que.quiz_id IS NULL) 
 			AND (que.entity_id = $entity_id OR que.entity_id IS NULL)
 			AND que.consumed <= qz.threshold  
-			AND que.section_id IN (SELECT subject_id from subjects where quiz_id = $quiz_id)";
+			AND que.section_id IN (SELECT subject_id from subjects where quiz_id = $quiz_id) LIMIT $maxAllocation";
+
+			*/
+
+		$factorList = $this->listMaxFactor($quiz_id);	
+
+
+		$sql = "INSERT INTO quizquestions (quiz_id, question_id)
+
+			SELECT quiz_id, question_id FROM ( ";
+
+			for($i = 0; $i<sizeof($factorList); $i++)
+			{
+
+				$subject_id = $factorList[$i]['subject_id'];
+				$maxFactor = $factorList[$i]['maxFactor'];
+
+			$sql .= " ( SELECT qz.id as quiz_id, que.id as question_id from quiz qz
+			INNER JOIN questions que on qz.category_id = que.category_id 
+			WHERE qz.id = $quiz_id AND que.status = 1 AND (que.quiz_id = $quiz_id OR que.quiz_id IS NULL) 
+			AND (que.entity_id = $entity_id OR que.entity_id IS NULL)
+			AND que.consumed <= qz.threshold  
+			AND que.section_id = $subject_id LIMIT $maxFactor ) ";
+
+
+			if($i + 1 < sizeof($factorList))
+			{
+				$sql .= " UNION "; 
+			}
+
+			}
+
+			$sql .= " ) coverge";
+
 
 		if($this->DB->rawSql($sql))
 		{
@@ -55,6 +88,8 @@ class quizQuestionsModule {
 		}
 
 			return false;
+
+			
 	}
 
 
@@ -78,7 +113,16 @@ class quizQuestionsModule {
 	{
 		/*
 			pick only non matching rows from questions which are not in quizquestions
+			{
+ 	   			"queIDs": "99,100,203",
+    			"noQues": "3",
+    			"status": true,
+    			"message": "3 New Questions Available"
+			}
 		*/
+
+		$rows = $this->calclauteSynPerSubject($quiz_id);
+		/*
 		$sql = "SELECT GROUP_CONCAT(que.id) as question_id, count(que.id) as quecount from quiz qz
 				INNER JOIN questions que on qz.category_id = que.category_id 
 				WHERE qz.id = $quiz_id AND que.status = 1 AND (que.quiz_id = $quiz_id OR que.quiz_id IS NULL) 
@@ -86,16 +130,50 @@ class quizQuestionsModule {
 				AND que.consumed <= qz.threshold 
 				AND que.section_id IN (SELECT subject_id from subjects where quiz_id = $quiz_id) 
     			AND que.id NOT IN (SELECT question_id from quizquestions where quiz_id = $quiz_id)";
+    	*/
 
 
-			if($data = $this->DB->rawSql($sql)->returnData())
+        $newSql = " SELECT GROUP_CONCAT(question_id) as question_id, count(question_id) as quecount from ( ";
+
+        for($i = 0; $i<sizeof($rows); $i++)
+        { 
+
+
+            $subject_id = $rows[$i]['section_id'];
+            $pullLimit = $rows[$i]['pullLimit'];
+            $limit = ($pullLimit < 0) ? 0 : $pullLimit;
+
+            $newSql .= " ( 
+                SELECT que.id as question_id from quiz qz 
+                INNER JOIN questions que on que.category_id = qz.category_id 
+                WHERE qz.id = $quiz_id AND que.status = 1 
+                AND (que.quiz_id = $quiz_id OR que.quiz_id IS NULL) 
+                AND (que.entity_id = $entity_id OR que.entity_id IS NULL) 
+                AND que.consumed <= qz.threshold 
+                AND que.section_id = $subject_id  
+                AND que.id NOT IN (SELECT question_id from quizquestions where quiz_id = $quiz_id) LIMIT $limit 
+                ) ";
+
+                if($i + 1 < sizeof($rows))
+                {
+                    $newSql .= " UNION "; 
+                }
+
+        }
+
+	        $newSql .= " ) converge";
+
+	        
+
+    		$data = $this->DB->rawSql($newSql)->returnData();
+
+			if($data[0]['quecount'] != 0)
 			{
 				return $data;	
 			}
 
-			else {
 				return false;
-			}
+	
 	}
 
 
@@ -519,7 +597,7 @@ class quizQuestionsModule {
 
 			$collections[$subj['subjects']]['composite'] = array('easy' => [], 'medium'=> [], 'difficult'=> []);				
 
-			$collections[$subj['subjects']]['meta'] = array('easy' => [], 'medium'=> [], 'difficult'=> []);
+			$collections[$subj['subjects']]['meta'] = array('easy' => 0, 'medium'=> 0, 'difficult'=> 0);
 			
 
 			$subject_id = (int) $subj['subject_id'];
@@ -576,12 +654,9 @@ class quizQuestionsModule {
 			{
 
 
-				
-
-
 				$levelKeyDB;
 
-				$sql = "SELECT qq.id, qq.status as 'qqStatus', que.id as questionId, que.type_id, que.queDesc, que.optionA, que.optionB, que.optionC, que.optionD,
+				$sql = "SELECT qq.id, qq.status as 'qqStatus', que.id as questionId, que.type_id, que.queDesc, que.optionA, que.optionB, que.optionC, que.optionD, que.answer as stamp,  
 				cat.name as category, 
             	sec.name as 'subDecipline',
 				lvl.levelEN, lvl.levelAR, 
@@ -603,7 +678,7 @@ class quizQuestionsModule {
 				if($questions = $this->DB->rawSql($sql)->returnData())
 				{
 				
-					$questionCount = $this->DB->noRows;
+					 $questionCount = $this->DB->noRows;
 
 					if($levelKeyDB == 1)
 					{					
@@ -619,7 +694,7 @@ class quizQuestionsModule {
 						$collections[$subj['subjects']]['meta']['medium'] = $questionCount;
 					}
 
-					else {
+					else if ($levelKeyDB == 3) {
 
 						$collections[$subj['subjects']]['composite']['difficult'] = $questions;
 						$collections[$subj['subjects']]['meta']['difficult'] = $questionCount;
@@ -627,22 +702,61 @@ class quizQuestionsModule {
 					}
 
 
-
 				}
 
 				}
-
-
-
 
 			}	
-
-				
+		
 			return ['collections' => $collections, 'distribution' => $subjects];
 			
+	}
+
+
+
+	public function listMaxFactor($quiz_id)
+	{
+
+		$sql = "SELECT round(qz.maxAllocation / qz.noques * sub.quePerSection) as maxFactor, sub.subject_id from subjects sub 
+			INNER JOIN quiz qz on qz.id = sub.quiz_id 
+			where quiz_id = $quiz_id";
+
+			return $this->DB->rawSql($sql)->returnData();
+
+	}
+
+
+
+	public function calclauteSynPerSubject($quiz_id)
+	{
+
+
+		$sql  = "SELECT que.section_id, cat.name, COUNT(qq.id) as allocated, ROUND(qz.maxAllocation / qz.noques * sub.quePerSection) as limitPerSubject, qz.noques, qz.maxAllocation, sub.quePerSection, 
+			ROUND(qz.maxAllocation / qz.noques * sub.quePerSection - COUNT(qq.id)) as pullLimit 
+			from quizquestions qq 
+			INNER JOIN quiz qz on qz.id = qq.quiz_id 
+			INNER JOIN questions que on qq.question_id = que.id 
+			INNER JOIN categories cat on cat.id = que.section_id 
+			INNER JOIN subjects sub on sub.quiz_id = qz.id AND sub.subject_id = que.section_id 
+			where qq.quiz_id = $quiz_id AND qq.status = 1
+			GROUP BY que.section_id";
+			return $this->DB->rawSql($sql)->returnData();
+
 	}
 
 
 }
 
 
+/*
+calculate available room for each subject as per setLimit 
+SELECT que.section_id, cat.name, COUNT(qq.id) as allocated, ROUND(qz.maxAllocation / qz.noques * sub.quePerSection) as limitPerSubject, qz.noques, qz.maxAllocation, sub.quePerSection, 
+ROUND(qz.maxAllocation / qz.noques * sub.quePerSection - COUNT(qq.id)) as pullLimit 
+from quizquestions qq 
+INNER JOIN quiz qz on qz.id = qq.quiz_id 
+INNER JOIN questions que on qq.question_id = que.id 
+INNER JOIN categories cat on cat.id = que.section_id 
+INNER JOIN subjects sub on sub.quiz_id = qz.id AND sub.subject_id = que.section_id 
+where qq.quiz_id = 126 AND qq.status = 1
+GROUP BY que.section_id;
+*/
