@@ -158,6 +158,15 @@
 		
 		$data['levels'] = $levelModule->listall();
 
+		if(jwACL::authRole() == 'contributor' || jwACL::authRole() == 'content developer')
+		{
+
+			$boundcategoryModule = $this->load('module', 'boundcategory');
+			$user_id = jwACL::authUserId();
+			$data['topCategory'] = $boundcategoryModule->pluckTopCategoryByUserId($user_id);
+
+		}
+
 
 		View::responseJson($data, 200);
 
@@ -800,7 +809,7 @@
 
 		$keys = array(
 			'title', 'category_id', 'minScore', 'maxScore', 'startDateTime', 'endDateTime', 'noques', 'duration',
-			'threshold', 'dls', 'uniqueOnRetake', 'showScore', 'showResult', 'showGrading', 'showGPA', 'maxAllocation'
+			'threshold', 'maxAllocation'
 		);
 
 		foreach ($keys as $key => $value) {
@@ -809,7 +818,7 @@
 			if(!isset($_POST[$keys[$key]]))
 			{
 
-				$data['message'] = $value . " is required field";
+				$data['message'] = $keys[$key] . " is required field";
 
 				$statusCode = 406;
 
@@ -822,8 +831,21 @@
 		}
 
 
+		$optionalKeys = ['dls', 'uniqueOnRetake', 'showScore', 'showResult', 'showGrading', 'showGPA'];
 
-		
+
+		foreach ($optionalKeys as $key => $value) {
+
+			if( isset($_POST[$optionalKeys[$key]]) )
+			{
+
+				$keys[] = $optionalKeys[$key];
+
+			}
+
+		}
+
+
 		
 		$dataPayload = $this->module->DB->sanitize($keys);
 		$dataPayload['maxAllocation'] = (int) $dataPayload['noques'] * (int) $dataPayload['maxAllocation'];
@@ -965,7 +987,93 @@
     }
 
 
+    public function updateDateTime()
+    {
 
+    	$_POST = Route::$_PUT;
+
+    	if(!jwACL::isLoggedIn()) 
+			return $this->uaReponse();	
+
+
+		/*
+		no permission in db
+		if(!jwACL::has('quiz-update')) 
+			return $this->accessDenied();
+		*/
+
+
+		$id = $this->getID();
+
+		$startDateTime = $_POST['startDateTime'];
+		$endDateTime = $_POST['endDateTime'];
+
+
+
+		$dataPayload = array(
+
+			'startDateTime' => $startDateTime,
+			'endDateTime' => $endDateTime
+
+		);
+
+
+		if($this->module->update($dataPayload, $id))
+		{
+
+			$data['message'] = "Quiz datetime updated successfully";
+			$statusCode = 200;
+
+		}
+
+		else {
+
+			$data['message'] = "Operation failed whilte updating datetime";
+			$statusCode = 500;
+
+		}
+
+		return View::responseJson($data, $statusCode);
+
+    }
+
+
+
+    public function destroy()
+    {
+
+
+    	if(!jwACL::isLoggedIn()) 
+			return $this->uaReponse();	
+
+		/*
+		no permission in db
+		if(!jwACL::has('quiz-delete')) 
+			return $this->accessDenied();
+		*/
+
+    	
+    	$id = $this->getID();
+
+    	if($this->module->deleteQuiz($id))
+    	{
+
+    		$data['message'] = "removed successfully";
+			$statusCode = 200;
+
+    	}
+
+    	else {
+
+    		$data['message'] = "Failed while removing Quiz";
+			$statusCode = 500;
+
+    	}
+
+
+    	return View::responseJson($data, $statusCode);
+
+    }
 
 
 

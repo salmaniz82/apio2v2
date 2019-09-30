@@ -161,5 +161,26 @@
 	}
 
 
+	public function resetAllUserPermissionUnderRole()
+	{
+
+		$role_id = $this->getID();
+
+		$deleted = $this->module->deleteUserPermissionForRole($role_id);
+
+		$inserted = $this->module->insertUserPermissionForRole($role_id);
+
+		$data['inserted'] = $inserted;
+
+		$data['deleted'] = $deleted;
+
+
+		return View::responseJson($data, 200);
+
+
+
+	}
+
+
 	
 }

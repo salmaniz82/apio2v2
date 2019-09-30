@@ -27,6 +27,10 @@
 
 		$roleModules = $this->load('module', 'role');
 		$data['roles'] = $roleModules->returnAllRoles($this->jwtRoleId());
+
+
+		$categoryModule = $this->load('module', 'category');	
+		$data['topCategories'] = $categoryModule->flatRootList();
 		
 
 		return View::responseJson($data, $statusCode);
@@ -45,7 +49,13 @@
 	{
 
 
-			// if role is not give then it must be a student
+			$roleModule = $this->load('module', 'role');
+
+
+			$boudUserToCategory = false;
+
+			
+
 			$keys = array('name', 'email', 'password');
 			$dataPayload = $this->module->DB->sanitize($keys);
 
@@ -57,19 +67,38 @@
 
 			if(!isset($_POST['role_id']))
 			{
+				// if role is not give then it must be a student
 				$dataPayload['role_id'] = 4;
 			}
 			else{
 
-				$dataPayload['role_id'] = $_POST['role_id'];
 
+				$roleName = $roleModule->pluckRoleNameById($_POST['role_id']);
+
+				if($roleName == 'contributor' || $roleName == 'content developer')
+				{
+					$boudUserToCategory = true;
+				}
+
+				$dataPayload['role_id'] = $_POST['role_id'];
 				$assignContributor = ($dataPayload['role_id'] == 3) ? true : false;
-				
-					 
-				
 
 			}
-	
+
+
+
+			if($assignContributor && !isset($_POST['topCategory']))
+			{
+
+				$data['message'] = "Top Level Category was missing a ". $roleName;
+				$statusCode = 406;
+				return View::responseJson($data, $statusCode);
+
+				die();
+
+			}
+
+
 
 			if(!$this->module->emailExists($dataPayload['email']))
 			{
@@ -86,6 +115,27 @@
 						);						
 
 						$contributorModule->assignContributor($assignData);
+					}
+
+
+					if($boudUserToCategory)
+					{
+
+						$boundCategoryModule = $this->load('module', 'boundcategory');
+
+
+						$boundPayload = array(
+
+							'user_id' => $last_id,
+							'category_id' => $_POST['topCategory']
+
+						);
+
+
+						$boundCategoryModule->save($boundPayload);
+
+
+
 					}
 					
 

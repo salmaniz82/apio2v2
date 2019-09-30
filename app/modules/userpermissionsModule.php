@@ -262,6 +262,61 @@ class userpermissionsModule {
 
 
 
+	public function resetDefaultPermissionForAllUserUnderRole($role_id)
+	{
+
+
+		$this->deleteUserPermissionForRole($role_id);
+
+		$this->insertUserPermissionForRole($role_id);
+
+
+
+	}
+
+
+	public function insertUserPermissionForRole($role_id)
+	{
+
+		$sql = "INSERT INTO userpermissions(user_id, permission_id, status) 
+    	SELECT u.id as user_id, rp.permission_id as 'permission_id', rp.status as 'status' from users u 
+		INNER JOIN rolepermissions rp on u.role_id = rp.role_id WHERE u.role_id = $role_id";
+
+
+		if($this->DB->rawSql($sql))
+		{
+			return $this->DB->connection->affected_rows;
+		}
+
+		else {
+			return false;
+		}
+
+	}
+
+
+
+	public function deleteUserPermissionForRole($role_id)
+	{
+
+		$sql = "DELETE FROM userpermissions where user_id IN (
+
+       		SELECT u.id FROM users u where u.role_id = $role_id 
+
+    	)";
+
+    	if($this->DB->rawSql($sql))
+    	{
+    		return $this->DB->connection->affected_rows;
+    	}
+
+    	return false;
+
+
+	}
+
+
+
 	/*
 
 	GETTING ALL PERMISSION ASSOCIATED TO USER FILTER BY ROLE TYPE
@@ -316,9 +371,6 @@ class userpermissionsModule {
 );
 
 	*/	
-
-
-
 
 
 }

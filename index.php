@@ -132,6 +132,7 @@ $route->post('/register-enroll', 'userCtrl@registerEnroll');
 
 $route->get('/roles', 'rolesCtrl@index');
 
+$route->put('/roles-reset-permission/{id}', 'userPermissionsCtrl@resetAllUserPermissionUnderRole');
 
 
 
@@ -200,9 +201,14 @@ $route->get('/quiz', 'quizCtrl@index');
 
 $route->get('/quiz/{id}', 'quizCtrl@single');
 
+$route->delete('/quiz/{id}', 'quizCtrl@destroy');
+
 $route->post('/quiz', 'quizCtrl@save');
 
 $route->post('/quiz/wizard', 'quizCtrl@saveWithWizard');
+
+
+$route->put('/quiz-update-datetime/{id}', 'quizCtrl@updateDateTime');
 
 
 
@@ -313,6 +319,7 @@ $route->post('/media', 'mediaCtrl@save');
 
 $route->get('/testmedialink/{id}', 'moduletestCtrl@testMediaLink');
 
+
 $route->get('/mediabyid/{id}', 'mediaCtrl@singleItemById');
 
 $route->get('/test-encoding', 'moduletestCtrl@testenc');
@@ -416,6 +423,53 @@ $route->get('/allocateTest', 'moduletestCtrl@testAllocation');
 
 
 $route->get('/subAlloTest', 'moduletestCtrl@subjectAllocation');
+
+
+
+
+$route->get('/datakeys', function() {
+
+
+	$postData = array(
+
+		'name' => 'salman',
+		'email' => 'sa@isystematic.com',
+		'dls' => 1
+
+	);
+
+
+	$keys = array('apple', 'orange', 'mango');
+
+
+	$optionalKeys = ['dls', 'uniqueOnRetake', 'showScore', 'showResult', 'showGrading', 'showGPA'];
+
+
+	/*
+
+	loop optional keys
+	check isset with postincomming data 
+	if found push to the keys 
+
+	*/
+
+
+	foreach ($optionalKeys as $key => $value) {
+
+
+			if(isset($postData[$optionalKeys[$key]]))
+			{
+
+				$keys[] =  $optionalKeys[$key];
+
+			}
+		
+	}
+
+
+
+
+});
 
 
 

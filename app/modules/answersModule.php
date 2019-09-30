@@ -103,6 +103,8 @@ class answersModule extends appCtrl {
 	public function saveCalculatedSubjectsScore($attempt_id)
 	{
 
+				/*
+
 				$sql = "INSERT INTO scoresheet (attempt_id, quiz_id, enroll_id, subject_id, maxScore, score, rightAnswers, quePerSection) 
 				
 						SELECT attempt_id, quiz_id, enroll_id, subject_id, maxScore, actualScore, rightAnswers, quePerSection FROM (
@@ -137,7 +139,47 @@ class answersModule extends appCtrl {
                         
                         having COUNT(sa.isRight) = sub.quePerSection 
 
-    			) converge";		
+    			) converge";
+
+    			*/
+
+
+
+    			$sql = "INSERT INTO scoresheet (attempt_id, quiz_id, enroll_id, subject_id, maxScore, score, rightAnswers, quePerSection) 
+
+    			SELECT attempt_id, quiz_id, enroll_id, subject_id, max(maxScore) as maxScore, actualScore, rightAnswers, quePerSection FROM (
+
+						SELECT st.id AS 'attempt_id', en.quiz_id, st.enroll_id, 
+  						que.section_id as 'subject_id', sub.points as 'maxScore', 
+						((sub.points / sub.quePerSection ) * COUNT(sa.isRight) ) as 'actualScore', 
+						COUNT(sa.isRight) as 'rightAnswers', sub.quePerSection as  'quePerSection' 
+
+						from stdattempts st 
+
+						INNER JOIN enrollment en on en.id = st.enroll_id 
+						INNER JOIN stdanswers sa on sa.attempt_id = st.id 
+						INNER JOIN questions que on que.id = sa.question_id 
+						INNER JOIN subjects sub on sub.subject_id = que.section_id AND en.quiz_id = sub.quiz_id 
+						where st.id = $attempt_id AND sa.isRight = 1 GROUP BY st.id, en.quiz_id, sub.subject_id, que.section_id, sub.points, sub.quePerSection 
+                        
+                        UNION 
+                        
+                        SELECT st.id AS 'attempt_id', en.quiz_id, st.enroll_id, 
+						que.section_id as 'subject_id', sub.points as 'maxScore', 0 as 'actualScore', SUM(sa.isRight) as 'rightAnswers', sub.quePerSection    
+
+						from stdattempts st 
+
+						INNER JOIN enrollment en on en.id = st.enroll_id 
+						INNER JOIN stdanswers sa on sa.attempt_id = st.id 
+						INNER JOIN questions que on que.id = sa.question_id 
+						INNER JOIN subjects sub on sub.subject_id = que.section_id AND en.quiz_id = sub.quiz_id 
+						where st.id = $attempt_id AND sa.isRight = 0 GROUP BY 
+                        
+                        st.id, en.quiz_id, st.enroll_id, que.section_id, sub.points, sub.quePerSection
+                        
+                        ) converge 
+                        
+                        GROUP BY attempt_id, quiz_id, enroll_id, subject_id";		
 
 
 				if($this->DB->rawSql($sql))

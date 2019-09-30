@@ -320,6 +320,20 @@
 	}
 
 
+	public function deleteQuiz($quizId)
+	{
+
+
+		if($this->DB->delete($quizId, true))
+		{
+			return true;
+		}
+
+		return false;
+
+	}
+
+
 
 
 }

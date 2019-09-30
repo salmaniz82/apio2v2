@@ -49,4 +49,11 @@ class roleModule {
 		}
 	}
 
+
+	public function pluckRoleNameById($roleID)
+	{
+
+		return $this->DB->pluck('role')->where("id = '".$roleID."'");
+	}
+
 }
