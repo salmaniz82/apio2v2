@@ -100,6 +100,7 @@
 		// pending quiz query
 
 		$sql = "SELECT qz.id, en.id as 'enroll_id', qz.title, qz.category_id, qz.maxScore, qz.minScore, qz.duration, qz.noQues, 
+		qz.showScore, qz.showResult, qz.showGrading, qz.showGPA, 
 		en.student_id, en.dateEnrolled, en.dtsScheduled,  en.attempts, en.retake,
 			IF(qz.endDateTime > NOW(), 'valid', 'expired') as 'validity',  IF(en.dtsScheduled > NOW(), 'countdown', 'eligible') as 'schedule' 
 		from enrollment en 
@@ -122,7 +123,10 @@
 	public function getStudentAttemptedQuizList($student_id)
 	{
 		$sql = "SELECT qz.id as 'id', sta.id as 'attemptId', en.id as 'enroll_id', qz.title, qz.category_id, qz.maxScore, qz.minScore, qz.duration,
-		qz.noques, qz.user_id, en.attempts, en.retake,  sta.attempted_at, sta.score, 
+		qz.noques, qz.user_id, qz.showScore, qz.showResult, qz.showGrading, qz.showGPA, 
+
+
+		en.attempts, en.retake,  sta.attempted_at, sta.score, 
 		IF(qz.endDateTime > NOW(), 'valid', 'expired') as 'validity' 
 		FROM quiz qz 
 		INNER JOIN enrollment en on en.quiz_id = qz.id 
