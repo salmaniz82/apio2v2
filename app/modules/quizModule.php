@@ -59,7 +59,11 @@
 
 		$sql = "SELECT qz.id, qz.title, qz.category_id, cat.name as 'category', 
 		qz.maxScore, qz.minScore, qz.duration, qz.startDateTime, qz.endDateTime, qz.noques, qz.user_id, qz.status as 'status',
-		qz.enrollment as 'enrollment' 
+		qz.enrollment as 'enrollment', qz.dls, qz.uniqueOnRetake, qz.showScore, qz.showResult, qz.showGrading, qz.showGPA,
+
+		(SELECT count(id) as enrolledStudent from enrollment WHERE quiz_id = $quiz_id GROUP by quiz_id ) as enrolledStudent 
+
+
 		 from quiz qz
 		INNER JOIN categories cat on cat.id = category_id
 		WHERE qz.id = $quiz_id LIMIT 1;";
@@ -334,6 +338,22 @@
 		}
 
 		return false;
+
+	}
+
+
+	public function optionToggleHandler($dataPayload, $id)
+	{
+
+
+		if($this->DB->update($dataPayload, $id))
+		{
+			return true;
+		}
+		else {
+			return false;
+		}
+
 
 	}
 

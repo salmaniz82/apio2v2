@@ -11,6 +11,12 @@
 
 
 
+	public function passtest()
+	{
+		echo $this->module->generateRandomPassword();
+	}
+
+
 	public function index()
 	{
 
@@ -104,6 +110,19 @@
 			{
 				if($last_id = $this->module->addNewUser($dataPayload) )
 				{
+
+
+					if($roleName == 'students' || $roleName == 'candidate')
+					{
+
+						// load module and insert the ticket
+
+						$preliminaryModule = $this->load('module','preliminary');
+						$ticketsPayload = array('user_id'=> $last_id, 'ticket' => $_POST['password']);
+						$preliminaryModule->addTickets($ticketsPayload);
+
+					}
+
 
 					if($assignContributor)
 					{
@@ -296,6 +315,11 @@
 				
 				if($last_id = $this->module->addNewUser($dataPayload) )
 				{
+
+
+					$preliminaryModule = $this->load('module','preliminary');
+					$ticketsPayload = array('user_id'=> $last_id, 'ticket' => $_POST['password']);
+					$preliminaryModule->addTickets($ticketsPayload);
 				
 					
 					$statusCode = 200;

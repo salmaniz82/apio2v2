@@ -1077,4 +1077,53 @@
 
 
 
+    public function optionsToggle()
+    {
+
+
+    	$PUT = Route::$_PUT;
+
+
+		if(!jwACL::isLoggedIn()) 
+			return $this->uaReponse();	
+
+    	$id = $this->getID();
+
+
+
+    	$data['keys'] = array_keys($PUT);
+
+    	/*
+    	typeKey
+    	statusValue
+    	*/
+
+
+    	$PUT['typeKey'];
+
+    	$PUT['statusValue'];
+
+
+    	$dataPayload = array(
+
+    		$PUT['typeKey'] => $PUT['statusValue']
+
+    	);
+
+
+    	if($this->module->optionToggleHandler($dataPayload, $id))
+    	{
+    		$data['message'] = 'working on';	
+    	}
+
+    	
+
+
+    	return View::responseJson($data, 200);
+
+
+    }
+
+
+
 }

@@ -221,11 +221,15 @@ $route->get('/quiz-question-validity/{id}', 'quizCtrl@checkValidityCount');
 $route->put('/quiz-enrollment-toggle/{id}', 'quizCtrl@enrollToggle');
 
 
+$route->put('/quiz-option-toggle/{id}', 'quizCtrl@optionsToggle');
+
+
 $route->put('/quiz-status-toggle/{id}', 'quizCtrl@statusToggle');
 
 
 
 $route->get('/quiz/progress/{id}', 'quizCtrl@quizProgress');
+
 
 $route->get('/quiz/subjects/{id}', 'subjectCtrl@index');
 
@@ -234,6 +238,7 @@ $route->put('/quiz/distribution/{id}', 'subjectCtrl@updateDistro');
 
 
 $route->get('/quiz/inspectanswers/{quiz_id}/{attempt_id}', 'answersCtrl@inpspectAnswers');
+
 
 $route->get('/quiz/scorecard/{quiz_id}/{attempt_id}', 'answersCtrl@scoreCard');
 
@@ -427,49 +432,7 @@ $route->get('/subAlloTest', 'moduletestCtrl@subjectAllocation');
 
 
 
-$route->get('/datakeys', function() {
-
-
-	$postData = array(
-
-		'name' => 'salman',
-		'email' => 'sa@isystematic.com',
-		'dls' => 1
-
-	);
-
-
-	$keys = array('apple', 'orange', 'mango');
-
-
-	$optionalKeys = ['dls', 'uniqueOnRetake', 'showScore', 'showResult', 'showGrading', 'showGPA'];
-
-
-	/*
-
-	loop optional keys
-	check isset with postincomming data 
-	if found push to the keys 
-
-	*/
-
-
-	foreach ($optionalKeys as $key => $value) {
-
-
-			if(isset($postData[$optionalKeys[$key]]))
-			{
-
-				$keys[] =  $optionalKeys[$key];
-
-			}
-		
-	}
-
-
-
-
-});
+$route->get('/addTickets', 'moduletestCtrl@testTickets');
 
 
 

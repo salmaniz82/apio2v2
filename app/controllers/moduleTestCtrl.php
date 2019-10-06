@@ -257,7 +257,7 @@
         $dls = $enrollmentModule->quizDLSByEnrollmentId($enrollID);
 
 
-        var_dump($r);
+        
 
     }
 
@@ -321,6 +321,27 @@
 
 
         echo $data;
+
+
+    }
+
+
+    public function testTickets()
+    {
+
+            $preliminaryModule = $this->load('module','preliminary');
+
+            /*
+            $password = 'hello World';
+            $last_id = 456;
+            echo 'working from here';
+            
+            $ticketsPayload = array('user_id'=> $last_id, 'ticket' => $password);
+            $preliminaryModule->addTickets($ticketsPayload);
+            */
+
+
+            $preliminaryModule->removeTicket(['user_id', '456']);
 
 
     }
