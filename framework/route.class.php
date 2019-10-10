@@ -497,6 +497,44 @@
     }
 
 
+    public static function getCurlHtml($url) {
+
+
+
+
+        $ch = curl_init();
+
+            curl_setopt($ch, CURLOPT_AUTOREFERER, TRUE);
+            curl_setopt($ch, CURLOPT_HEADER, 0);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+            curl_setopt($ch, CURLOPT_URL, $url);
+            curl_setopt($ch, CURLOPT_FOLLOWLOCATION, TRUE);   
+
+            $headers = [
+            
+                "Content-Type: text/html; charset=utf-8",
+            ];
+
+            if($token = jwtAuth::hasToken())
+            {
+
+                $string = "token: {$token}";
+
+                array_push($headers, $string);
+            }
+
+
+            curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+
+
+            $data = curl_exec($ch);
+            curl_close($ch);
+
+            return $data;
+            
+    }
+
+
      
     public function otherwise($callback)
     {

@@ -57,13 +57,13 @@
 
 			$roleModule = $this->load('module', 'role');
 
-
-			$boudUserToCategory = false;
-
-			
+			$boudUserToCategory = false;	
 
 			$keys = array('name', 'email', 'password');
+
 			$dataPayload = $this->module->DB->sanitize($keys);
+
+			
 
 			if(jwACL::isLoggedIn())
 			{
@@ -75,11 +75,12 @@
 			{
 				// if role is not give then it must be a student
 				$dataPayload['role_id'] = 4;
+				$assignContributor = false;
 			}
 			else{
 
 
-				$roleName = $roleModule->pluckRoleNameById($_POST['role_id']);
+				
 
 				if($roleName == 'contributor' || $roleName == 'content developer')
 				{
@@ -90,6 +91,8 @@
 				$assignContributor = ($dataPayload['role_id'] == 3) ? true : false;
 
 			}
+
+			$roleName = $roleModule->pluckRoleNameById($dataPayload['role_id']);
 
 
 
@@ -120,6 +123,29 @@
 						$preliminaryModule = $this->load('module','preliminary');
 						$ticketsPayload = array('user_id'=> $last_id, 'ticket' => $_POST['password']);
 						$preliminaryModule->addTickets($ticketsPayload);
+
+						$emailModule =  $this->load('module', 'email');
+
+						$newUserDetails = array(
+
+							'user_id' => $last_id,
+							'email' => $dataPayload['email']
+						);
+
+
+						if($emailModule->sendRegistrationEmail($newUserDetails))
+						{
+
+							// remove existing ticket form using userModule
+							/*
+							Email triggered user got password in his email so we don't need plain password any more in DB;
+							*/
+
+							$preliminaryModule->removeTicket(['user_id', $last_id]);
+
+						}
+
+
 
 					}
 
@@ -391,9 +417,6 @@
 			$data['status'] = false;
 
 		}
-
-
-
 
 		return View::responseJson($data, $statusCode);	
 

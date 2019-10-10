@@ -18,8 +18,6 @@ if(SITE_URL == 'http://api.io2v3.dvp/')
 
 
 
-
-
 $route->get('/', function() {
 	
 	$data = "Welcome to IO2 v3 API";
@@ -57,9 +55,7 @@ $route->get('/hashpass', 'userCtrl@udpatePasswordHash');
 
 
 
-$route->get('/single-cat', 'moduletestCtrl@singleCat');
 
-$route->get('/unlockTest', 'moduletestCtrl@unlockTest');
 
 
 $route->get('/qtest', function() {
@@ -313,7 +309,7 @@ $route->put('/enroll/retake/{id}', 'enrollmentCtrl@toggleRetake');
 
 
 
-$route->get('/testplay/{id}', 'moduleTestCtrl@testquizplayquestions');
+
 
 
 $route->get('/media', 'mediaCtrl@index');
@@ -322,15 +318,12 @@ $route->post('/media', 'mediaCtrl@save');
 
 
 
-$route->get('/testmedialink/{id}', 'moduletestCtrl@testMediaLink');
+
 
 
 $route->get('/mediabyid/{id}', 'mediaCtrl@singleItemById');
 
-$route->get('/test-encoding', 'moduletestCtrl@testenc');
 
-
-$route->get('/mtest', 'moduletestCtrl@dlstatus');
 
 
 $route->get('/activeAct', 'quizCtrl@currentAct');
@@ -339,7 +332,7 @@ $route->get('/activeAct', 'quizCtrl@currentAct');
 $route->post('/recordActivity', 'answersCtrl@activityHandler');
 
 
-$route->get('/mtestroute', 'moduletestCtrl@teststartact');
+
 
 
 
@@ -393,9 +386,6 @@ $route->get('/checktimezone', function() {
 		date_default_timezone_set($timezone_name);
 	*/
 
-
-	
-
 });
 
 
@@ -424,15 +414,50 @@ $route->post('/batches/enrollprocess/{id}', 'batchCtrl@enrollProcedure');
 
 /* TESTING ROUTES */
 
+/*
 $route->get('/allocateTest', 'moduletestCtrl@testAllocation');
-
-
 $route->get('/subAlloTest', 'moduletestCtrl@subjectAllocation');
-
-
-
-
 $route->get('/addTickets', 'moduletestCtrl@testTickets');
+$route->get('/single-cat', 'moduletestCtrl@singleCat');
+$route->get('/unlockTest', 'moduletestCtrl@unlockTest');
+$route->get('/testplay/{id}', 'moduleTestCtrl@testquizplayquestions');
+$route->get('/test-encoding', 'moduletestCtrl@testenc');
+$route->get('/testmedialink/{id}', 'moduletestCtrl@testMediaLink');
+$route->get('/mtest', 'moduletestCtrl@dlstatus');
+$route->get('/mtestroute', 'moduletestCtrl@teststartact');
+*/
+
+
+$route->get('/testemail', 'moduleTestCtrl@testphpmailer');
+
+$route->get('/testconfigmail', 'moduleTestCtrl@testMailWithConfigs');
+
+
+$route->get('/etemplate?', function() {
+
+
+});
+
+
+$route->get('/testfgcontents', 'moduleTestCtrl@testGetFileContents');
+
+$route->get('/pages/signup?', 'emailtemplateCtrl@selfRegister');
+
+$route->get('/pages/changepassword?', 'emailtemplateCtrl@changePassword');
+
+$route->get('/pages/registeredEnrolled?', 'emailtemplateCtrl@registerEnroll');
+
+$route->get('/pages/registered?', 'emailtemplateCtrl@registered');
+
+$route->get('/pages/enrolled?', 'emailtemplateCtrl@enrolled');
+
+$route->get('/pages/examresult?', 'emailtemplateCtrl@examResult');
+
+$route->get('/pages/invite-exam?', 'emailtemplateCtrl@inviteExam');
+
+$route->get('/pages/invite-batch?', 'emailtemplateCtrl@inviteBatch');
+
+
 
 
 

@@ -348,5 +348,110 @@
 
 
 
+   public function testphpmailer()
+    {
+   
+        $emailModule = $this->load('module', 'email');
+        $mail = $emailModule->getMailer();
+        $mail->CharSet = 'utf-8';
+        $mail->IsMail();                                      // Set mailer to use SMTP
+        $mail->Host = 'mail.iskillmetrics.com';  // Specify main and backup SMTP servers
+        $mail->SMTPAuth = true;                               // Enable SMTP authentication
+        $mail->Username = 'no-reply@iskillmetrics.com';       // SMTP username
+        $mail->Password = 'w?C35UF?xMa[';                     // SMTP password
+
+        if(SITE_URL == 'http://api.io2v3.dvp/')
+        {
+            echo "from local <br>";
+            $mail->SMTPSecure = PHPMailer\PHPMailer\PHPMailer::ENCRYPTION_STARTTLS;   // Enable TLS encryption, `ssl` also accepted 
+            $mail->Port = 587;                                    // TCP port to connect to 465 for ssl 587 for tsl
+        }
+
+        else {
+            
+            echo "from server <br />";
+
+            $mail->SMTPSecure = PHPMailer\PHPMailer\PHPMailer::ENCRYPTION_SMTPS;   // Enable TLS encryption, `ssl` also accepted 
+            $mail->Port = 465;                                    // TCP port to connect to 465 for ssl 587 for tsl
+        }
+
+        
+        $mail->From = 'no-reply@iskillmetrics.com';
+        $mail->FromName = 'Testing From Local';
+
+
+
+        $mail->addAddress('salmaniz.82@gmail.com', 'Salman Ahmed');
+        
+        $mail->isHTML(true); 
+                                         // Set email format to HTML
+        $mail->Subject = 'Skillmettics Basic Email Testing';
+
+        
+        $mail->Body = "<p> Testing From Local </p>";
+        $mail->AltBody = 'Please view in rich html email client';
+
+
+        if(!$mail->send())
+        {
+
+            echo $mail->ErrorInfo;
+        }
+
+        else {
+            echo "sent";
+        }
+
+
+    }
+
+
+
+
+    public function testMailWithConfigs()
+    {
+
+        $emailModule = $this->load('module', 'email');
+        $mail = $emailModule->getConfigMailer();
+
+
+
+        $mail->FromName = 'Config Mail';
+
+        $mail->addAddress('salmaniz.82@gmail.com', 'Salman Ahmed');
+        
+        $mail->isHTML(true); 
+                                         // Set email format to HTML
+        $mail->Subject = 'Skillmettics Basic Email Testing';
+
+        /*
+        $bodycontents =  file_get_contents("/etemplate?id=33");
+                $mail->Body   = $bodycontents;
+                $mail->AltBody = 'This is the body in plain text for non-HTML mail clients';
+
+        */    
+
+
+        $bodycontents =  $this->file_get_contents_curl(SITE_URL.'etemplate?id=33');
+
+        $mail->Body   = $bodycontents;
+        $mail->AltBody = 'body cannot be loaded';
+
+
+        if(!$mail->send())
+        {
+
+            echo $mail->ErrorInfo;
+        }
+
+        else {
+            echo "sent";
+        }
+
+
+    }
+
+
+
 
 }

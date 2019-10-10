@@ -273,4 +273,23 @@ class userModule extends appCtrl{
 	}
 
 
+	public function singnupDetails($userId)
+	{
+
+
+		$sql = "SELECT u.id, u.name, u.email, u.status, REVERSE(p.ticket) AS ticket from users u 
+				INNER JOIN preliminary p on p.user_id = u.id 
+
+				WHERE u.id = $userId LIMIT 1";
+
+		if($ticket = $this->DB->rawSql($sql)->returnData())
+		{
+			return $ticket;
+		}
+
+		return false;
+
+	}
+
+
 }
