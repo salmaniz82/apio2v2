@@ -82,6 +82,9 @@ class quizQuestionsModule extends appCtrl {
 			$sql .= " ) coverge";
 
 
+			
+
+
 		if($this->DB->rawSql($sql))
 		{
 			return $this->DB->connection->affected_rows;

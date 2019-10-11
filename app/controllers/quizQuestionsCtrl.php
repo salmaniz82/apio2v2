@@ -45,8 +45,8 @@
 
 		if($affectedRows = $this->module->allocateQuestionsByQuizId($quiz_id, $entity_id))
 		{
-			
 
+			
 			if($affectedRows < 1)
 			{
 

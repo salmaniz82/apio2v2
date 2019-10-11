@@ -31,23 +31,25 @@ class answersCtrl extends appCtrl
 		if($this->module->patchBulkAnswers($dataset))
 		{
 			
-			$correct = $this->module->markRightAnswers($attempt_id);
-			$inCorrect = $this->module->markIncorrectAnswers($attempt_id);
-
+			$this->module->markAnswers($attempt_id);
 
 			$this->module->saveCalculatedSubjectsScore($attempt_id);
 
 			$queCounter = $this->module->udpateQuestionCounter($attempt_id);
 
 			$score = $this->module->getCalcuatedScoreSum($attempt_id);
+
 			$this->module->setBasicScore($attempt_id, $score);
 
+
 			$data['message'] = "Answers Were Saved";
-			$data['correct'] = $correct;
-			$data['wrong'] = $inCorrect;
+			
 			$data['score'] = $score;
+			
 			$data['consumed'] = $queCounter;
+
 			$statusCode = 200;
+
 			$data['status'] = true;
 
 
@@ -75,12 +77,12 @@ class answersCtrl extends appCtrl
 
 			fclose($stdSourceFile);				
 
-			
 		}
+
 
 		else 
 		{
-			$data['message'] = "Cannot Save Amswers";
+			$data['message'] = "Answer were not saved to database";
 			$statusCode = 400;
 			$data['status'] = false;
 		}
@@ -147,10 +149,10 @@ class answersCtrl extends appCtrl
 		if($scoreCard = $this->module->scoreCardBreakDown($quiz_id, $attempt_id))
 		{
 			$data['scorecard'] = $scoreCard;
-			$data['total'] = array_sum(array_column($scoreCard, 'actualScore'));
+			$data['total'] = number_format(array_sum(array_column($scoreCard, 'actualScore')), 2);
 			$data['maxTotal'] = array_sum(array_column($scoreCard, 'maxScore'));
 			$data['queTotal'] = array_sum(array_column($scoreCard, 'quePerSection'));
-			$data['overAllPer'] = ($data['total'] / $data['maxTotal']) * 100;
+			$data['overAllPer'] = number_format(($data['total'] / $data['maxTotal']) * 100, 2);
 			$data['status'] = true;
 			$statusCode = 200;
 		}

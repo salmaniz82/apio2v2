@@ -13,7 +13,7 @@ $routeList = false;
 
 if(SITE_URL == 'http://api.io2v3.dvp/')
 {
-	sleep(1);		
+	// sleep(1);		
 }
 
 
@@ -428,6 +428,9 @@ $route->get('/mtestroute', 'moduletestCtrl@teststartact');
 */
 
 
+
+
+
 $route->get('/testemail', 'moduleTestCtrl@testphpmailer');
 
 $route->get('/testconfigmail', 'moduleTestCtrl@testMailWithConfigs');
@@ -441,21 +444,21 @@ $route->get('/etemplate?', function() {
 
 $route->get('/testfgcontents', 'moduleTestCtrl@testGetFileContents');
 
-$route->get('/pages/signup?', 'emailtemplateCtrl@selfRegister');
+$route->get('/pages/signup?', 'emailTemplateCtrl@selfRegister');
 
-$route->get('/pages/changepassword?', 'emailtemplateCtrl@changePassword');
+$route->get('/pages/changepassword?', 'emailTemplateCtrl@changePassword');
 
-$route->get('/pages/registeredEnrolled?', 'emailtemplateCtrl@registerEnroll');
+$route->get('/pages/registeredEnrolled?', 'emailTemplateCtrl@registerEnroll');
 
-$route->get('/pages/registered?', 'emailtemplateCtrl@registered');
+$route->get('/pages/registered?', 'emailTemplateCtrl@registered');
 
-$route->get('/pages/enrolled?', 'emailtemplateCtrl@enrolled');
+$route->get('/pages/enrolled?', 'emailTemplateCtrl@enrolled');
 
-$route->get('/pages/examresult?', 'emailtemplateCtrl@examResult');
+$route->get('/pages/examresult?', 'emailTemplateCtrl@examResult');
 
-$route->get('/pages/invite-exam?', 'emailtemplateCtrl@inviteExam');
+$route->get('/pages/invite-exam?', 'emailTemplateCtrl@inviteExam');
 
-$route->get('/pages/invite-batch?', 'emailtemplateCtrl@inviteBatch');
+$route->get('/pages/invite-batch?', 'emailTemplateCtrl@inviteBatch');
 
 
 

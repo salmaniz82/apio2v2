@@ -63,7 +63,6 @@
 
 			$dataPayload = $this->module->DB->sanitize($keys);
 
-			
 
 			if(jwACL::isLoggedIn())
 			{
@@ -106,6 +105,9 @@
 				die();
 
 			}
+
+
+
 
 
 

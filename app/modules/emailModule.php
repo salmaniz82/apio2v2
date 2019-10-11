@@ -74,7 +74,9 @@ class emailModule extends appCtrl {
 
 		$mail->isHTML(true);
 
-		$mail->FromName = 'Registration Email';
+		$mail->Subject = "Registration Successfull - iSkillmetrics";
+
+		$mail->FromName = 'iSkillmetrics';
 
 		$mail->addAddress($sentToAddress);
 

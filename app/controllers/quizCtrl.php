@@ -849,6 +849,19 @@
 		
 		$dataPayload = $this->module->DB->sanitize($keys);
 		$dataPayload['maxAllocation'] = (int) $dataPayload['noques'] * (int) $dataPayload['maxAllocation'];
+
+
+		if($dataPayload['maxAllocation'] == 0)
+		{
+
+
+
+			$data['message'] = "Max Allocated value not provided";
+
+			return View::responseJson($data, 406);
+
+
+		}
 		
 
 
@@ -860,7 +873,6 @@
 		$subDecipline = $_POST['cleanSubDesp'];
 
 
-		
 
 		if($res = $this->module->addQuiz($dataPayload))
 		{

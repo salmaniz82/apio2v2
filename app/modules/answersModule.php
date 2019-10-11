@@ -25,25 +25,31 @@ class answersModule extends appCtrl {
 	}
 
 
-	public function prepareReturnDatasetArray($vehicle_id, $options)
+
+	public function markAnswers($attempt_id)
 	{
 
-		$options = explode(',', $options);
+		/*
+		refactoring previously using 2 queries to mark correct and incorrect answers
+		mark 0 for incorrect 
+		mark 1 for correct
+		*/
 
-		$dataset['cols'] = array('vehicle_id', 'options_id');
 
-		for($i=0; $i<=sizeof($options)-1; $i++) { 
+		$sql = "UPDATE stdanswers stda 
+		INNER JOIN questions que on que.id = stda.question_id  
+		SET stda.isRight = IF(que.answer = stda.answer, '1', '0') 
+		WHERE stda.attempt_id = $attempt_id";
 
-			$dataset['vals'][$i] = array(
-				'vehicle_id'=> $vehicle_id,
-				'options_id'=> (int)$options[$i]
-			);
-
+		if($this->DB->rawSql($sql))
+		{
+			return $this->DB->connection->affected_rows;
 		}
 
-		return $dataset;
+		return false;
 
 	}
+
 
 
 	public function markRightAnswers($attempt_id)
@@ -103,48 +109,6 @@ class answersModule extends appCtrl {
 	public function saveCalculatedSubjectsScore($attempt_id)
 	{
 
-				/*
-
-				$sql = "INSERT INTO scoresheet (attempt_id, quiz_id, enroll_id, subject_id, maxScore, score, rightAnswers, quePerSection) 
-				
-						SELECT attempt_id, quiz_id, enroll_id, subject_id, maxScore, actualScore, rightAnswers, quePerSection FROM (
-
-						SELECT st.id AS 'attempt_id', en.quiz_id, st.enroll_id, 
-  						que.section_id as 'subject_id', sub.points as 'maxScore', 
-						((sub.points / sub.quePerSection ) * COUNT(sa.isRight) ) as 'actualScore', 
-						COUNT(sa.isRight) as 'rightAnswers', sub.quePerSection as  'quePerSection' 
-
-						from stdattempts st 
-
-						INNER JOIN enrollment en on en.id = st.enroll_id 
-						INNER JOIN stdanswers sa on sa.attempt_id = st.id 
-						INNER JOIN questions que on que.id = sa.question_id 
-						INNER JOIN subjects sub on sub.subject_id = que.section_id AND en.quiz_id = sub.quiz_id 
-						where st.id = $attempt_id AND sa.isRight = 1 GROUP BY st.id, en.quiz_id, sub.subject_id, que.section_id, sub.points, sub.quePerSection 
-                        
-                        UNION 
-                        
-                        SELECT st.id AS 'attempt_id', en.quiz_id, st.enroll_id, 
-						que.section_id as 'subject_id', sub.points as 'maxScore', 0 as 'actualScore', SUM(sa.isRight) as 'rightAnswers', sub.quePerSection    
-
-						from stdattempts st 
-
-						INNER JOIN enrollment en on en.id = st.enroll_id 
-						INNER JOIN stdanswers sa on sa.attempt_id = st.id 
-						INNER JOIN questions que on que.id = sa.question_id 
-						INNER JOIN subjects sub on sub.subject_id = que.section_id AND en.quiz_id = sub.quiz_id 
-						where st.id = $attempt_id AND sa.isRight = 0 GROUP BY 
-                        
-                        st.id, en.quiz_id, st.enroll_id, que.section_id, sub.points, sub.quePerSection
-                        
-                        having COUNT(sa.isRight) = sub.quePerSection 
-
-    			) converge";
-
-    			*/
-
-
-
     			$sql = "INSERT INTO scoresheet (attempt_id, quiz_id, enroll_id, subject_id, maxScore, score, rightAnswers, quePerSection) 
 
     			SELECT attempt_id, quiz_id, enroll_id, subject_id, max(maxScore) as maxScore, actualScore, rightAnswers, quePerSection FROM (
@@ -173,18 +137,21 @@ class answersModule extends appCtrl {
 						INNER JOIN stdanswers sa on sa.attempt_id = st.id 
 						INNER JOIN questions que on que.id = sa.question_id 
 						INNER JOIN subjects sub on sub.subject_id = que.section_id AND en.quiz_id = sub.quiz_id 
-						where st.id = $attempt_id AND sa.isRight = 0 GROUP BY 
-                        
-                        st.id, en.quiz_id, st.enroll_id, que.section_id, sub.points, sub.quePerSection
+						where st.id = $attempt_id 
+						GROUP BY 
+                        st.id, en.quiz_id, st.enroll_id, que.section_id, sub.points, sub.quePerSection 
+                        HAVING SUM(sa.isRight) = 0 
                         
                         ) converge 
                         
-                        GROUP BY attempt_id, quiz_id, enroll_id, subject_id";		
+                        GROUP BY converge.attempt_id, converge.quiz_id, converge.enroll_id, converge.subject_id, converge.actualScore, converge.quePerSection,
+                            converge.rightAnswers";		
 
 
-				if($this->DB->rawSql($sql))
-						{
+				if($this->DB->rawSql($sql)) {
+
 					return $this->DB->connection->affected_rows;
+
 				}
 
 				return false;
@@ -238,16 +205,6 @@ class answersModule extends appCtrl {
 	public function scoreCardBreakDown($quiz_id, $attempt_id)
 	{
 
-
-		/*
-
-		$sql = "SELECT cat.name as 'subjects', sc.maxScore as 'maxScore', 
-		sc.score as 'actualScore', (sc.score / sc.maxScore) * 100 as 'per'  
-		from scoresheet sc 
-		INNER JOIN categories cat on cat.id = sc.subject_id 
-		WHERE sc.attempt_id = $attempt_id";
-
-		*/
 
 		$sql = "SELECT cat.name as 'subjects', sc.maxScore as 'maxScore', 
 			sc.score as 'actualScore',  (sc.score / sc.maxScore) * 100 as 'per', sc.quePerSection as 'quePerSection', sc.rightAnswers as 'correctAnswers'  
