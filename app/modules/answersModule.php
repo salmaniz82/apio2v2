@@ -279,7 +279,59 @@ class answersModule extends appCtrl {
 	}
 
 
+	public function recoverAnswersFromActivity($attempt_id)
+	{
 
-	
+		$sql = "INSERT IGNORE INTO stdanswers (attempt_id, question_id, answer)
+		SELECT $attempt_id as attempt_id, question_id, answer from activity where attempt_id = $attempt_id";
+
+		if($this->DB->rawSql($sql))
+		{
+			return $this->DB->connection->affected_rows;		
+		}
+
+		return false;
+
+
+	}
+
+
+
+	public function singleProgressByAtemptId($attempt_id)
+	{
+
+
+		$sql = "SELECT qz.id as 'quizId', sta.id as 'attemptId', std.id as 'student_id', en.id as 'enroll_id',  std.name, std.email,  qz.title, qz.category_id, qz.maxScore, qz.minScore, qz.duration, 
+		qz.noques, qz.user_id, en.attempts, en.retake,  sta.attempted_at as attempted_at, sta.score as 'score',
+
+		((sta.score * 100) / qz.maxScore) as 'per',
+
+		(SELECT gd.grade from grading gd WHERE ((sta.score * 100) / qz.maxScore) BETWEEN gd.spmin AND gd.spmax LIMIT 1 ) as grade,  
+ 
+        (SELECT gd.gpa from grading gd WHERE ((sta.score * 100) / qz.maxScore) BETWEEN gd.spmin AND gd.spmax LIMIT 1) as gpa   
+		
+		FROM quiz qz 
+		INNER JOIN enrollment en on en.quiz_id = qz.id 
+		INNER JOIN users std on std.id = en.student_id 
+
+		LEFT JOIN stdattempts sta on sta.enroll_id = en.id 
+		WHERE sta.id IN (SELECT max(id) as id from stdattempts group by enroll_id) AND
+		sta.id = $attempt_id ORDER BY sta.attempted_at DESC";
+
+
+
+		if($progress = $this->DB->rawSql($sql)->returnData())
+		{
+				return $progress;
+		}
+
+		else {
+				return false;
+		}				
+
+
+	}
+
+
 
 }

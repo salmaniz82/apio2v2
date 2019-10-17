@@ -13,7 +13,7 @@ $routeList = false;
 
 if(SITE_URL == 'http://api.io2v3.dvp/')
 {
-	// sleep(1);		
+	 sleep(1);		
 }
 
 
@@ -220,6 +220,9 @@ $route->put('/quiz-enrollment-toggle/{id}', 'quizCtrl@enrollToggle');
 $route->put('/quiz-option-toggle/{id}', 'quizCtrl@optionsToggle');
 
 
+$route->get('/dlsqualification/{id}', 'quizCtrl@isdlsQualified');
+
+
 $route->put('/quiz-status-toggle/{id}', 'quizCtrl@statusToggle');
 
 
@@ -332,8 +335,7 @@ $route->get('/activeAct', 'quizCtrl@currentAct');
 $route->post('/recordActivity', 'answersCtrl@activityHandler');
 
 
-
-
+$route->put('/quiz/progress/recoverviaactivity/{id}', 'answersCtrl@recoverFromActivity');
 
 
 
@@ -425,10 +427,6 @@ $route->get('/test-encoding', 'moduletestCtrl@testenc');
 $route->get('/testmedialink/{id}', 'moduletestCtrl@testMediaLink');
 $route->get('/mtest', 'moduletestCtrl@dlstatus');
 $route->get('/mtestroute', 'moduletestCtrl@teststartact');
-*/
-
-
-
 
 
 $route->get('/testemail', 'moduleTestCtrl@testphpmailer');
@@ -436,10 +434,16 @@ $route->get('/testemail', 'moduleTestCtrl@testphpmailer');
 $route->get('/testconfigmail', 'moduleTestCtrl@testMailWithConfigs');
 
 
-$route->get('/etemplate?', function() {
+*/
 
 
-});
+
+
+
+$route->post('/message', 'moduleTestCtrl@twilloPost');
+
+
+$route->post('/servicepost', 'moduleTestCtrl@servicePost');
 
 
 $route->get('/testfgcontents', 'moduleTestCtrl@testGetFileContents');
@@ -459,6 +463,12 @@ $route->get('/pages/examresult?', 'emailTemplateCtrl@examResult');
 $route->get('/pages/invite-exam?', 'emailTemplateCtrl@inviteExam');
 
 $route->get('/pages/invite-batch?', 'emailTemplateCtrl@inviteBatch');
+
+
+
+
+
+
 
 
 

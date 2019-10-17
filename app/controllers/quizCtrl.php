@@ -1123,15 +1123,120 @@
     	);
 
 
+    	if($PUT['typeKey'] == 'dls' && $PUT['statusValue'] == 1)
+    	{
+			
+			return $this->dlsToggleHandler($dataPayload, $id);
+
+    	}
+
+
     	if($this->module->optionToggleHandler($dataPayload, $id))
     	{
-    		$data['message'] = 'working on';	
+    		$reponse['message'] = 'updated';	
+    		$statusCode = 200;
+    	}
+
+    	else {
+
+    		$reponse['message'] = 'Fail while trying to update';	
+    		$statusCode = 500;	
+
+    	}
+
+    	return View::responseJson($reponse, $statusCode);
+
+    }
+
+
+    public function isdlsQualified()
+    {
+
+
+        $quiz_id = $this->getID();
+        $quizQuestionModule = $this->load('module', 'quizQuestions');
+
+
+
+        if(!$allocatedSummary = $quizQuestionModule->dlsQuizQueAllocatedSummary($quiz_id))
+        {
+
+        	$data['message'] = 'Allocated distribution data not found for quiz';
+        	$statusCode = 500;
+        	$data['status'] = false;
+            return View::responseJson($data, $statusCode);
+
+        }
+
+
+
+        $output = $quizQuestionModule->dlsQualificationCheck($allocatedSummary);
+
+
+        if($output === true)
+        {
+            $data['message'] = 'DLS Qualified';
+        	$statusCode = 200;
+        	$data['status'] = true;
+            return View::responseJson($data, $statusCode);
+        }
+
+
+        if(is_array($output))
+        {
+
+        	$data['message'] = 'Quiz is not Eligible for DLS';
+        	$data['detailError'] = $output;
+        	$statusCode = 406;
+        	$data['status'] = true;
+            return View::responseJson($data, $statusCode);
+        }
+
+        	$data['message'] = 'Un Expected Error';
+        	$statusCode = 500;
+        	$data['status'] = true;
+            return View::responseJson($data, $statusCode);
+
+
+    }
+
+
+
+
+    public function dlsToggleHandler($dataPayload, $quiz_id)
+    {
+
+
+
+    	$quizQuestionModule = $this->load('module', 'quizQuestions');
+
+    	if($quizQuestionModule->isDlsQualifiedNitroMode($quiz_id))
+    	{
+
+    		if($this->module->optionToggleHandler($dataPayload, $quiz_id))
+    		{	
+    		
+    			$data['message'] = 'DLS : Enabled';	
+    			$statusCode = 200;
+
+    		}	
+
+    		else {
+    			$data['message'] = 'Failed while updating dls status';	
+    			$statusCode = 500;
+    		}
+
+    	}
+
+    	else {
+
+    		$data['message'] = 'Quiz is not elibile please match allocation and distribution';
+    		$statusCode = 406;
+
     	}
 
     	
-
-
-    	return View::responseJson($data, 200);
+    	return View::responseJson($data, $statusCode);
 
 
     }

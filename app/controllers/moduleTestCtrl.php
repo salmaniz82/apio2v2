@@ -457,6 +457,89 @@
 
 
 
+    public function servicePost()
+    {
+
+        
+        $swModule = $this->load('module', 'servicetest');
+
+        $keys = array('first_name', 'middle_name', 'last_name', 'date_of_birth', 'address', 'hobby');
+
+
+        $dataPayload = $swModule->DB->sanitize($keys);
+        
+
+        if($last_id = $swModule->save($dataPayload))
+        {
+            $data['last_id'] = $last_id;
+            $data['message'] = "record added to database";
+            $statusCode = 200;
+        }
+
+        else {
+
+            $data['message'] = "cannot add record";
+            $statusCode = 500;
+
+        }
+
+        return View::responseJson($data, $statusCode);
+
+        
+
+    }
+
+
+
+    public function twilloPost()
+    {
+
+
+        $db = new Database();
+
+        $db->table = 'twillo';
+
+
+        $keys = array('phoneNumber', 'body');
+
+
+        $dataPayload = $db->sanitize($keys);
+
+
+        if($last_id = $db->insert($dataPayload))
+        {
+
+            $data['addedRecord'] = $last_id;
+            $data['message'] = "message has been added to twillo test";
+            $statusCode = 200;
+
+        }
+
+        else {
+
+            
+            $data['message'] = "Failed while adding a message to twillo test";
+            $statusCode = 500;            
+
+
+        }
+
+        return View::responseJson($data, $statusCode);
+
+    }
+
+
+    public function nitroTest()
+    {
+
+
+        $quiz_id = 141;
+
+        $quizQuestionModule = $this->load('module', 'quizQuestions');
+
+        var_dump($quizQuestionModule->isDlsQualifiedNitroMode($quiz_id));
+
+
     }
 
 

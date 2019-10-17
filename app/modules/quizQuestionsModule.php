@@ -748,6 +748,183 @@ class quizQuestionsModule extends appCtrl {
 	}
 
 
+
+	public function dlsQuizQueAllocatedSummary($quiz_id)
+	{
+
+
+		if(SITE_URL == 'http://api.io2v3.dvp/')
+		{
+
+			
+
+
+			$sql = "SELECT sub.name as 'subject', que.section_id as 'subject_id',  
+			lvl.levelEN, count(que.section_id) AS 'queLevelCount', qsub.quePerSection,
+            (SELECT count(id) from subjects where quiz_id = $quiz_id) as noSubjects, 
+			(case when count(que.section_id) >= qsub.quePerSection then true else false end) as isDlsStatus  
+			from quizquestions qq 
+			INNER JOIN questions que on que.id = qq.question_id 
+			INNER JOIN categories cat on cat.id = que.category_id 
+			INNER JOIN categories sub on sub.id = que.section_id 
+			INNER JOIN level lvl on que.level_id = lvl.id 
+			INNER JOIN type typ on typ.id = que.type_id 
+			INNER JOIN quiz qz on qz.id = qq.quiz_id 
+			INNER JOIN subjects qsub on que.section_id = qsub.subject_id  
+			WHERE qq.quiz_id = $quiz_id  
+			GROUP BY sub.name, lvl.levelEN, que.section_id
+			ORDER BY que.section_id, lvl.levelEN";
+
+		}
+
+
+		else {
+
+
+			$sql = "SELECT sub.name as 'subject', que.section_id as 'subject_id',  
+			lvl.levelEN, count(que.section_id) AS 'queLevelCount', qsub.quePerSection 
+            
+			
+			from quizquestions qq 
+			INNER JOIN questions que on que.id = qq.question_id 
+			INNER JOIN categories cat on cat.id = que.category_id 
+			INNER JOIN categories sub on sub.id = que.section_id 
+			INNER JOIN level lvl on que.level_id = lvl.id 
+			INNER JOIN type typ on typ.id = que.type_id 
+            INNER JOIN quiz qz on qz.id = qq.quiz_id 
+            INNER JOIN subjects qsub on que.section_id = qsub.subject_id  
+			WHERE qq.quiz_id = $quiz_id 
+            GROUP BY lvl.levelEN, que.section_id
+            ORDER BY que.section_id";
+
+		}
+
+		
+
+			if($dlsSummary = $this->DB->rawSql($sql)->returnData())
+			{
+				
+				return $dlsSummary;
+			}
+
+			return false;
+
+	}
+
+
+	public function dlsQualificationCheck($allocatedSummary)
+	{
+
+		$output = [];
+        $noOfSubjetcs = (int) $allocatedSummary[0]['noSubjects'];
+        $rowsCount = sizeof($allocatedSummary);
+
+
+
+        if($rowsCount % 3 != 0 &&  $rowsCount != ($noOfSubjetcs * 3))
+        {
+
+            // all sections have rows no missing subject difficuty
+
+            $output = array(
+
+                'message' => 'All 3 difficulty levels must have alleast equal required no. of questions for each subject',
+                'status' => false
+            );
+
+            return  $output;
+
+        }
+
+
+        $dlsStatusCount = 0;
+
+        foreach ($allocatedSummary as $key => $item) {
+
+
+            if($item['isDlsStatus'] == 0)
+            {
+
+            	$dlsStatusCount += 1;
+
+                $missingCount = $item['quePerSection'] - $item['queLevelCount'];
+                $message = $item['subject'] . " required " . $missingCount . " more Questions with " . $item['levelEN'] . " level";
+
+                $errorMessage = array(
+
+                    'message' => $message,
+                    'status' => false
+                );
+
+                $output[] = $errorMessage;
+
+            }
+
+
+           }
+
+
+
+           if($dlsStatusCount === 0)
+           {
+           		return true;
+           }
+
+           return $output;
+
+
+	}
+
+
+
+
+	public function isDlsQualifiedNitroMode($quiz_id)
+	{
+
+
+
+
+		if( !$allocatedSummary = $this->dlsQuizQueAllocatedSummary($quiz_id) )
+		{
+
+			return false;
+
+		}
+
+
+		$output = [];
+        $noOfSubjetcs = (int) $allocatedSummary[0]['noSubjects'];
+        $rowsCount = sizeof($allocatedSummary);
+
+
+
+        if($rowsCount % 3 != 0 &&  $rowsCount != ($noOfSubjetcs * 3))
+        {
+
+            return false;
+
+        }
+
+
+
+	       foreach ($allocatedSummary as $key => $item) 
+	       {
+
+		        if($item['isDlsStatus'] == 0)
+		        {
+		          	return false;
+
+		        }
+
+	        }
+
+
+	        return true;
+
+
+	}
+
+
 }
 
 

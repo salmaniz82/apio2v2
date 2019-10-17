@@ -321,6 +321,25 @@
 		{
 			$data['batchDetails'] = $details;
 			$statusCode = 200;
+
+
+			$summary['tmin'] = array_sum(array_column($data['batchDetails'], 'minScore'));
+			$summary['tmax'] = array_sum(array_column($data['batchDetails'], 'maxScore'));
+
+			$data['summary'] = $summary;
+
+			/*
+
+
+			$summary['tmin'] = array_sum(array_column($rows, 'minScore'));
+			$summary['tmax'] = array_sum(array_column($rows, 'maxScore'));
+			$summary['tscore'] = array_sum(array_column($rows, 'score'));
+			$summary['tper'] = round($summary['tscore'] / $summary['tmax'] * 100, 2);
+			$summary['result'] = ($summary['tscore'] < $summary['tmin'] ) ? 'Fail' : 'Pass';
+
+			*/
+
+
 		}
 
 		else {

@@ -11,6 +11,68 @@ class answersCtrl extends appCtrl
 	}
 
 
+	public function recoverFromActivity()
+	{
+
+		$attempt_id = $this->getID();
+
+		/*
+
+		1. copy answers from activity
+		2. insert to questions
+
+		3. toggleActive
+		4. markAnswer with correct & incorrect
+		5. calcuate score and insert into score sheet
+		6. get caculated score
+		7. set / udpate score on attempts table
+		8. update question counter
+		9. 
+
+
+		*/
+
+
+		if($this->module->recoverAnswersFromActivity($attempt_id))
+		{
+
+			$attemptModule = $this->load('module', 'attempt');
+
+			$attemptModule->toggleActive($attempt_id, "0");
+
+			$this->module->markAnswers($attempt_id);
+
+			$this->module->saveCalculatedSubjectsScore($attempt_id);
+
+			$queCounter = $this->module->udpateQuestionCounter($attempt_id);
+
+			$score = $this->module->getCalcuatedScoreSum($attempt_id);
+
+			$this->module->setBasicScore($attempt_id, $score);
+
+
+
+			if($progress = $this->module->singleProgressByAtemptId($attempt_id))
+			{
+				$data['progress'] = $progress;
+
+				$statusCode = 200;
+			}
+
+			else {
+				$data['message'] = "Unable to fetch Progress";
+				$statusCode = 500;
+			}
+
+
+			return View::responseJson($data, $statusCode);
+
+		}
+
+
+	}
+
+
 	public function patchAnswers()
 	{
 
