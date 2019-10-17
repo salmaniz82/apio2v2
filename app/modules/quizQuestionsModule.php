@@ -69,7 +69,9 @@ class quizQuestionsModule extends appCtrl {
 			WHERE qz.id = $quiz_id AND que.status = 1 AND (que.quiz_id = $quiz_id OR que.quiz_id IS NULL) 
 			AND (que.entity_id = $entity_id OR que.entity_id IS NULL)
 			AND que.consumed <= qz.threshold  
-			AND que.section_id = $subject_id LIMIT $maxFactor ) ";
+			AND que.section_id = $subject_id
+
+			ORDER BY que.level_id ASC LIMIT $maxFactor ) ";
 
 
 			if($i + 1 < sizeof($factorList))
@@ -762,7 +764,7 @@ class quizQuestionsModule extends appCtrl {
 			$sql = "SELECT sub.name as 'subject', que.section_id as 'subject_id',  
 			lvl.levelEN, count(que.section_id) AS 'queLevelCount', qsub.quePerSection,
             (SELECT count(id) from subjects where quiz_id = $quiz_id) as noSubjects, 
-			(case when count(que.section_id) >= qsub.quePerSection then true else false end) as isDlsStatus  
+			(case when count(que.section_id) >= (SELECT quePerSection from subjects where quiz_id = $quiz_id AND subject_id = que.section_id) then true else false end) as isDlsStatus  
 			from quizquestions qq 
 			INNER JOIN questions que on que.id = qq.question_id 
 			INNER JOIN categories cat on cat.id = que.category_id 
@@ -771,7 +773,7 @@ class quizQuestionsModule extends appCtrl {
 			INNER JOIN type typ on typ.id = que.type_id 
 			INNER JOIN quiz qz on qz.id = qq.quiz_id 
 			INNER JOIN subjects qsub on que.section_id = qsub.subject_id  
-			WHERE qq.quiz_id = $quiz_id  
+			WHERE qq.quiz_id = $quiz_id  AND qsub.quiz_id = $quiz_id 
 			GROUP BY sub.name, lvl.levelEN, que.section_id
 			ORDER BY que.section_id, lvl.levelEN";
 
@@ -780,26 +782,25 @@ class quizQuestionsModule extends appCtrl {
 
 		else {
 
-
 			$sql = "SELECT sub.name as 'subject', que.section_id as 'subject_id',  
-			lvl.levelEN, count(que.section_id) AS 'queLevelCount', qsub.quePerSection 
-            
-			
+			lvl.levelEN, count(que.section_id) AS 'queLevelCount', qsub.quePerSection,
+            (SELECT count(id) from subjects where quiz_id = $quiz_id) as noSubjects, 
+			(case when count(que.section_id) >= (SELECT quePerSection from subjects where quiz_id = $quiz_id AND subject_id = que.section_id) then true else false end) as isDlsStatus  
 			from quizquestions qq 
 			INNER JOIN questions que on que.id = qq.question_id 
 			INNER JOIN categories cat on cat.id = que.category_id 
 			INNER JOIN categories sub on sub.id = que.section_id 
 			INNER JOIN level lvl on que.level_id = lvl.id 
 			INNER JOIN type typ on typ.id = que.type_id 
-            INNER JOIN quiz qz on qz.id = qq.quiz_id 
-            INNER JOIN subjects qsub on que.section_id = qsub.subject_id  
-			WHERE qq.quiz_id = $quiz_id 
-            GROUP BY lvl.levelEN, que.section_id
-            ORDER BY que.section_id";
+			INNER JOIN quiz qz on qz.id = qq.quiz_id 
+			INNER JOIN subjects qsub on que.section_id = qsub.subject_id  
+			WHERE qq.quiz_id = $quiz_id  AND qsub.quiz_id = $quiz_id 
+			GROUP BY sub.name, lvl.levelEN, que.section_id, qsub.quePerSection 
+			ORDER BY que.section_id, lvl.levelEN";
 
 		}
 
-		
+
 
 			if($dlsSummary = $this->DB->rawSql($sql)->returnData())
 			{
@@ -923,6 +924,100 @@ class quizQuestionsModule extends appCtrl {
 
 
 	}
+
+
+
+	public function allocateDLSQuestionsByQuizId($quiz_id, $entity_id)
+	{
+
+
+		/*
+		- get maxXFactor by xAllocation / noques  
+		- get subjectsId and their quePerSection
+		- sectionLimit = quePerSection * maxXFactor 
+		*/
+
+		/*
+
+		$sql = "INSERT INTO quizquestions (quiz_id, question_id)
+			SELECT qz.id as quiz_id, que.id as question_id from quiz qz
+			INNER JOIN questions que on qz.category_id = que.category_id 
+			WHERE qz.id = $quiz_id AND que.status = 1 AND (que.quiz_id = $quiz_id OR que.quiz_id IS NULL) 
+			AND (que.entity_id = $entity_id OR que.entity_id IS NULL)
+			AND que.consumed <= qz.threshold  
+			AND que.section_id IN (SELECT subject_id from subjects where quiz_id = $quiz_id) LIMIT $maxAllocation";
+
+			*/
+
+		$factorList = $this->listMaxFactor($quiz_id);	
+
+		$levels = [1,2,3];
+
+
+		$sql = "INSERT INTO quizquestions (quiz_id, question_id) 
+
+
+		SELECT quiz_id, question_id FROM ( ";
+
+			for($i = 0; $i<sizeof($factorList); $i++)
+			{
+
+				$subject_id = $factorList[$i]['subject_id'];
+				$maxFactor = $factorList[$i]['maxFactor'];
+			
+			$levelIteration = 1;	
+				
+	        for($t = 0; $t<sizeof($levels);  $t++) {
+
+	        	$sql .= " ( SELECT qz.id as quiz_id, que.id as question_id from quiz qz
+			INNER JOIN questions que on qz.category_id = que.category_id 
+			WHERE qz.id = $quiz_id AND que.status = 1 AND (que.quiz_id = $quiz_id OR que.quiz_id IS NULL) 
+			AND (que.entity_id = $entity_id OR que.entity_id IS NULL)
+			AND que.consumed <= qz.threshold  
+			AND que.section_id = $subject_id 
+			AND que.level_id = $levels[$t]   
+
+			LIMIT $maxFactor ) ";
+
+			
+
+			if($t + 1 < sizeof($levels) ) 
+			{
+
+				$sql .= " UNION "; 
+
+			}
+
+            
+            
+            
+	       	}
+
+
+
+			if($i + 1 < sizeof($factorList) )
+			{
+				$sql .= " UNION "; 
+			}
+
+			}
+
+			$sql .= " ) coverge";
+
+
+			
+
+
+		if($this->DB->rawSql($sql))
+		{
+			return $this->DB->connection->affected_rows;
+		}
+
+			return false;
+
+			
+	}
+
 
 
 }

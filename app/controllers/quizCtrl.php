@@ -19,6 +19,10 @@
 			student will see the courses he is enrolled in
 		*/
 
+
+		if(!jwACL::isLoggedIn()) 
+			return $this->uaReponse();
+
 		$allowedRoles = [1,2];
     	if( JwtAuth::validateToken() && in_array((int) JwtAuth::$user['role_id'], $allowedRoles) )
 		{
@@ -56,6 +60,12 @@
 
 	public function single()
 	{
+
+		
+
+		if(!jwACL::isLoggedIn()) 
+			return $this->uaReponse();
+
 
 		$quizID = $this->getID();
 
@@ -141,6 +151,11 @@
 	public function globals()
 	{
 
+		
+		if(!jwACL::isLoggedIn()) 
+			return $this->uaReponse();
+
+
 		$categoryModule = $this->load('module', 'category');
 		$sectionModule = $this->load('module', 'sections');
 
@@ -178,6 +193,10 @@
 	public function studentQuizList()
 	{
 
+		if(!jwACL::isLoggedIn()) 
+			return $this->uaReponse();
+
+
 
 		$studentId = $this->jwtUserId();
 		$this->module->studentQuizList($studentId);
@@ -206,6 +225,13 @@
 
 	public function studentQuizListHandler($timestamp = null)
 	{
+
+
+
+		if(!jwACL::isLoggedIn()) 
+			return $this->uaReponse();
+
+
 
 
 		$allowedRoles = [4];
@@ -342,8 +368,36 @@
 	public function enrollToggle()
 	{
 
+		
+		if(!jwACL::isLoggedIn()) 
+			return $this->uaReponse();
+
+
 		$quiz_id = $this->getID();
 		$_POST = Route::$_PUT;
+
+
+		$quizQuestionModule = $this->load('module', 'quizQuestions');
+
+		
+
+		if($this->module->isDLSEnabledQuiz($quiz_id) && !$quizQuestionModule->isDlsQualifiedNitroMode($quiz_id) && $_POST['enrollment'] == 1)
+		{
+
+			$data['message'] = "Not qualified for DLS mode, for static mode disable DLS and try again";
+			$statusCode = 406;
+
+			$data['quiz_id'] = $quiz_id;
+			$data['value'] = $_POST['enrollment'];
+
+			return View::responseJson($data, $statusCode);
+
+			die();
+
+		}
+
+
+
 
 		$validity = $this->module->quizQuestionEligible($quiz_id);
 
@@ -422,6 +476,11 @@
 	{
 		
 		
+		
+		if(!jwACL::isLoggedIn()) 
+			return $this->uaReponse();
+
+
 		$quiz_id = $this->getID();
 		$_POST = Route::$_PUT;
 
@@ -479,6 +538,11 @@
 
 	public function studentQuizInitiate()
 	{
+
+
+		
+		if(!jwACL::isLoggedIn()) 
+			return $this->uaReponse();
 
 
 		$enroll_id = $this->getID();
@@ -593,6 +657,11 @@
 	public function studentQuizData()
 	{
 
+		
+		if(!jwACL::isLoggedIn()) 
+			return $this->uaReponse();
+
+
 		$quiz_id = (int) Route::$params['quiz_id'];
 
 		$attempt_id = (int) Route::$params['attempt_id'];
@@ -631,6 +700,9 @@
 				}
 
 				$data['questions'] = $this->encodeData($questions);
+
+
+				// $data['questions'] = $questions;
 			
 
 				// $attemptModule->toggleActive($attempt_id, "1");

@@ -232,7 +232,9 @@
 
 		(SELECT gd.grade from grading gd WHERE ((sta.score * 100) / qz.maxScore) BETWEEN gd.spmin AND gd.spmax LIMIT 1 ) as grade,  
  
-        (SELECT gd.gpa from grading gd WHERE ((sta.score * 100) / qz.maxScore) BETWEEN gd.spmin AND gd.spmax LIMIT 1) as gpa   
+        (SELECT gd.gpa from grading gd WHERE ((sta.score * 100) / qz.maxScore) BETWEEN gd.spmin AND gd.spmax LIMIT 1) as gpa,
+
+        (case when sta.score >= qz.minScore then true else false end) as resultStatus      
 		
 		FROM quiz qz 
 		INNER JOIN enrollment en on en.quiz_id = qz.id 
@@ -350,6 +352,19 @@
 		else {
 			return false;
 		}
+
+
+	}
+
+
+	public function isDLSEnabledQuiz($quiz_id)
+	{
+
+
+		$dlsStatus = $this->DB->pluck('dls')->Where("id = '".$quiz_id."'");
+		
+
+		return $dlsStatus;
 
 
 	}

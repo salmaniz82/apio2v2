@@ -442,8 +442,9 @@ $route->get('/testconfigmail', 'moduleTestCtrl@testMailWithConfigs');
 
 $route->post('/message', 'moduleTestCtrl@twilloPost');
 
-
 $route->post('/servicepost', 'moduleTestCtrl@servicePost');
+
+$route->get('/dlsallocatetest/{id}', 'moduleTestCtrl@dlsAllocateTest');
 
 
 $route->get('/testfgcontents', 'moduleTestCtrl@testGetFileContents');

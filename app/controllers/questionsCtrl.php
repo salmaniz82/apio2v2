@@ -13,6 +13,10 @@
 	public function index()
 	{
 		
+		if(!jwACL::isLoggedIn()) 
+			return $this->uaReponse();
+
+
 		
 		if($questions = $this->module->listall())
 		{
@@ -36,6 +40,10 @@
 
 	public function save()
 	{
+
+		
+		if(!jwACL::isLoggedIn()) 
+			return $this->uaReponse();
 
 
 		$keys = array('category_id', 'section_id', 'level_id', 'type_id', 'queDesc', 'optionA', 'optionB', 'optionC', 'optionD', 'answer');

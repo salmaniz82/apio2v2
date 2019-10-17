@@ -43,6 +43,16 @@
 
 		$entity_id = $this->jwtUserId();
 
+
+		$quizModule = $this->load('module', 'quiz');
+
+		if($quizModule->isDLSEnabledQuiz($quiz_id))
+		{
+
+			return $this->dlsAllocationHandler($quiz_id, $entity_id);
+
+		}
+
 		if($affectedRows = $this->module->allocateQuestionsByQuizId($quiz_id, $entity_id))
 		{
 
@@ -229,6 +239,41 @@
 
         return View::responseJson($data, $statusCode);
 
+    }
+
+
+
+    public function dlsAllocationHandler($quiz_id, $entity_id)
+    {
+
+
+
+    	if($affectedRows = $this->module->allocateDLSQuestionsByQuizId($quiz_id, $entity_id))
+		{
+
+			
+			if($affectedRows < 1)
+			{
+
+				$data['message'] = 'Already allocated try synchornization instead';
+				$statusCode = 400;
+
+			}
+
+			else {
+				$data['message'] = $affectedRows . " Questions were added to Quiz DLS ";
+				$statusCode = 200;	
+			}
+			
+		}
+
+		else {
+			$data['message'] = 'No Matching Questions were found';
+			$statusCode = 404;
+		}
+
+
+		return View::responseJson($data, $statusCode);
     }
 
 

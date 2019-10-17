@@ -544,5 +544,37 @@
 
 
 
+    public function dlsAllocateTest()
+    {
+
+
+        $quiz_id = $this->getID();
+        
+        $quizModule = $this->load('module', 'quiz');
+
+        
+
+        $quizQuestionModule = $this->load('module', 'quizQuestions');
+
+
+
+        $allocatedSummary = $quizQuestionModule->dlsQuizQueAllocatedSummary($quiz_id);
+
+
+
+        $output = $quizQuestionModule->dlsQualificationCheck($allocatedSummary);
+
+
+
+        View::responseJson($allocatedSummary, 200);
+
+        
+
+
+
+    }
+
+
+
 
 }
