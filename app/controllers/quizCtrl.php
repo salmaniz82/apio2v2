@@ -542,7 +542,11 @@
 
 		
 		if(!jwACL::isLoggedIn()) 
+		{
 			return $this->uaReponse();
+		}
+			
+		
 
 
 		$enroll_id = $this->getID();
@@ -657,9 +661,13 @@
 	public function studentQuizData()
 	{
 
-		
+
+				
 		if(!jwACL::isLoggedIn()) 
+		{
 			return $this->uaReponse();
+		}
+		
 
 
 		$quiz_id = (int) Route::$params['quiz_id'];
@@ -668,8 +676,39 @@
 
 		$attemptModule = $this->load('module', 'attempt');
 
+		$usageXTimes = $attemptModule->getXTimesUsed($attempt_id);
+
+
+		
+
+		if($usageXTimes === false)
+		{
+
+
+			$erroMessage['message'] = "Invalid Attempt";
+			$erroMessage['status'] = false;
+			$erroMessage['usageXTimes'] = $usageXTimes;
+			$erroMessage['action'] = 'redirect';
+
+			return View::responseJson($erroMessage, 200);
+			
+		
+
+		}
+
+		else if ($usageXTimes != 0)
+		{
+
+			$erroMessage['message'] = "Attempt cannot be instantiated Twice";
+			$erroMessage['status'] = false;
+			$erroMessage['usageXTimes'] = $usageXTimes;
+			$erroMessage['action'] = 'redirect';
+			return View::responseJson($erroMessage, 200);
+			
+		}
+
+
 		$attemptModule->incrementUsageXTimes($attempt_id);
-	
 		$quizQuestionModule = $this->load('module', 'quizQuestions');
 
 
@@ -699,18 +738,18 @@
 
 				}
 
-				$data['questions'] = $this->encodeData($questions);
+				// $data['questions'] = $this->encodeData($questions);
 
 
-				// $data['questions'] = $questions;
+				$data['questions'] = $questions;
 			
 
 				// $attemptModule->toggleActive($attempt_id, "1");
 
 				$data['usageXTimes'] = $attemptModule->getXTimesUsed($attempt_id);
 
+				$data['count'] = sizeof($questions);
 
-				
 
 
 			}
@@ -763,28 +802,70 @@
     public function prepareDls()
     {
 
-  	
-    	$quiz_id = (int) Route::$params['quiz_id'];
+    		
+    	if(!jwACL::isLoggedIn()) 
+    	{
+    		return $this->uaReponse();
+    	}
+    	
 
+		
+		$quiz_id = (int) Route::$params['quiz_id'];
 		$attempt_id = (int) Route::$params['attempt_id'];
+		$attemptModule = $this->load('module', 'attempt');
+		$usageXTimes = $attemptModule->getXTimesUsed($attempt_id);
+
+
+		
+
+
+		if($usageXTimes === false)
+		{
+
+			$erroMessage['message'] = "Invalid Attempt";
+			$erroMessage['status'] = false;
+			$data['usageXTimes'] = $usageXTimes;
+			$erroMessage['action'] = 'redirect';
+			return View::responseJson($erroMessage, 200);	
+
+		}
+
+		else if ($usageXTimes != 0)
+		{
+
+			$erroMessage['message'] = "Attempt cannot be instantiated Twice";
+			$erroMessage['status'] = false;
+			$erroMessage['usageXTimes'] = $usageXTimes;
+			$erroMessage['action'] = 'redirect';
+			return View::responseJson($erroMessage, 200);
+			
+		}
+	
+
+		
+		
+		
+		
+
+		$attemptModule->incrementUsageXTimes($attempt_id);
 
 		$quizQuestionModule = $this->load('module', 'quizQuestions');
 
-		// $studentId = $this->jwtUserId();
+		$studentId = $this->jwtUserId();
 
-		$studentId = 68;
-
-
-
-
+		
 		if($quiz = $this->module->getQuizInfo($quiz_id))
 		{
 
 			$statusCode = 200;
 			$data['quiz'] = $quiz[0];	
+
 			//$data['stream'] = $this->encodeData($quizQuestionModule->listQuizPlayQuestionsDLS($quiz_id, $studentId));
 
 			$data['stream'] = $quizQuestionModule->listQuizPlayQuestionsDLS($quiz_id, $studentId);
+			$data['usageXTimes'] = $attemptModule->getXTimesUsed($attempt_id);
+
+			$data['action'] = 'play';
 
 
 		}

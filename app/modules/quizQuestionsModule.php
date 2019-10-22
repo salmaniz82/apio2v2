@@ -653,6 +653,11 @@ class quizQuestionsModule extends appCtrl {
 			}
 
 
+
+			// disable usedx times filter out questions
+			$idsToFilerOut = 0;
+
+
 			// here we need to repeat it 3 times for each level and store that array based on level 
 
 			foreach ($levels as $levelLabel => $levelKeyDB) 

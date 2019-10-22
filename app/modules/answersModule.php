@@ -334,4 +334,88 @@ class answersModule extends appCtrl {
 
 
 
+
+	public function buildDLSSummary($attempt_id)
+	{
+
+			$sql = "SELECT sub.name, lvl.levelEN, SUM(stx.isRight) as correct, COUNT(stx.id) as queFromLvel, que.level_id, que.section_id, (case when lvl.id = 1 then 20 when lvl.id = 2 then 30 when lvl.id = 3 then 50 END) as dlsDistro, qz.maxScore, qsub.points as pointsPerSection,
+				round( SUM(stx.isRight) * 100 / (COUNT(lvl.id) )  ) as ability,
+				( (qsub.points * (case when lvl.id = 1 then 20 when lvl.id = 2 then 30 when lvl.id = 3 then 50 END) / 100) * (  SUM(stx.isRight) / (COUNT(lvl.id) * 100 ) / 100 ) ) as obtained 
+				from stdanswers stx
+				INNER JOIN questions que on que.id = stx.question_id 
+				INNER JOIN categories sub on sub.id = que.section_id 
+				INNER JOIN level lvl on lvl.id = que.level_id 
+				INNER JOIN stdattempts sta on sta.id = stx.attempt_id 
+				INNER JOIN enrollment en on en.id = sta.enroll_id 
+				INNER JOIN quiz qz on qz.id = en.quiz_id 
+				INNER JOIN subjects qsub on qsub.quiz_id = qz.id 
+				WHERE stx.attempt_id = $attempt_id 
+				GROUP BY lvl.id, que.section_id, qsub.points";
+
+				if($data =  $this->DB->rawSql($sql)->returnData() )
+				{
+					return $data;
+				}
+
+				return false;
+
+	}
+
 }
+
+/*
+
+
+	strength
+---------------------
+91 - 100 Phenominal
+81 - 90 Expert
+71 - 80 Solid
+61 - 70 Above Average
+51 - 60 Average
+40 - 50 Below Average
+31 - 40 Weak
+0 - 30 Poor
+
+	TESTING QUERY FOR THE DYNAMIC LEVEL QUIZ
+
+	SCORE IS DISTRUBUTED AND ALLOCATED ON THE BASIS OF DIFFCULTY LEVELS
+
+	EASY IS 20
+	MEDIUM IS 30
+	DIFFICULT IS 50
+
+	get all attmept id for quiz
+	SELECT std.id, en.id, std.score as enrollID from stdattempts std 
+	INNER JOIN enrollment en on en.id = std.enroll_id
+	INNER JOIN quiz qz on qz.id = en.quiz_id where qz.id = 150;
+
+
+
+-----------------------------------------------------------------
+
+DLS SCORING
+
+SET @attempt_id := 546;
+SET @quiz_id := 150;
+
+SELECT sub.name, lvl.levelEN, sum(stx.isRight) as correct, count(stx.id) as queFromLvel, que.level_id, que.section_id, (case when lvl.id = 1 then 20 when lvl.id = 2 then 30 when lvl.id = 3 then 50 END) as dlsDistro, qz.maxScore, qsub.points as pointsPerSection,
+
+round( SUM(stx.isRight) * 100 / (COUNT(lvl.id) )  ) as ability,
+
+( (qsub.points * (case when lvl.id = 1 then 20 when lvl.id = 2 then 30 when lvl.id = 3 then 50 END) / 100) * (SUM(stx.isRight) * 100 / (COUNT(lvl.id) ) / 100 ) ) as obtained 
+
+from stdanswers stx
+INNER JOIN questions que on que.id = stx.question_id 
+INNER JOIN categories sub on sub.id = que.section_id 
+INNER JOIN level lvl on lvl.id = que.level_id 
+INNER JOIN stdattempts sta on sta.id = stx.attempt_id 
+INNER JOIN enrollment en on en.id = sta.enroll_id 
+INNER JOIN quiz qz on qz.id = en.quiz_id 
+INNER JOIN subjects qsub on qsub.quiz_id = qz.id 
+
+WHERE stx.attempt_id = @attempt_id 
+
+GROUP BY lvl.id, que.section_id;
+
+	*/

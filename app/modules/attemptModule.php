@@ -158,8 +158,28 @@ class attemptModule {
 	}
 
 
-	
 
-	
+	public function isQuizDLSbyAttempt_id($attempt_id)
+	{
+
+		$sql  = "SELECT qz.dls from stdattempts std 
+		INNER JOIN enrollment en on en.id = std.enroll_id
+		INNER JOIN quiz qz on qz.id = en.quiz_id where std.id = $attempt_id limit 1";
+
+		if($data = $this->DB->rawSql($sql)->returnData())
+		{
+			if($data[0]['dls'] == 1)
+			{
+				return true;
+			} 
+
+			return false;
+
+		}
+
+		return false;
+	}
 
 }
+
+

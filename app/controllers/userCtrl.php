@@ -78,21 +78,22 @@
 			}
 			else{
 
-
-				
-
-				if($roleName == 'contributor' || $roleName == 'content developer')
-				{
-					$boudUserToCategory = true;
-				}
-
-				$dataPayload['role_id'] = $_POST['role_id'];
-				$assignContributor = ($dataPayload['role_id'] == 3) ? true : false;
+				$dataPayload['role_id'] = $_POST['role_id'];			
 
 			}
 
 			$roleName = $roleModule->pluckRoleNameById($dataPayload['role_id']);
 
+
+			$assignContributor = ($roleName == 'contributor') ? true : false;
+
+
+			if($roleName == 'contributor' || $roleName == 'content developer')
+			{
+					$boudUserToCategory = true;
+			}
+
+			
 
 
 			if($assignContributor && !isset($_POST['topCategory']))
@@ -179,9 +180,25 @@
 						);
 
 
-						$boundCategoryModule->save($boundPayload);
+						if($boundCategoryModule->save($boundPayload))
+						{
+							$data['boundMessage'] = $roleName. " linked to top category";
+						}
+
+						else {
+
+							$data['boundMessage'] = "User link to top level failed";
+
+						}
 
 
+
+					}
+
+					else {
+
+
+						$data['boundMessage'] = "User boundUSerToCategoryWas not activated";
 
 					}
 					
@@ -216,6 +233,9 @@
 			return View::responseJson($data, $statusCode);
 
 	}
+
+
+
 
 	public function udpate()
 	{

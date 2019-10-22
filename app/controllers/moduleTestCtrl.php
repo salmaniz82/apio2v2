@@ -575,6 +575,144 @@
     }
 
 
+    public function xattempts()
+    {
+
+
+        $attempt_id = $this->getID();
+
+        $attemptModule = $this->load('module', 'attempt');
+
+        $usageXTimes = $attemptModule->getXTimesUsed($attempt_id);
+
+
+        if($usageXTimes === false)
+        {
+            echo "Invalid Attempt ID";
+
+            return false;
+        }
+
+        else if ($usageXTimes != 0)
+        {
+            echo "Aready Used";
+
+            return false;
+        }
+
+
+        echo "continue as folow";
+
+    }
+
+
+    public function dlsSummaryReport()
+    {
+
+
+        $attempt_id = $this->getID();
+
+
+        /*    
+        $answerModule = $this->load('module', 'answers');
+        $dlsReport = $answerModule->buildDLSSummary($attempt_id);
+        $dlsReportModule = $this->load('module', 'dlsreport');
+        $res = $dlsReportModule->saveDlsReport($attempt_id);
+
+        $data = $attemptModule->isQuizDLSbyAttempt_id($attempt_id);
+        */
+
+
+        $attemptModule = $this->load('module', 'attempt');
+
+
+        $dlsReportModule = $this->load('module', 'dlsreport');
+
+        $res = $dlsReportModule->updateScoresheetDlsMatrix($attempt_id);
+
+        var_dump($res);
+
+
+    }
+
+    public function checkTimeZoneTesting()
+    {
+        function isValidTimezone($timezone) {
+        return in_array($timezone, timezone_identifiers_list());
+    }
+
+    var_dump(isValidTimezone('Asia/Karachi'));
+
+    die();
+
+    $db = new Database();
+
+    $dbDate = $db->rawSql("SELECT attempted_at as dt from stdattempts where id = '345'")->returnData();
+
+    echo "mysql date time <br>";
+
+    echo $dbDate[0]['dt'];
+
+    echo "php date time";
+
+    echo Date('Y-m-d H:i:s');
+
+
+    die();
+
+    prx($_SERVER);
+
+    
+
+    /*
+    echo "PHP datetime" . Date('Y-m-d H:i:s');
+    $db = new Database();
+    $datetimeDB = $db->rawSql("SELECT NOW() AS currentdatetime")->returnData(); 
+    var_dump($datetimeDB);
+        
+    git ls-files | xargs wc -l  
+
+    */
+
+    $timezone_offset_minutes = 300;  // $_GET['timezone_offset_minutes']
+    // Convert minutes to seconds
+    $timezone_name = timezone_name_from_abbr("", $timezone_offset_minutes*60, false);
+    // Asia/Kolkata
+    echo $timezone_name;
+
+    /*
+        date_default_timezone_set($timezone_name);
+    */
+    }
+
+
+    public function jwtAclTesting()
+    {
+        
+        if(!jwACL::isLoggedIn()) 
+        {
+            return $this->uaReponse();
+        }
+
+        echo "jwACL is working Fine Token is validated";
+
+
+    }
+
+    public function jwPlainTesting()
+    {
+
+            if(JwtAuth::validateToken())
+            {
+                echo "authenticated";
+            }
+            else {
+                echo "token is not authenticated";
+            }
+
+    }
+
+
 
 
 }

@@ -97,6 +97,19 @@ class answersCtrl extends appCtrl
 
 			$this->module->saveCalculatedSubjectsScore($attempt_id);
 
+			/*				
+			if($attemptModule->isQuizDLSbyAttempt_id($attempt_id))
+			{
+				
+				$dlsReportModule = $this->load('module', 'dlsreport');
+
+				$dlsReportModule->saveDlsReport($attempt_id);
+
+				$dlsReportModule->updateScoresheetDlsMatrix($attempt_id);
+			}
+			*/
+			
+
 			$queCounter = $this->module->udpateQuestionCounter($attempt_id);
 
 			$score = $this->module->getCalcuatedScoreSum($attempt_id);

@@ -158,6 +158,32 @@
 			$data['message'] = ($retake == 1) ? "Retake is Now Enabled" : "Retake is Disabled";
 			$data['value'] = $retake;
 			$statusCode = 200;
+
+			$filePayloadContents = array(
+
+				"message"=> "user Updated With REtake toggle"
+
+
+			);
+
+				if($candidateId = $this->module->pluckStudentByEnrollmentId($enroll_id))
+				{
+
+					// ping activity file	
+	        	$FileName = ABSPATH."pooling/stdquiz/candidate_"."{$candidateId}".".json";
+    	    	$dataFilePath = $FileName;
+        		$data_source_file = fopen($dataFilePath, "w");
+        		fwrite($data_source_file, json_encode($filePayloadContents));
+				fclose($data_source_file);
+
+				$data['candidateId'] = $candidateId;
+
+				}
+				
+
+
+				
+
 		}
 
 		else {

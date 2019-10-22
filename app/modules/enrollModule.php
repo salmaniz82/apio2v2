@@ -205,6 +205,22 @@
 
 
 
+	public function pluckStudentByEnrollmentId($enroll_id)
+	{
+
+		if($candiate_id = $this->DB->pluck('student_id')->Where("id = '".$enroll_id."'"))
+		{
+			return $candiate_id;
+		}
+
+		return false;
+
+		
+
+	}
+
+
+
 
 
 

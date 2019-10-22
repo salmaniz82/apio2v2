@@ -82,6 +82,8 @@ class emailModule extends appCtrl {
 
 		$mail->Body = Route::getCurlHtml(SITE_URL.'pages/signup?user_id='.$userId);
 
+		/*
+
 
 		if(!$mail->send())
         {
@@ -91,6 +93,20 @@ class emailModule extends appCtrl {
 
         else {
             return true;
+        }
+        */
+
+        try {
+
+        	$mail->send();
+
+        	return true;
+
+        	
+        } catch (Exception $e) {
+
+        	return false;
+        	
         }
 
 
