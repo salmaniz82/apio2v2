@@ -714,5 +714,27 @@
 
 
 
+    public function testBulkInsert()
+    {
+
+
+
+
+        
+
+        
+
+
+
+
+
+
+
+
+
+    }
+
+
+
 
 }

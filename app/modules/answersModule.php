@@ -186,8 +186,8 @@ class answersModule extends appCtrl {
 
 	public function inspectAnswerByAttemptId($attempt_id)
 	{
-		$sql ="SELECT que.id as 'Question_id', sd.name as 'subdiscipline', que.queDesc as 'QuestionDescription', que.answer as 'answer', 
-				sa.answer as 'response', sa.isRight as 'isCorrect' from questions que 
+		$sql ="SELECT sa.id as answerId, que.id as 'Question_id', sd.name as 'subdiscipline', que.queDesc as 'QuestionDescription', que.answer as 'answer', 
+				sa.answer as 'response', que.type_id, sa.isRight as 'isCorrect', sa.markedStatus from questions que 
 				INNER JOIN categories sd on sd.id = que.section_id 
 				INNER JOIN stdanswers sa on sa.question_id = que.id 
 				WHERE sa.attempt_id = $attempt_id ORDER BY que.section_id";
@@ -358,6 +358,78 @@ class answersModule extends appCtrl {
 				}
 
 				return false;
+
+	}
+
+
+
+	public function updateMarkedAnswers($attempt_id)
+	{
+
+
+		$sql = "UPDATE stdanswers stda 
+		INNER JOIN markedtable mt on stda.id = mt.id AND stda.question_id = mt.question_id   
+		SET stda.markedStatus = mt.markedStatus   
+		WHERE stda.attempt_id = $attempt_id";
+
+		if($this->DB->rawSql($sql))
+		{
+			return $this->DB->connection->affected_rows;
+		}
+
+		return false;	
+
+
+	}
+
+
+	public function upgradeMarkedAnswers($attempt_id)
+	{
+
+		/*
+		refactoring previously using 2 queries to mark correct and incorrect answers
+		mark 0 for incorrect 
+		mark 1 for correct
+		*/
+
+
+		$sql = "UPDATE stdanswers stda 
+		INNER JOIN questions que on que.id = stda.question_id  
+		SET stda.answer = que.answer, stda.isRight = 1  
+		WHERE stda.attempt_id = $attempt_id AND stda.markedStatus = 'up'";
+
+		if($this->DB->rawSql($sql))
+		{
+			return $this->DB->connection->affected_rows;
+		}
+
+		return false;
+
+	}
+
+
+
+	public function downgradeMarkedAnswers($attempt_id)
+	{
+		
+
+		$sql = "UPDATE stdanswers stda 
+
+		INNER JOIN questions que on que.id = stda.question_id  SET stda.answer = 
+		(case 
+        when stda.answer = 'a' then 'b' 
+        when stda.answer = 'b' then 'c' 
+        when stda.answer = 'c' then 'd' 
+        when stda.answer = 'd' then 'b' 
+        else stda.answer  
+        END), stda.isRight = 0  WHERE stda.attempt_id = $attempt_id AND stda.markedStatus = 'down' AND stda.isRight = 1 AND (que.type_id = 1 OR que.type_id = 2)";
+
+       	if($this->DB->rawSql($sql))
+		{
+			return $this->DB->connection->affected_rows;
+		}
+
+		return false;
 
 	}
 

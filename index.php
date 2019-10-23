@@ -358,6 +358,10 @@ $route->get('/jwplain', 'moduleTestCtrl@jwPlainTesting');
 
 
 
+$route->post('/markandudpateanswers/{id}', 'answersCtrl@markedAnswerUpdates');
+
+
+
 $route->get('/testfgcontents', 'moduleTestCtrl@testGetFileContents');
 
 $route->get('/pages/signup?', 'emailTemplateCtrl@selfRegister');

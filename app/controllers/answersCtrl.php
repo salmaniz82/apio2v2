@@ -283,4 +283,92 @@ class answersCtrl extends appCtrl
 	}
 
 
+
+
+	public function markedAnswerUpdates()
+	{
+
+
+		if(!jwACL::isLoggedIn()) return $this->uaReponse();	
+
+
+		
+		if(!jwACL::has('score-matrix')) return $this->accessDenied();		
+		
+
+
+		$markedModule = $this->load('module', 'marked');
+
+		$attempt_id = $this->getID();
+
+        $payload = $_POST['dataMarkedPayload'];
+       
+        $dataset['cols'] = array('attempt_id','id', 'question_id', 'markedStatus');
+
+        $dataset['vals'] = $payload;
+
+
+        if($markedModule->multiInsert($dataset))
+        {
+
+            if($this->module->updateMarkedAnswers($attempt_id))
+            {
+            	
+        		if($this->module->upgradeMarkedAnswers($attempt_id) || $this->module->downgradeMarkedAnswers($attempt_id))
+        		{
+        		
+        			if($markedModule->deletePreviousScoreSheet($attempt_id))
+        			{
+        				
+        				$this->module->saveCalculatedSubjectsScore($attempt_id);
+
+        				$score = $this->module->getCalcuatedScoreSum($attempt_id);
+
+						$this->module->setBasicScore($attempt_id, $score);
+
+
+						$data['message'] = "All operation concluded successfully";
+						$statusCode = 200;
+
+
+        			}
+
+
+        		}
+
+        		else {
+
+        			$data['upgrade'] = "failed";
+
+        		}
+            }
+
+            else {
+
+            	$data['message'] = "Saveed but unable to update status for stdAnswers";
+        		$statusCode = 500;	
+            }
+       	
+
+        }
+
+        else {
+
+        	$data['message'] = "Failed while Marking Initial Step";
+        	$data['debug'] = $this->module->DB;
+        	$statusCode = 500;
+
+        }
+
+        $markedModule->deleteMarkedTableData($attempt_id);
+
+        $markedModule->neutralStatusAnswersTable($attempt_id);
+
+        return View::responseJson($data, $statusCode);
+
+
+
+	}
+
+
 }
