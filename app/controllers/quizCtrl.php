@@ -774,9 +774,11 @@
 
     public function quizProgress()
     {
-    	/*
-    	teacher view of progress
-    	*/
+    	
+    	if(!jwACL::isLoggedIn()) 
+			return $this->uaReponse();
+		
+
         $quiz_id = $this->getID();
 
 

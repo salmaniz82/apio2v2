@@ -337,9 +337,9 @@ $route->get('/testemail', 'moduleTestCtrl@testphpmailer');
 
 $route->get('/testconfigmail', 'moduleTestCtrl@testMailWithConfigs');
 
-$route->post('/message', 'moduleTestCtrl@twilloPost');
 
-$route->post('/servicepost', 'moduleTestCtrl@servicePost');
+
+
 
 $route->get('/dlsallocatetest/{id}', 'moduleTestCtrl@dlsAllocateTest');
 
@@ -350,6 +350,10 @@ $route->get('/dlstesting/{id}', 'moduleTestCtrl@dlsSummaryReport');
 
 */
 
+$route->post('/servicepost', 'moduleTestCtrl@servicePost');
+
+
+$route->post('/message', 'moduleTestCtrl@twilloPost');
 
 
 $route->get('/jwact', 'moduleTestCtrl@jwtAclTesting');

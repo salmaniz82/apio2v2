@@ -230,9 +230,9 @@
 
 		((sta.score * 100) / qz.maxScore) as 'per',
 
-		(SELECT gd.grade from grading gd WHERE ((sta.score * 100) / qz.maxScore) BETWEEN gd.spmin AND gd.spmax LIMIT 1 ) as grade,  
+		(SELECT gd.grade from grading gd WHERE  round( ((sta.score * 100) / qz.maxScore) ) BETWEEN gd.spmin AND gd.spmax LIMIT 1 ) as grade,  
  
-        (SELECT gd.gpa from grading gd WHERE ((sta.score * 100) / qz.maxScore) BETWEEN gd.spmin AND gd.spmax LIMIT 1) as gpa,
+        (SELECT gd.gpa from grading gd WHERE  round( ((sta.score * 100) / qz.maxScore) ) BETWEEN gd.spmin AND gd.spmax LIMIT 1) as gpa,
 
         (case when sta.score >= qz.minScore then true else false end) as resultStatus      
 		

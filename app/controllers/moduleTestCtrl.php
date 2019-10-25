@@ -511,6 +511,7 @@
 
             $data['addedRecord'] = $last_id;
             $data['message'] = "message has been added to twillo test";
+            $data['result'] = "success";
             $statusCode = 200;
 
         }
@@ -713,27 +714,12 @@
     }
 
 
-
     public function testBulkInsert()
     {
 
-
-
-
         
-
-        
-
-
-
-
-
-
-
-
 
     }
-
 
 
 
