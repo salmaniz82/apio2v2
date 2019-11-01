@@ -241,7 +241,20 @@ class Database
 
             $sql = "UPDATE {$this->table} SET ";
             $sql .= $keyValues;
-            $sql .= "WHERE id = " . $id;
+
+            if(is_array($id))
+            {
+                $col = $id[0];
+                $val = $id[1];
+
+                $sql .= "WHERE {$col} = " . $val;
+            }
+            else 
+            {
+                $sql .= "WHERE id = " . $id;
+
+            }
+            
 
             $this->sqlSyntax = $sql;
             return $this->runQuery();

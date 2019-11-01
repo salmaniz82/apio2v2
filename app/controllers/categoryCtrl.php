@@ -84,6 +84,13 @@
 			return $this->accessDenied();
 
 
+		if($_POST['name'] == "" || strlen($_POST['name']) < 3)
+		{
+			$data['message'] = 'Category must be at least 3 characters long';
+			return View::responseJson($data, 406);
+		}
+
+
 
 		$crossTail = false;
 

@@ -14,7 +14,12 @@
 	public function selfRegister()
 	{
 
+
+
 		$userId = $_GET['user_id'];
+
+
+		$tickets = $this->module->singnupDetails($userId);
 
 		if($tickets = $this->module->singnupDetails($userId))
 		{
@@ -24,6 +29,16 @@
 			return View::render('emails/signup-details', $data);
 
 		}
+
+		else {
+
+			$data['message'] = "Ticket data is not available";
+			$statusCode = 200;
+
+		}
+
+		return View::responseJson($data, $statusCode);
+		
 
 	}
 

@@ -125,7 +125,8 @@ class subjectModule {
 			inner join categories sec on sec.id = que.section_id 
             inner join subjects sub on sub.subject_id = que.section_id 
 			where qq.quiz_id = $quiz_id AND sub.quiz_id = $quiz_id AND qq.status = 1 
-			AND que.section_id IN (SELECT subject_id from subjects where quiz_id = $quiz_id) AND que.section_id = $subject_id  GROUP BY sec.id";
+			AND que.section_id IN (SELECT subject_id from subjects where quiz_id = $quiz_id) AND que.section_id = $subject_id  
+			GROUP BY sec.id, sec.name, sub.quePerSection";
 
 
 

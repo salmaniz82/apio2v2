@@ -181,6 +181,19 @@ class attemptModule {
 	}
 
 
+	public function postUpdateMetaInformation($payload, $id)
+	{
+
+		if($this->DB->update($payload, $id))
+		{
+			return true;
+		}
+
+		return false;
+
+	}
+
+
 
 	
 

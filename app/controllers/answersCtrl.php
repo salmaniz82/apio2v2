@@ -79,14 +79,45 @@ class answersCtrl extends appCtrl
 		
 		$payload = $_POST['answers'];
 
+
+		$meta = $_POST['quizMeta'];
+
+
 		$user_id = $this->jwtUserId();
 
 		$attempt_id = $payload[0]['attempt_id'];
 		$dataset['cols'] = array('attempt_id', 'question_id', 'answer');
 		$dataset['vals'] = $payload;
 
-
 		$attemptModule = $this->load('module', 'attempt');
+
+
+		if(isset($_POST['quizMeta']) && sizeof($_POST['quizMeta']) != 0)
+		{
+
+
+			$postMetaInfo = $_POST['quizMeta'];
+			
+			$metaPayload = array(
+	            'endState'=> $postMetaInfo['endState'],
+    	        'timeLeft'=> $postMetaInfo['timeLeft']
+        	);
+
+        	if($attemptModule->postUpdateMetaInformation($metaPayload, $attempt_id))
+        	{
+            	$data['postMetaStatus'] = "Meta Inforation is saved";
+        	}
+        	
+
+
+		}
+
+
+
+
+
+		$dlsReportModule = $this->load('module', 'dlsreport');
+
 
 		$attemptModule->toggleActive($attempt_id, "0");
 
@@ -97,29 +128,28 @@ class answersCtrl extends appCtrl
 
 			$this->module->saveCalculatedSubjectsScore($attempt_id);
 
-			/*				
+							
 			if($attemptModule->isQuizDLSbyAttempt_id($attempt_id))
 			{
-				
-				$dlsReportModule = $this->load('module', 'dlsreport');
-
 				$dlsReportModule->saveDlsReport($attempt_id);
-
 				$dlsReportModule->updateScoresheetDlsMatrix($attempt_id);
 			}
-			*/
 			
-
-			$queCounter = $this->module->udpateQuestionCounter($attempt_id);
-
+			/*
 			$score = $this->module->getCalcuatedScoreSum($attempt_id);
 
 			$this->module->setBasicScore($attempt_id, $score);
+			*/
+
+			$this->module->setTotalScore($attempt_id);
+
+
+			$queCounter = $this->module->udpateQuestionCounter($attempt_id);
 
 
 			$data['message'] = "Answers Were Saved";
 			
-			$data['score'] = $score;
+			$data['score'] = 'private';
 			
 			$data['consumed'] = $queCounter;
 

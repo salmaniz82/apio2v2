@@ -433,6 +433,52 @@ class answersModule extends appCtrl {
 
 	}
 
+
+	public function setTotalScore($attempt_id)
+	{
+
+
+		$sql = "UPDATE stdattempts as t1 LEFT JOIN (
+
+		SELECT attempt_id, SUM(score) as totalObtained FROM scoresheet WHERE attempt_id = $attempt_id GROUP BY attempt_id
+
+
+		) AS d ON d.attempt_id = t1.id 
+
+    
+	    SET t1.score = d.totalObtained 
+    
+    	WHERE t1.id = $attempt_id";
+
+
+    	if($this->DB->rawSql($sql))
+    	{
+
+    		return $this->DB->connection->affected_rows;
+
+    	}
+
+    	return false;
+
+	}
+
+	/*
+
+	UPDATE stdanswers SET answer='e'
+	WHERE id IN (
+    SELECT id FROM (
+        SELECT id FROM stdanswers 
+        ORDER BY id ASC  
+        LIMIT 20
+    	) tmp
+	);
+
+
+	*/
+
+
+
+
 }
 
 /*

@@ -252,7 +252,7 @@ table.MsoNormalTable {
    </v:background>
   <![endif]-->
 
-  <div style="height: 50px">&nbsp </div>
+  <div style="height: 50px">&nbsp;</div>
 
 
    <table align="center" border="0" cellpadding="0" cellspacing="0" height="100%" style="border-collapse: collapse; min-width: 100% !important; mso-table-lspace: 0pt; mso-table-rspace: 0pt; width: 100%;" width="100%">
@@ -293,7 +293,7 @@ table.MsoNormalTable {
 
                     -->
 
-                      <img width="200" height="88" src="<?=SITE_URL?>assets/images/iSkillMetrics-logo.svg">
+                      <img width="200" height="23" src="https://api.iskillmetrics.com/assets/images/iskillmetrics-logo-email.png">
 
                     </a>
 

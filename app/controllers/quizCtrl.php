@@ -232,8 +232,6 @@
 			return $this->uaReponse();
 
 
-
-
 		$allowedRoles = [4];
     	if( JwtAuth::validateToken() && in_array((int) JwtAuth::$user['role_id'], $allowedRoles) )
 		{
@@ -678,8 +676,8 @@
 
 		$usageXTimes = $attemptModule->getXTimesUsed($attempt_id);
 
-
 		
+		/*
 
 		if($usageXTimes === false)
 		{
@@ -689,11 +687,8 @@
 			$erroMessage['status'] = false;
 			$erroMessage['usageXTimes'] = $usageXTimes;
 			$erroMessage['action'] = 'redirect';
-
 			return View::responseJson($erroMessage, 200);
-			
 		
-
 		}
 
 		else if ($usageXTimes != 0)
@@ -707,8 +702,13 @@
 			
 		}
 
+		*/
+
+		
+
 
 		$attemptModule->incrementUsageXTimes($attempt_id);
+
 		$quizQuestionModule = $this->load('module', 'quizQuestions');
 
 
@@ -818,7 +818,7 @@
 		$usageXTimes = $attemptModule->getXTimesUsed($attempt_id);
 
 
-		
+		/*
 
 
 		if($usageXTimes === false)
@@ -843,6 +843,8 @@
 			
 		}
 	
+
+		*/
 
 		
 		
@@ -964,7 +966,7 @@
 
 		$keys = array(
 			'title', 'category_id', 'minScore', 'maxScore', 'startDateTime', 'endDateTime', 'noques', 'duration',
-			'threshold', 'maxAllocation'
+			'threshold', 'maxAllocation', 'code', 'venue' 
 		);
 
 		foreach ($keys as $key => $value) {

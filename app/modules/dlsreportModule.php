@@ -55,8 +55,8 @@ class dlsreportModule {
 
 		$sql = "UPDATE scoresheet as t1 LEFT JOIN (
 
-		SELECT attempt_id, section_id, level_id, queFromLevel, SUM(obtained) as obtained from dlsreport where attempt_id = $attempt_id 
-		GROUP BY section_id, level_id, queFromLevel
+		SELECT attempt_id, section_id, SUM(obtained) as obtained from dlsreport where attempt_id = $attempt_id 
+		GROUP BY attempt_id, section_id 
 
 		) AS d ON d.attempt_id = t1.attempt_id 
 
@@ -74,35 +74,30 @@ class dlsreportModule {
 
     	}
 
-
     	return false;
-
 
 	}
 
 
 
+	
 
-	/* 
+
+}
 
 
-UPDATE scoresheet as t1 LEFT JOIN (
+/*
 
-SELECT attempt_id, section_id, level_id, queFromLevel, SUM(obtained) as obtained from dlsreport where attempt_id = @attempt_id 
-GROUP BY section_id 
+SELECT attempt_id, section_id, level_id, queFromLevel, SUM(obtained) as obtained from dlsreport where attempt_id = $attempt_id 
+		GROUP BY section_id, level_id, queFromLevel
 
-) AS d ON d.attempt_id = t1.attempt_id 
+		) AS d ON d.attempt_id = t1.attempt_id 
 
-	AND t1.subject_id = d.section_id 
+			AND t1.subject_id = d.section_id 
     
-    SET t1.score = d.obtained
+	    SET t1.score = d.obtained
     
-    WHERE t1.attempt_id = $attempt_id;
+    WHERE t1.attempt_id = $attempt_id
 
 
 */
-
-
-	
-
-}

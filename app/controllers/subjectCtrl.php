@@ -13,6 +13,11 @@
 	public function index()
 	{
 		
+
+		if(!jwACL::isLoggedIn()) 
+			return $this->uaReponse();
+
+		
 		$quiz_id = $this->getID();
 		$quizModule = $this->load('module', 'quiz');
 

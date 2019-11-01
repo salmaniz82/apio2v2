@@ -57,9 +57,9 @@
 	public function getQuizById($quiz_id)
 	{
 
-		$sql = "SELECT qz.id, qz.title, qz.category_id, cat.name as 'category', 
+		$sql = "SELECT qz.id, qz.code, qz.title, qz.category_id, cat.name as 'category', 
 		qz.maxScore, qz.minScore, qz.duration, qz.startDateTime, qz.endDateTime, qz.noques, qz.user_id, qz.status as 'status',
-		qz.enrollment as 'enrollment', qz.dls, qz.uniqueOnRetake, qz.showScore, qz.showResult, qz.showGrading, qz.showGPA,
+		qz.enrollment as 'enrollment', qz.dls, qz.uniqueOnRetake, qz.showScore, qz.showResult, qz.showGrading, qz.showGPA, qz.venue,  
 
 		(SELECT count(id) as enrolledStudent from enrollment WHERE quiz_id = $quiz_id GROUP by quiz_id ) as enrolledStudent 
 
@@ -227,6 +227,8 @@
 
 		$sql = "SELECT qz.id as 'quizId', sta.id as 'attemptId', std.id as 'student_id', en.id as 'enroll_id',  std.name, std.email,  qz.title, qz.category_id, qz.maxScore, qz.minScore, qz.duration, 
 		qz.noques, qz.user_id, en.attempts, en.retake,  sta.attempted_at as attempted_at, sta.score as 'score',
+
+		SUBSTR(SEC_TO_TIME(sta.timeLeft), 4 ,5) as timeLeft, sta.endState,  
 
 		((sta.score * 100) / qz.maxScore) as 'per',
 

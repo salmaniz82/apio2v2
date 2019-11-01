@@ -26,6 +26,9 @@ $route->get('/', function() {
 });
 
 
+$route->get('/masterdatalist', 'masterdataListController@masterDataRouter');
+
+
 $route->get('/dashboard', 'dashboardCtrl@router');
 
 $route->get('/dasboard/activity?', 'dashboardCtrl@activity');
@@ -37,6 +40,10 @@ $route->get('/routes', function() {
 	$routeList = true;
 
 });
+
+
+
+
 
 
 
@@ -52,6 +59,10 @@ $route->get('/validate', 'jwtauthCtrl@validateToken');
 $route->put('/changepassword/{id}', 'userCtrl@changePassword');
 
 $route->get('/hashpass', 'userCtrl@udpatePasswordHash');
+
+
+
+
 
 
 
@@ -86,6 +97,36 @@ $route->post('/cat/add-with-text', 'categoryCtrl@addWithText');
 
 
 /* USERS */
+
+$route->get('/profile', 'profileCtrl@index');
+
+
+$route->post('/profile/logo', 'profileCtrl@updateLogo');
+
+
+$route->put('/profile', 'profileCtrl@updateInfo');
+
+$route->post('/profile', 'profileCtrl@save');
+
+
+
+$route->get('/strcheck', function() {
+
+	$user_id = 110;
+
+	$logoImageUrl = 'uplooads/110-logo.png';
+
+
+	$str = "INSERT INTO profile (user_id, logo) VALUES($user_id, '{$logoImageUrl}')	
+		ON DUPLICATE KEY UPDATE logo = '{$logoImageUrl}'";
+
+
+		echo $str;
+
+});
+
+
+
 
 $route->get('/users', 'userCtrl@index');
 
@@ -218,6 +259,8 @@ $route->put('/quiz-status-toggle/{id}', 'quizCtrl@statusToggle');
 
 $route->get('/quiz/progress/{id}', 'quizCtrl@quizProgress');
 
+/* quiz overview uses same data */
+
 $route->get('/quiz/subjects/{id}', 'subjectCtrl@index');
 
 $route->put('/quiz/distribution/{id}', 'subjectCtrl@updateDistro');
@@ -323,9 +366,11 @@ $route->get('/allocateTest', 'moduletestCtrl@testAllocation');
 
 $route->get('/subAlloTest', 'moduletestCtrl@subjectAllocation');
 
-$route->get('/addTickets', 'moduletestCtrl@testTickets');
+
 $route->get('/single-cat', 'moduletestCtrl@singleCat');
+
 $route->get('/unlockTest', 'moduletestCtrl@unlockTest');
+
 $route->get('/testplay/{id}', 'moduleTestCtrl@testquizplayquestions');
 $route->get('/test-encoding', 'moduletestCtrl@testenc');
 $route->get('/testmedialink/{id}', 'moduletestCtrl@testMediaLink');
@@ -333,10 +378,9 @@ $route->get('/mtest', 'moduletestCtrl@dlstatus');
 $route->get('/mtestroute', 'moduletestCtrl@teststartact');
 
 
-$route->get('/testemail', 'moduleTestCtrl@testphpmailer');
+
 
 $route->get('/testconfigmail', 'moduleTestCtrl@testMailWithConfigs');
-
 
 
 
@@ -347,8 +391,25 @@ $route->get('/xattempts/{id}', 'moduleTestCtrl@xattempts');
 
 $route->get('/dlstesting/{id}', 'moduleTestCtrl@dlsSummaryReport');
 
+$route->get('/testtickets/{id}', 'moduleTestCtrl@testTickets');
+
 
 */
+
+
+$route->get('/testphpmailer', 'moduleTestCtrl@testphpmailer');
+
+
+
+$route->get('/testmailmodule', 'moduleTestCtrl@emailmoduletest');
+
+
+
+
+$route->post('/postmeta/{id}', 'moduleTestCtrl@postmeta');
+
+
+
 
 $route->post('/servicepost', 'moduleTestCtrl@servicePost');
 
@@ -365,9 +426,6 @@ $route->get('/jwplain', 'moduleTestCtrl@jwPlainTesting');
 $route->post('/markandudpateanswers/{id}', 'answersCtrl@markedAnswerUpdates');
 
 
-
-$route->get('/testfgcontents', 'moduleTestCtrl@testGetFileContents');
-
 $route->get('/pages/signup?', 'emailTemplateCtrl@selfRegister');
 
 $route->get('/pages/changepassword?', 'emailTemplateCtrl@changePassword');
@@ -383,6 +441,7 @@ $route->get('/pages/examresult?', 'emailTemplateCtrl@examResult');
 $route->get('/pages/invite-exam?', 'emailTemplateCtrl@inviteExam');
 
 $route->get('/pages/invite-batch?', 'emailTemplateCtrl@inviteBatch');
+
 
 
 

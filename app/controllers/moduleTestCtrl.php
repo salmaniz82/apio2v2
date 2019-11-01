@@ -329,21 +329,28 @@
     public function testTickets()
     {
 
-            $preliminaryModule = $this->load('module','preliminary');
+            $last_id = $this->getID();
 
-            /*
+            $preliminaryModule = $this->load('module','preliminary');
+            
             $password = 'hello World';
-            $last_id = 456;
-            echo 'working from here';
             
             $ticketsPayload = array('user_id'=> $last_id, 'ticket' => $password);
-            $preliminaryModule->addTickets($ticketsPayload);
-            */
 
+            if($preliminaryModule->addTickets($ticketsPayload))
+            {
+                echo "ticket created";
+            }
 
-            $preliminaryModule->removeTicket(['user_id', '456']);
+            else {
 
+                echo  "Failed while creating ticket";
 
+                var_dump($preliminaryModule->DB);
+
+            }
+
+            
     }
 
 
@@ -353,6 +360,8 @@
    
         $emailModule = $this->load('module', 'email');
         $mail = $emailModule->getMailer();
+
+        $mail->SMTPDebug = true;
         $mail->CharSet = 'utf-8';
         $mail->IsMail();                                      // Set mailer to use SMTP
         $mail->Host = 'mail.iskillmetrics.com';  // Specify main and backup SMTP servers
@@ -392,15 +401,20 @@
         $mail->AltBody = 'Please view in rich html email client';
 
 
-        if(!$mail->send())
-        {
 
-            echo $mail->ErrorInfo;
-        }
+        
 
-        else {
-            echo "sent";
+        try {
+
+            $mail->send();
+            return true;
+            
+        } catch (Exception $e) {
+
+            return false;
+            
         }
+        
 
 
     }
@@ -412,17 +426,17 @@
     {
 
         $emailModule = $this->load('module', 'email');
+
         $mail = $emailModule->getConfigMailer();
 
 
+        $mail->FromName = 'Test With Configs is working';
 
-        $mail->FromName = 'Config Mail';
-
-        $mail->addAddress('salmaniz.82@gmail.com', 'Salman Ahmed');
+        $mail->addAddress('sa@isystematic.com', 'Salman Ahmed');
         
         $mail->isHTML(true); 
                                          // Set email format to HTML
-        $mail->Subject = 'Skillmettics Basic Email Testing';
+        $mail->Subject = 'Skillmetrics Basic';
 
         /*
         $bodycontents =  file_get_contents("/etemplate?id=33");
@@ -431,8 +445,6 @@
 
         */    
 
-
-        $bodycontents =  $this->file_get_contents_curl(SITE_URL.'etemplate?id=33');
 
         $mail->Body   = $bodycontents;
         $mail->AltBody = 'body cannot be loaded';
@@ -718,6 +730,71 @@
     {
 
         
+
+    }
+
+
+
+    public function emailmoduletest()
+    {
+
+        $emailModule = $this->load('module', 'email');
+
+
+        $last_id = 116;
+        
+        $newUserDetails = array(
+            'user_id' => $last_id,
+            'email' => 'salmaniz.82@gmail.com'
+        );
+        
+        if($emailModule->sendRegistrationEmail($newUserDetails))
+        {
+            echo "sent";
+        }
+
+        else {
+
+            echo "not sent";
+            
+        }
+        
+    }
+
+
+
+    public function postmeta()
+    {
+
+
+
+        $attempt_id = $this->getID();
+
+
+        $metaPayload = $_POST['meta'];
+
+        $metaPayload = array(
+
+            'endState'=> 'explicit',
+            'timeLeft'=> '20156'
+
+        );
+
+
+        $attemptModule = $this->load('module', 'attempt');
+
+
+        if($attemptModule->postUpdateMetaInformation($metaPayload, $attempt_id))
+        {
+            echo "posted and updated";
+        }
+
+
+        else {
+            echo "failed post";
+        }
+
+
 
     }
 

@@ -108,10 +108,6 @@
 			}
 
 
-
-
-
-
 			if(!$this->module->emailExists($dataPayload['email']))
 			{
 				if($last_id = $this->module->addNewUser($dataPayload) )
@@ -123,32 +119,44 @@
 
 						// load module and insert the ticket
 
+
+						$data['ticket'] = "attempt to create ticket and send email";
+
 						$preliminaryModule = $this->load('module','preliminary');
+
 						$ticketsPayload = array('user_id'=> $last_id, 'ticket' => $_POST['password']);
-						$preliminaryModule->addTickets($ticketsPayload);
 
-						$emailModule =  $this->load('module', 'email');
+						if($preliminaryModule->addTickets($ticketsPayload))
+						{
 
-						$newUserDetails = array(
+							$data['ticket'] = "ticket created";
+
+							$emailModule =  $this->load('module', 'email');
+
+							$newUserDetails = array(
 
 							'user_id' => $last_id,
 							'email' => $dataPayload['email']
-						);
 
+							);
 
-						if($emailModule->sendRegistrationEmail($newUserDetails))
-						{
+							if($emailModule->sendRegistrationEmail($newUserDetails))
+							{
 
-							// remove existing ticket form using userModule
-							/*
-							Email triggered user got password in his email so we don't need plain password any more in DB;
-							*/
-
-							$preliminaryModule->removeTicket(['user_id', $last_id]);
+								$data['email'] = "Sent";
+								$preliminaryModule->removeTicket(['user_id', $last_id]);
+							}
+							else {
+									$data['email'] = "Email not sent";
+							}
 
 						}
 
+						else {
 
+							$data['ticket'] = "cannot be created";
+							$data['ticketError'] = $preliminaryModule->DB;
+						}
 
 					}
 
@@ -219,7 +227,6 @@
 				{
 					$statusCode = 500;
 					$data['message'] = "Failed While Creating new Users";
-					$data['debug'] = $this->module->DB;
 					$data['status'] = false;				
 				}
 			}

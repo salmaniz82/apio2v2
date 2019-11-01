@@ -129,4 +129,16 @@ class jwACL {
 	}
 
 
+	public static function roleId()
+	{
+		
+		if(JwtAuth::validateToken())
+		{
+			return JwtAuth::$user['role_id'];	
+		}
+
+		return false;
+	}
+
+
 }
