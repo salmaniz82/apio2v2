@@ -15,7 +15,8 @@
 	public function enrolledStudents($quiz_id)
 	{
 		
-		$sql = "SELECT en.id, en.student_id, en.quiz_id, en.dtsScheduled, std.name, std.email, en.dateEnrolled as 'dateEnrolled', en.attempts, en.retake,
+		$sql = "SELECT en.id, en.student_id, en.quiz_id, en.dtsScheduled, en.invited, 
+		std.name, std.email, en.dateEnrolled as 'dateEnrolled', en.attempts, en.retake,
 		qz.user_id 
 		from enrollment en 
 		inner join users std on std.id = en.student_id 
@@ -215,7 +216,23 @@
 
 		return false;
 
-		
+	}
+
+
+
+	public function updateInvited($enroll_id)
+	{
+
+
+		$dataPayload = array('invited'=> 1);
+
+		if($this->DB->update($dataPayload, $enroll_id))
+		{
+			return true;
+		}
+
+		return false;
+
 
 	}
 

@@ -168,10 +168,19 @@ class appCtrl {
 	}
 
 
-	
 
+	public function apiEncodeUri($payload)
+	{
+		return urlencode(base64_encode(json_encode($payload)));	
+	}
 
-    
+	public function apiDecodeUri($payload)
+	{
+
+		return urldecode(base64_decode(json_decode($payload)));
+
+	}
+
 
 
 }

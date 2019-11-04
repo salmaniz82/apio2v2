@@ -72,7 +72,6 @@ class profileCtrl extends appCtrl {
 		return View::responseJson($data, $statusCode);
 
 
-
 	}
 
 
@@ -200,6 +199,40 @@ class profileCtrl extends appCtrl {
 
 		return $this->updateHandler($dataPayload, $condArr);
 
+
+
+	}
+
+
+
+	public function entityProfilebyslug()
+	{
+
+		$slug = Route::$params['slug'];
+
+		if($profile = $this->module->entityProfileBySlug($slug))
+		{
+			$data['profile'] = $profile;
+			$data['status'] = true;
+			$statusCode = 200;
+		}
+
+		else {
+
+			$data['message'] = 'Profile Information not found';
+			$data['status'] = false;
+			$statusCode = 500;
+
+		}
+
+		return View::responseJson($data, $statusCode);
+
+	}
+
+
+
+	public function verify()
+	{
 
 
 	}

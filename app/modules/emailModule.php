@@ -82,9 +82,7 @@ class emailModule extends appCtrl {
 
 		$mail->Body = Route::getCurlHtml(SITE_URL.'pages/signup?user_id='.$userId);
 
-       
-
-        /*
+       /*
         if(!$mail->send())
         {
 
@@ -112,22 +110,55 @@ class emailModule extends appCtrl {
         */
 
 
-            try {
-
-            $mail->send();
-
-            return true;
-
-            
-        } catch (Exception $e) {
+         if(!$mail->send())
+        {
 
             return false;
-            
         }
+
+        else {
+            return true;
+        }
+
+
+         
 
         
         
 	}
+
+
+    public function sendInviationEmail($payload)
+    {
+
+        extract($payload);
+
+        $inviteId;
+        $toAddress;
+        $sentToAddress = $toEmail;
+
+
+        $mail = $this->getConfigMailer();
+        $mail->isHTML(true);
+        $mail->Subject = "Quiz Invitation - iSkillmetrics";
+        $mail->FromName = 'iSkillmetrics';
+        $mail->addAddress($sentToAddress, $toAddress);
+        $mail->Body = Route::getCurlHtml(SITE_URL.'pages/invite-exam/'.$inviteId);
+
+
+        if(!$mail->send())
+        {
+
+            return false;
+        }
+
+        else {
+
+            return true;
+
+        }
+
+    }
 
 
 

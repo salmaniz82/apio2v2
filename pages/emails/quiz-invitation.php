@@ -1,7 +1,28 @@
+<?php 
+
+$inviteInfo = $data[0];
+
+$siteHomeUrl = 'https://alpha.iskillmetrics.com';
+
+$inviteId = $inviteInfo['id'];
+$quizName = $inviteInfo['title'];
+$toName = $inviteInfo['name'];
+$toAddress = $inviteInfo['email'];
+$endDate = $inviteInfo['endDate'];
+$endTime = $inviteInfo['endTime'];
+$duration = $inviteInfo['duration'];
+$actiontoken = $inviteInfo['uriToken'];
+
+
+$redirectUrl = "https://alpha.iskillmetrics.com/login?actiontoken=".$actiontoken;
+
+?>
+
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:v="urn:schemas-microsoft-com:vml">
  <head>
-  <title>Robust Designs</title>
+  <title>iSkillmetrics Quiz Invitations</title>
   <meta content="IE=edge" http-equiv="X-UA-Compatible" />
   <meta content="width=device-width, initial-scale=1" name="viewport" />
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
@@ -251,7 +272,7 @@ table.MsoNormalTable {
       <table align="center" border="0" cellpadding="20" cellspacing="0" class="contenttable" lang="x-content" style="border-collapse: collapse; min-width: 280px; mso-table-lspace: 0pt; mso-table-rspace: 0pt; width: 550px;" width="550">
        <tbody>
         <tr>
-         <td align="center" style="color: #b0b0b0; font-size: 13px; font-weight: 300; line-height: 18px; padding: 20px 20px 20px 20px;"><font color="#b0b0b0" size="2" style="font-family: 'Open Sans', 'Source Sans Pro', sans-serif; font-weight: 400; text-size-adjust: 100%;"> Having trouble viewing in your inbox? <a href="#" style="text-decoration: none;">View this email in your browser.</a> </font></td>
+         <td align="center" style="color: #b0b0b0; font-size: 13px; font-weight: 300; line-height: 18px; padding: 20px 20px 20px 20px;"><font color="#b0b0b0" size="2" style="font-family: 'Open Sans', 'Source Sans Pro', sans-serif; font-weight: 400; text-size-adjust: 100%;"> &nbsp; </td>
         </tr>
        </tbody>
       </table>
@@ -274,7 +295,10 @@ table.MsoNormalTable {
                   <table align="left" border="0" cellpadding="0" cellspacing="0" class="tablemobile" lang="x-tablem" style="border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt; direction: ltr; vertical-align: top; display: inline-block;">
                    <tbody>
                     <tr>
-                     <td align="center" style="line-height: 100%; padding-bottom: 0px; padding-left: 0px; padding-right: 0px; padding-top: 0px;"><a href="#" style="color: inherit; text-decoration: none;"> <img alt="" border="0" height="21" src="https://robust.email/files/template_2/images/logo.png" style="display: block; max-width: 220px; min-width: 150px; height: 21px" width="180" /> </a></td>
+                     <td align="center" style="line-height: 100%; padding-bottom: 0px; padding-left: 0px; padding-right: 0px; padding-top: 0px;">
+                      <a href="<?=$siteHomeUrl?>" style="color: inherit; text-decoration: none;"> 
+                        <img width="200" height="23" src="https://api.iskillmetrics.com/assets/images/iskillmetrics-logo-email.png">
+                      </td>
                     </tr>
                    </tbody>
                   </table>
@@ -300,15 +324,9 @@ table.MsoNormalTable {
                       <table align="center" border="0" cellpadding="0" cellspacing="0" style="border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
                        <tbody>
                         <tr>
-                         <td align="center" style="color: #777777; font-size: 12px; line-height: 18px; padding-bottom: 0px; padding-left: 0px; padding-right: 0px; padding-top: 0px;"><a href="#" style="text-decoration: none; color: #777777;"><font color="#777777" size="2" style="font-family: 'Montserrat', 'Gotham Rounded', 'Gotham', 'Noto Sans', 'Open Sans', 'Source Sans Pro', 'Segoe UI','Segoe UI Web Regular','Segoe UI Symbol','Helvetica Neue',Arial,sans-serif; font-size: 12px; text-size-adjust: 100%; text-transform: uppercase;">  Account </font></a></td>
+                         <td align="center" style="color: #777777; font-size: 12px; line-height: 18px; padding-bottom: 0px; padding-left: 0px; padding-right: 0px; padding-top: 0px;"><a href="#" style="text-decoration: none; color: #777777;"><font color="#777777" size="2" style="font-family: 'Montserrat', 'Gotham Rounded', 'Gotham', 'Noto Sans', 'Open Sans', 'Source Sans Pro', 'Segoe UI','Segoe UI Web Regular','Segoe UI Symbol','Helvetica Neue',Arial,sans-serif; font-size: 12px; text-size-adjust: 100%; text-transform: uppercase;">  &nbsp; </font></a></td>
                          <td align="center" style="padding-bottom: 0px; padding-left: 10px; padding-right: 0px; padding-top: 0px;">
-                          <table align="center" bgcolor="#5c6bc0" border="0" cellpadding="0" cellspacing="0" style="border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
-                           <tbody>
-                            <tr>
-                             <td align="center" style="color: #ffffff; font-size: 12px; line-height: 16px; padding-bottom: 3px; padding-left: 8px; padding-right: 8px; padding-top: 3px;"><a href="#" style="color: #ffffff; text-decoration: none;"> <font color="#ffffff" size="2" style="font-family: 'Montserrat', 'Gotham Rounded', 'Gotham', 'Noto Sans', 'Open Sans', 'Source Sans Pro', 'Segoe UI','Segoe UI Web Regular','Segoe UI Symbol','Helvetica Neue',Arial,sans-serif; font-size: 12px; text-size-adjust: 100%; text-transform: uppercase;"> Login </font> </a></td>
-                            </tr>
-                           </tbody>
-                          </table>
+                          
                          </td>
                         </tr>
                        </tbody>
@@ -388,10 +406,15 @@ table.MsoNormalTable {
                      <td align="center" height="20" style="color: transparent; font-size: 1px; height: 20px; line-height: 20px; padding: 0px 0px 0px 0px;"> &nbsp; </td>
                     </tr>
                     <tr>
-                     <td align="center" style="line-height: 100%; padding-bottom: 10px; padding-left: 0px; padding-right: 0px; padding-top: 0px;"><img alt="" border="0" height="90" src="https://robust.email/files/template_2/images/doug.png" style="display: block; height: 90px; max-width: 150px; width: 90px;" width="90" /></td>
+                     <td align="center" style="line-height: 100%; padding-bottom: 10px; padding-left: 0px; padding-right: 0px; padding-top: 0px;">
+
+                      <!-- user image placeholder -->
+
+
+                     </td>
                     </tr>
                     <tr>
-                     <td align="center" style="color: #ffffff; font-size: 13px; line-height: 18px; padding-bottom: 0px; padding-left: 0px; padding-right: 0px; padding-top: 0px;"><font color="#ffffff" size="2" style="font-family: 'Montserrat', 'Gotham Rounded', 'Gotham', 'Noto Sans', 'Open Sans', 'Source Sans Pro', 'Segoe UI','Segoe UI Web Regular','Segoe UI Symbol','Helvetica Neue',Arial,sans-serif; text-size-adjust: 100%;"> Doug DeMuro </font></td>
+                     <td align="center" style="color: #ffffff; font-size: 13px; line-height: 18px; padding-bottom: 0px; padding-left: 0px; padding-right: 0px; padding-top: 0px;"><font color="#ffffff" size="2" style="font-family: 'Montserrat', 'Gotham Rounded', 'Gotham', 'Noto Sans', 'Open Sans', 'Source Sans Pro', 'Segoe UI','Segoe UI Web Regular','Segoe UI Symbol','Helvetica Neue',Arial,sans-serif; text-size-adjust: 100%;"> <?= $toName ?> </font></td>
                     </tr>
                     <tr>
                      <td align="center" height="20" style="color: transparent; font-size: 1px; height: 20px; line-height: 20px; padding: 0px 0px 0px 0px;"> &nbsp; </td>
@@ -401,19 +424,21 @@ table.MsoNormalTable {
                  </td>
                 </tr>
                 <tr>
-                 <td align="left" style="color: #555555; font-size: 13px; line-height: 18px; padding-bottom: 20px; padding-left: 20px; padding-right: 20px; padding-top: 20px;"><font color="#b9bec2" size="2" style="font-family: 'Montserrat', 'Gotham Rounded', 'Gotham', 'Noto Sans', 'Open Sans', 'Source Sans Pro', 'Segoe UI','Segoe UI Web Regular','Segoe UI Symbol','Helvetica Neue',Arial,sans-serif; text-size-adjust: 100%; text-transform: uppercase;"> About: </font><br /><font color="#555555" size="2" style="font-family: 'Montserrat', 'Gotham Rounded', 'Gotham', 'Noto Sans', 'Open Sans', 'Source Sans Pro', 'Segoe UI','Segoe UI Web Regular','Segoe UI Symbol','Helvetica Neue',Arial,sans-serif; font-size: 12px; text-size-adjust: 100%;"> Hi, I once bought an Aston Martin with unlimited mileage bumper to bumper warranty. </font></td>
+                 <td align="left" style="color: #555555; font-size: 13px; line-height: 18px; padding-bottom: 20px; padding-left: 20px; padding-right: 20px; padding-top: 20px;"><font color="#b9bec2" size="2" style="font-family: 'Montserrat', 'Gotham Rounded', 'Gotham', 'Noto Sans', 'Open Sans', 'Source Sans Pro', 'Segoe UI','Segoe UI Web Regular','Segoe UI Symbol','Helvetica Neue',Arial,sans-serif; text-size-adjust: 100%; text-transform: uppercase;"> Quiz Invitation </font><br /><font color="#555555" size="2" style="font-family: 'Montserrat', 'Gotham Rounded', 'Gotham', 'Noto Sans', 'Open Sans', 'Source Sans Pro', 'Segoe UI','Segoe UI Web Regular','Segoe UI Symbol','Helvetica Neue',Arial,sans-serif; font-size: 12px; text-size-adjust: 100%;"> 
+                  Hi, you have been invited to take participation in quiz, details of which can be found below. 
+                 </font></td>
                 </tr>
                 <tr>
                  <td align="center" style="padding-bottom: 0px; padding-left: 20px; padding-right: 20px; padding-top: 0px;">
                   <table align="center" border="0" cellpadding="20" cellspacing="0" class="tablemobile" lang="x-tablem" style="border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
                    <tbody>
                     <tr>
-                     <td align="left" style="color: #555555; font-size: 13px; line-height: 18px; padding-bottom: 20px; padding-left: 0px; padding-right: 10px; padding-top: 0px;"><font color="#b9bec2" size="2" style="font-family: 'Montserrat', 'Gotham Rounded', 'Gotham', 'Noto Sans', 'Open Sans', 'Source Sans Pro', 'Segoe UI','Segoe UI Web Regular','Segoe UI Symbol','Helvetica Neue',Arial,sans-serif; text-size-adjust: 100%; text-transform: uppercase;"> Lives in: </font><br /><font color="#555555" size="2" style="font-family: 'Montserrat', 'Gotham Rounded', 'Gotham', 'Noto Sans', 'Open Sans', 'Source Sans Pro', 'Segoe UI','Segoe UI Web Regular','Segoe UI Symbol','Helvetica Neue',Arial,sans-serif; font-size: 12px; text-size-adjust: 100%;"> Pensylvania </font></td>
-                     <td align="right" style="color: #555555; font-size: 13px; line-height: 18px; padding-bottom: 20px; padding-left: 10px; padding-right: 0px; padding-top: 0px;"><font color="#b9bec2" size="2" style="font-family: 'Montserrat', 'Gotham Rounded', 'Gotham', 'Noto Sans', 'Open Sans', 'Source Sans Pro', 'Segoe UI','Segoe UI Web Regular','Segoe UI Symbol','Helvetica Neue',Arial,sans-serif; text-size-adjust: 100%; text-transform: uppercase;"> Works at: </font><br /><font color="#555555" size="2" style="font-family: 'Montserrat', 'Gotham Rounded', 'Gotham', 'Noto Sans', 'Open Sans', 'Source Sans Pro', 'Segoe UI','Segoe UI Web Regular','Segoe UI Symbol','Helvetica Neue',Arial,sans-serif; font-size: 12px; text-size-adjust: 100%;"> YouTube Creator </font></td>
+                     <td align="left" style="color: #555555; font-size: 13px; line-height: 18px; padding-bottom: 20px; padding-left: 0px; padding-right: 10px; padding-top: 0px;"><font color="#b9bec2" size="2" style="font-family: 'Montserrat', 'Gotham Rounded', 'Gotham', 'Noto Sans', 'Open Sans', 'Source Sans Pro', 'Segoe UI','Segoe UI Web Regular','Segoe UI Symbol','Helvetica Neue',Arial,sans-serif; text-size-adjust: 100%; text-transform: uppercase;"> Quiz: </font><br /><font color="#555555" size="2" style="font-family: 'Montserrat', 'Gotham Rounded', 'Gotham', 'Noto Sans', 'Open Sans', 'Source Sans Pro', 'Segoe UI','Segoe UI Web Regular','Segoe UI Symbol','Helvetica Neue',Arial,sans-serif; font-size: 12px; text-size-adjust: 100%;"> <?= $quizName ?> </font></td>
+                     <td align="right" style="color: #555555; font-size: 13px; line-height: 18px; padding-bottom: 20px; padding-left: 10px; padding-right: 0px; padding-top: 0px;"><font color="#b9bec2" size="2" style="font-family: 'Montserrat', 'Gotham Rounded', 'Gotham', 'Noto Sans', 'Open Sans', 'Source Sans Pro', 'Segoe UI','Segoe UI Web Regular','Segoe UI Symbol','Helvetica Neue',Arial,sans-serif; text-size-adjust: 100%; text-transform: uppercase;"> Duration: </font><br /><font color="#555555" size="2" style="font-family: 'Montserrat', 'Gotham Rounded', 'Gotham', 'Noto Sans', 'Open Sans', 'Source Sans Pro', 'Segoe UI','Segoe UI Web Regular','Segoe UI Symbol','Helvetica Neue',Arial,sans-serif; font-size: 12px; text-size-adjust: 100%;"> <?= $duration ?> mins. </font></td>
                     </tr>
                     <tr>
-                     <td align="left" style="color: #555555; font-size: 13px; line-height: 18px; padding-bottom: 20px; padding-left: 0px; padding-right: 10px; padding-top: 0px;"><font color="#b9bec2" size="2" style="font-family: 'Montserrat', 'Gotham Rounded', 'Gotham', 'Noto Sans', 'Open Sans', 'Source Sans Pro', 'Segoe UI','Segoe UI Web Regular','Segoe UI Symbol','Helvetica Neue',Arial,sans-serif; text-size-adjust: 100%; text-transform: uppercase;"> Profile ID: </font><br /><font color="#555555" size="2" style="font-family: 'Montserrat', 'Gotham Rounded', 'Gotham', 'Noto Sans', 'Open Sans', 'Source Sans Pro', 'Segoe UI','Segoe UI Web Regular','Segoe UI Symbol','Helvetica Neue',Arial,sans-serif; font-size: 12px; text-size-adjust: 100%;"> <a href="#" style="color: #555555; text-decoration: none;">/dougdomuro</a> </font></td>
-                     <td align="right" style="color: #555555; font-size: 13px; line-height: 18px; padding-bottom: 20px; padding-left: 10px; padding-right: 0px; padding-top: 0px;"><font color="#b9bec2" size="2" style="font-family: 'Montserrat', 'Gotham Rounded', 'Gotham', 'Noto Sans', 'Open Sans', 'Source Sans Pro', 'Segoe UI','Segoe UI Web Regular','Segoe UI Symbol','Helvetica Neue',Arial,sans-serif; text-size-adjust: 100%; text-transform: uppercase;"> Likes: </font><br /><font color="#555555" size="2" style="font-family: 'Montserrat', 'Gotham Rounded', 'Gotham', 'Noto Sans', 'Open Sans', 'Source Sans Pro', 'Segoe UI','Segoe UI Web Regular','Segoe UI Symbol','Helvetica Neue',Arial,sans-serif; font-size: 12px; text-size-adjust: 100%;"> Cars, Coffee </font></td>
+                     <td align="left" style="color: #555555; font-size: 13px; line-height: 18px; padding-bottom: 20px; padding-left: 0px; padding-right: 10px; padding-top: 0px;"><font color="#b9bec2" size="2" style="font-family: 'Montserrat', 'Gotham Rounded', 'Gotham', 'Noto Sans', 'Open Sans', 'Source Sans Pro', 'Segoe UI','Segoe UI Web Regular','Segoe UI Symbol','Helvetica Neue',Arial,sans-serif; text-size-adjust: 100%; text-transform: uppercase;"> End Date </font><br /><font color="#555555" size="2" style="font-family: 'Montserrat', 'Gotham Rounded', 'Gotham', 'Noto Sans', 'Open Sans', 'Source Sans Pro', 'Segoe UI','Segoe UI Web Regular','Segoe UI Symbol','Helvetica Neue',Arial,sans-serif; font-size: 12px; text-size-adjust: 100%;"> <?= $endDate ?> </font></td>
+                     <td align="right" style="color: #555555; font-size: 13px; line-height: 18px; padding-bottom: 20px; padding-left: 10px; padding-right: 0px; padding-top: 0px;"><font color="#b9bec2" size="2" style="font-family: 'Montserrat', 'Gotham Rounded', 'Gotham', 'Noto Sans', 'Open Sans', 'Source Sans Pro', 'Segoe UI','Segoe UI Web Regular','Segoe UI Symbol','Helvetica Neue',Arial,sans-serif; text-size-adjust: 100%; text-transform: uppercase;"> endtime </font><br /><font color="#555555" size="2" style="font-family: 'Montserrat', 'Gotham Rounded', 'Gotham', 'Noto Sans', 'Open Sans', 'Source Sans Pro', 'Segoe UI','Segoe UI Web Regular','Segoe UI Symbol','Helvetica Neue',Arial,sans-serif; font-size: 12px; text-size-adjust: 100%;"> <?= $endTime ?> </font></td>
                     </tr>
                    </tbody>
                   </table>
@@ -432,7 +457,7 @@ table.MsoNormalTable {
                   <table align="right" bgcolor="#8f8fef" border="0" cellpadding="0" cellspacing="0" style="background-color: #8f8fef; border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
                    <tbody>
                     <tr>
-                     <td align="center" style="color: #ffffff; font-size: 12px; line-height: 16px; padding-bottom: 5px; padding-left: 20px; padding-right: 20px; padding-top: 5px;"><a href="#" style="text-decoration: none;"> <font color="#FFFFFF" size="2" style="font-family: 'Montserrat', 'Gotham Rounded', 'Gotham', 'Noto Sans', 'Open Sans', 'Source Sans Pro', 'Segoe UI','Segoe UI Web Regular','Segoe UI Symbol','Helvetica Neue',Arial,sans-serif; font-size: 12px; text-size-adjust: 100%;"> Accept </font> </a></td>
+                     <td align="center" style="color: #ffffff; font-size: 12px; line-height: 16px; padding-bottom: 5px; padding-left: 20px; padding-right: 20px; padding-top: 5px;"><a href="<?= $redirectUrl?>" style="text-decoration: none;"> <font color="#FFFFFF" size="2" style="font-family: 'Montserrat', 'Gotham Rounded', 'Gotham', 'Noto Sans', 'Open Sans', 'Source Sans Pro', 'Segoe UI','Segoe UI Web Regular','Segoe UI Symbol','Helvetica Neue',Arial,sans-serif; font-size: 12px; text-size-adjust: 100%;"> Proceed </font> </a></td>
                     </tr>
                    </tbody>
                   </table>
@@ -451,13 +476,7 @@ table.MsoNormalTable {
                   <td align="center" valign="top" style="padding-top:0;padding-bottom:0;padding-right:0px;padding-left:10px;">
                   <![endif]-->
 
-                  <table align="right" bgcolor="#ee6666" border="0" cellpadding="0" cellspacing="0" style="border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
-                   <tbody>
-                    <tr>
-                     <td align="center" style="color: #ffffff; font-size: 12px; line-height: 16px; padding-bottom: 5px; padding-left: 20px; padding-right: 20px; padding-top: 5px;"><a href="#" style="text-decoration: none;"> <font color="#FFFFFF" size="2" style="font-family: 'Montserrat', 'Gotham Rounded', 'Gotham', 'Noto Sans', 'Open Sans', 'Source Sans Pro', 'Segoe UI','Segoe UI Web Regular','Segoe UI Symbol','Helvetica Neue',Arial,sans-serif; font-size: 12px; text-size-adjust: 100%;"> Decline </font> </a></td>
-                    </tr>
-                   </tbody>
-                  </table>
+                  
                  </td>
                 </tr>
                </tbody>
@@ -472,7 +491,7 @@ table.MsoNormalTable {
           <table align="center" bgcolor="#ffffff" border="0" cellpadding="0" cellspacing="0" class="contenttable" lang="x-content" style="border-collapse: collapse; min-width: 280px; mso-table-lspace: 0pt; mso-table-rspace: 0pt; width: 550px;" width="550">
            <tbody>
             <tr>
-             <td align="center" style="color: #333333; font-size: 13px; line-height: 18px; padding-bottom: 0px; padding-left: 20px; padding-right: 20px; padding-top: 0px;"><font color="#333333" size="2" style="font-family: 'Noto Sans', 'Open Sans', sans-serif; text-size-adjust: 100%;"> This is it. This is where you get to write something <a href="#" style="text-decoration: none;">intriguing</a>. </font></td>
+             <td align="center" style="color: #333333; font-size: 13px; line-height: 18px; padding-bottom: 0px; padding-left: 20px; padding-right: 20px; padding-top: 0px;"><font color="#333333" size="2" style="font-family: 'Noto Sans', 'Open Sans', sans-serif; text-size-adjust: 100%;"> By clicking on accept button you will be taken to login and then redirected to invited quiz </font></td>
             </tr>
            </tbody>
           </table>
@@ -493,7 +512,9 @@ table.MsoNormalTable {
               <table align="center" border="0" cellpadding="0" cellspacing="0" class="tablemobile" lang="x-tablem" style="border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="400">
                <tbody>
                 <tr>
-                 <td align="left" style="color: #b4b4b4; font-size: 10px; line-height: 15px; padding-bottom: 0px; padding-left: 0px; padding-right: 0px; padding-top: 0px;"><font color="#b4b4b4" size="1" style="font-family: 'Noto Sans', 'Open Sans', 'Source Sans Pro', sans-serif; font-weight: 400; text-size-adjust: 100%;"> This message was sent to you from your account on: mamamia.com. Nesciunt, delectus! Sit ratione placeat ex voluptas possimus nulla, unde repudiandae reprehenderit. </font></td>
+                 <td align="left" style="color: #b4b4b4; font-size: 10px; line-height: 15px; padding-bottom: 0px; padding-left: 0px; padding-right: 0px; padding-top: 0px;"><font color="#b4b4b4" size="1" style="font-family: 'Noto Sans', 'Open Sans', 'Source Sans Pro', sans-serif; font-weight: 400; text-size-adjust: 100%;"> 
+                    <!-- footer note -->
+                  </font></td>
                 </tr>
                </tbody>
               </table>
@@ -512,7 +533,7 @@ table.MsoNormalTable {
       <table align="center" bgcolor="transparent" border="0" cellpadding="0" cellspacing="0" class="contenttable" lang="x-content" style="border-collapse: collapse; min-width: 280px; mso-table-lspace: 0pt; mso-table-rspace: 0pt; width: 550px;" width="550">
        <tbody>
         <tr>
-         <td align="center" style="color: #b0b0b0; font-size: 13px; font-weight: 400; line-height: 18px; padding: 20px 30px 20px 30px;"><font color="#b0b0b0" size="2" style="font-family: 'Open Sans', 'Source Sans Pro', sans-serif; font-weight: 400; text-size-adjust: 100%;"> <a href="#" style="text-decoration: none;">unsubscribe</a> to no longer receive posts from us <br /> Copyright&copy; 2016 Robust Designs LLC </font></td>
+         <td align="center" style="color: #b0b0b0; font-size: 13px; font-weight: 400; line-height: 18px; padding: 20px 30px 20px 30px;"><font color="#b0b0b0" size="2" style="font-family: 'Open Sans', 'Source Sans Pro', sans-serif; font-weight: 400; text-size-adjust: 100%;">  <br /> Copyright&copy; <?= date('Y')?> iSkillmetrics  </font></td>
         </tr>
        </tbody>
       </table>

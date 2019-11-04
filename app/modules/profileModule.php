@@ -92,5 +92,42 @@ class profileModule {
 	}
 
 
+	public function entityProfileBySlug($slug)
+	{
+
+		
+		$sql = "SELECT id, user_id as entityId, companyTitle, slug, photo, logo, url, 
+		email, contactPerson, address, mobile, landline FROM `profile` WHERE slug = '{$slug}' LIMIT 1";
+
+		if($profile = $this->DB->rawSql($sql)->returnData())
+		{
+
+				return $profile;
+		}
+
+				return false;
+
+	}
+
+
+
+	public function entityslugId($user_id)
+	{
+
+
+
+		if($slug = $this->DB->pluck('slug')->Where("user_id = '".$user_id."'"))
+		{
+			return $slug;
+		}
+
+		else {
+			return false;
+		}
+
+
+	}
+
+
 
 }

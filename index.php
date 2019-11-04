@@ -100,6 +100,8 @@ $route->post('/cat/add-with-text', 'categoryCtrl@addWithText');
 
 $route->get('/profile', 'profileCtrl@index');
 
+$route->get('/profile/entity-by-slug/{slug}', 'profileCtrl@entityProfilebyslug');
+
 
 $route->post('/profile/logo', 'profileCtrl@updateLogo');
 
@@ -334,6 +336,12 @@ $route->put('/quiz/progress/recoverviaactivity/{id}', 'answersCtrl@recoverFromAc
 
 
 
+/* INVITATIONS */
+
+
+
+$route->post('/sendinvitation/{id}', 'invitationsCtrl@addInvitation');
+
 
 
 
@@ -426,7 +434,11 @@ $route->get('/jwplain', 'moduleTestCtrl@jwPlainTesting');
 $route->post('/markandudpateanswers/{id}', 'answersCtrl@markedAnswerUpdates');
 
 
+
+
 $route->get('/pages/signup?', 'emailTemplateCtrl@selfRegister');
+
+$route->get('/pages/invite-exam/{id}', 'emailTemplateCtrl@inviteExam');
 
 $route->get('/pages/changepassword?', 'emailTemplateCtrl@changePassword');
 
@@ -438,9 +450,29 @@ $route->get('/pages/enrolled?', 'emailTemplateCtrl@enrolled');
 
 $route->get('/pages/examresult?', 'emailTemplateCtrl@examResult');
 
-$route->get('/pages/invite-exam?', 'emailTemplateCtrl@inviteExam');
+
 
 $route->get('/pages/invite-batch?', 'emailTemplateCtrl@inviteBatch');
+
+
+
+$route->get('/verify', function() {
+
+
+	$uriToken = array(
+
+		'action' => 'quizInvitation',
+		'entitySlug' => 'virtual-tech',
+		'enroll_id' => 329,
+		'entity_id' => 33,
+		'candidate_id' => 44,
+		'invite_id' => 356
+
+		);
+
+		echo urlencode(base64_encode(json_encode($uriToken)));
+
+});
 
 
 

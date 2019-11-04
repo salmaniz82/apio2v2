@@ -11,6 +11,26 @@
 	}
 
 
+	public function inviteExam()
+	{
+
+
+		$inviteID = $this->getID();
+
+		$invitationModule = $this->load('module', 'invitations');
+
+		$profileModule = $this->load('module', 'profile');
+
+		$data = $invitationModule->invitationQuizDetails($inviteID);	
+
+		return View::render('/emails/quiz-invitation', $data);
+
+	}
+
+
+
+
+
 	public function selfRegister()
 	{
 
@@ -76,11 +96,7 @@
 
 	}
 
-	public function inviteExam()
-	{
-
-
-	}
+	
 
 
 	public function inviteBatch()

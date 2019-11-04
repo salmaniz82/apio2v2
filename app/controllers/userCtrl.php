@@ -375,6 +375,11 @@
 					$preliminaryModule = $this->load('module','preliminary');
 					$ticketsPayload = array('user_id'=> $last_id, 'ticket' => $_POST['password']);
 					$preliminaryModule->addTickets($ticketsPayload);
+
+
+					
+
+
 				
 					
 					$statusCode = 200;
