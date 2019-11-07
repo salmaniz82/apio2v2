@@ -34,7 +34,51 @@
 
 		$enroll_id = $this->getID();
 
-		$slug = $this->profileModule->entityslugId($user_id);
+		$profile = $this->profileModule->getProfileByUserId($user_id);
+
+
+		if(!$profile)
+		{
+
+			$data['message'] = "Please add profile information";
+			$statusCode = 406;
+			return View::responseJson($data, $statusCode);
+
+		}
+
+		else if($profile[0]['companyTitle'] == null)  
+		{
+
+			$data['message'] = "Profile set organization name";
+			$statusCode = 406;
+			return View::responseJson($data, $statusCode);
+
+		}
+
+		else if($profile[0]['logo'] == null)
+		{
+
+			$data['message'] = "Profile set logo image";
+			$statusCode = 406;
+			return View::responseJson($data, $statusCode);
+
+		}
+
+		else if($profile[0]['slug'] == null || $profile[0]['slug'] == "")
+		{
+
+			$data['message'] = "Slug is not defined in profile settings";
+			$statusCode = 406;
+			return View::responseJson($data, $statusCode);
+		}
+
+		else {
+
+			$slug = $profile[0]['slug'];
+
+		}
+
+		
 
 		$addPayload = array(
 
@@ -72,7 +116,7 @@
 			}
 
 			return $this->TriggerInvitationEmail($inviteId);
-			
+		
 
 		}
 
@@ -110,10 +154,7 @@
 		$enrollModule = $this->load('module', 'enroll');
 
 
-
-
-
-		if($resp = $emailModule->sendInviationEmail($payload))
+		if($emailModule->sendInviationEmail($payload))
 		{
 
 
@@ -125,13 +166,13 @@
 			}
 			
 
-			$data['message'] = "Invitation Sent to" . $payload['toAddress'] . " successfully";
+			$data['message'] = "Invitation Sent to " . $payload['toAddress'] . " successfully";
 			$statusCode = 200;
 		}
 
 		else {
 
-			$data['message'] = "Failed while triggering email";
+			$data['message'] = "Cannot trigger email";
 			$statusCode = 500;
 
 		}

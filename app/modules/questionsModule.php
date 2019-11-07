@@ -102,7 +102,18 @@
 
 
 
-	
+	public function statusToggle($stsValue, $id)
+	{
 
+		$payload = array('status'=> $id);
+
+		if($this->DB->update($payload, $id))
+		{
+			return true;
+		}
+
+		return false;
+			
+	}
 
 }

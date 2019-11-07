@@ -129,5 +129,22 @@ class profileModule {
 	}
 
 
+	public function isSlugTaken($slug)
+	{
+
+
+		$sql = "SELECT id from profile where slug = '{$slug}' LIMIT 1";
+
+
+		if($slug = $this->DB->rawSql($sql)->returnData())
+		{
+			return true;	
+		}
+
+		return false;
+
+	}
+
+
 
 }

@@ -372,8 +372,59 @@
 	}
 
 
+	public function getPendingInvitedQuiList($studentId, $enroll_id)
+	{
 
 
+		// pending quiz query
+
+		$sql = "SELECT qz.id, en.id as 'enroll_id', qz.title, qz.category_id, qz.maxScore, qz.minScore, qz.duration, qz.noQues, 
+		qz.showScore, qz.showResult, qz.showGrading, qz.showGPA, 
+		en.student_id, en.dateEnrolled, en.dtsScheduled,  en.attempts, en.retake,
+			IF(qz.endDateTime > NOW(), 'valid', 'expired') as 'validity',  IF(en.dtsScheduled > NOW(), 'countdown', 'eligible') as 'schedule' 
+		from enrollment en 
+		INNER JOIN quiz qz on qz.id = en.quiz_id 
+		WHERE en.student_id = $studentId AND en.id = $enroll_id AND en.id NOT IN (SELECT DISTINCT(enroll_id) from stdattempts)";
+
+		if($quiz = $this->DB->rawSql($sql)->returnData())
+			{
+				return $quiz;	
+			}
+
+			else {
+				return false;
+			}
+
+	}
+
+
+
+	public function getAttemptedInvitedQuizList($student_id, $enroll_id)
+	{
+		$sql = "SELECT qz.id as 'id', sta.id as 'attemptId', en.id as 'enroll_id', qz.title, qz.category_id, qz.maxScore, qz.minScore, qz.duration,
+		qz.noques, qz.user_id, qz.showScore, qz.showResult, qz.showGrading, qz.showGPA, 
+
+
+		en.attempts, en.retake,  sta.attempted_at, sta.score, 
+		IF(qz.endDateTime > NOW(), 'valid', 'expired') as 'validity' 
+		FROM quiz qz 
+		INNER JOIN enrollment en on en.quiz_id = qz.id 
+		INNER JOIN stdattempts sta on sta.enroll_id = en.id 
+		WHERE sta.id IN (SELECT max(id) as id from stdattempts group by enroll_id) AND
+		en.student_id = $student_id AND 
+		en.id = $enroll_id ORDER BY sta.attempted_at DESC";
+
+		
+		if($quiz = $this->DB->rawSql($sql)->returnData())
+			{
+				return $quiz;	
+			}
+
+			else {
+				return false;
+			}
+
+	}
 
 
 

@@ -63,6 +63,8 @@
 
 			$dataPayload = $this->module->DB->sanitize($keys);
 
+			$dataPayload['status'] = 1;
+
 
 			if(jwACL::isLoggedIn())
 			{
@@ -155,7 +157,6 @@
 						else {
 
 							$data['ticket'] = "cannot be created";
-							$data['ticketError'] = $preliminaryModule->DB;
 						}
 
 					}
@@ -302,7 +303,11 @@
 		$_POST = Route::$_PUT;
 		$id = $this->getID();
 		
-        if($res = $this->module->changePassword($_POST['password'], $id))
+
+		$password = trim($_POST['password']);
+
+		
+        if($res = $this->module->changePassword($password, $id))
         {
         	$data['status'] = true;
         	$data['message'] = "Password Updated";
@@ -312,7 +317,6 @@
 
         	$data['status'] = false;
         	$data['message'] = " Failed Password Updated";
-        	$data['res'] = $res;
 			$statusCode = 500;
         }
 
@@ -373,14 +377,33 @@
 
 
 					$preliminaryModule = $this->load('module','preliminary');
+
 					$ticketsPayload = array('user_id'=> $last_id, 'ticket' => $_POST['password']);
-					$preliminaryModule->addTickets($ticketsPayload);
+					if($preliminaryModule->addTickets($ticketsPayload))
+					{
 
+						/* start trigger email */
+						$emailModule =  $this->load('module', 'email');
 
-					
+						$newUserDetails = array(
 
+						'user_id' => $last_id,
+						'email' => $dataPayload['email']
 
-				
+						);
+
+						if($emailModule->sendRegistrationEmail($newUserDetails))
+							{
+
+								$data['email'] = "Sent";
+								$preliminaryModule->removeTicket(['user_id', $last_id]);
+							}
+							else {
+									$data['email'] = "Email not sent";
+							}
+
+					}
+
 					
 					$statusCode = 200;
 					$data['message'] = "Registration User Created Successfully";

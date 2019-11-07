@@ -67,6 +67,30 @@ class invitationsModule {
 
 
 
+	public function validateInvitation($enroll_id, $candidate_id)
+	{
+
+		$sql = "SELECT qi.id as inviteID, en.id as enroll_id, u.id as user_id from quizinvitations qi 
+				INNER JOIN enrollment en on en.id = qi.enroll_id 
+				INNER JOIN users u on u.id = en.student_id 
+				WHERE u.id = $candidate_id AND en.id = $enroll_id  
+				LIMIT 1";
+
+		if($invitation = $this->DB->rawSql($sql)->returnData())
+		{
+			return true;
+		}
+
+
+		return false;
+
+	}
+
+
+	
+
+
+
 
 
 

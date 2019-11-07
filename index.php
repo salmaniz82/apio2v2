@@ -102,6 +102,8 @@ $route->get('/profile', 'profileCtrl@index');
 
 $route->get('/profile/entity-by-slug/{slug}', 'profileCtrl@entityProfilebyslug');
 
+$route->post('/profile/slugavailable', 'profileCtrl@slugAvailable');
+
 
 $route->post('/profile/logo', 'profileCtrl@updateLogo');
 
@@ -143,6 +145,22 @@ $route->put('/users/status-toggle/{id}', 'userCtrl@statusToggle');
 $route->delete('/users/{id}', 'userCtrl@destroy');
 
 $route->post('/register-enroll', 'userCtrl@registerEnroll');
+
+
+/* residue */
+
+
+$route->post('/residue', 'residueCtrl@makeEntrypoint');
+
+
+$route->put('/residue/doaction/{id}', 'residueCtrl@doaction');
+
+
+
+
+
+
+
 
 
 /* ROLES*/
@@ -312,7 +330,7 @@ $route->post('/questions', 'questionsCtrl@save');
 
 $route->get('/question-section-summary', 'questionsCtrl@summaryCount');
 
-
+$route->put('/questions/status-toggle/{id}', 'questionsCtrl@statusToggle');
 
 $route->get('/enroll/{id}', 'enrollmentCtrl@listEnrolledStudents');
 
@@ -343,6 +361,7 @@ $route->put('/quiz/progress/recoverviaactivity/{id}', 'answersCtrl@recoverFromAc
 $route->post('/sendinvitation/{id}', 'invitationsCtrl@addInvitation');
 
 
+$route->get('/invitation-quizzes/{id}', 'quizCtrl@invitationQuizListHandler');
 
 
 
@@ -367,56 +386,29 @@ $route->post('/batches/enrollprocess/{id}', 'batchCtrl@enrollProcedure');
 /* TESTING ROUTES */
 
 /*
-
 $route->get('/checktimezone', 'moduleTestCtrl@checkTimeZoneTesting');
-
 $route->get('/allocateTest', 'moduletestCtrl@testAllocation');
-
 $route->get('/subAlloTest', 'moduletestCtrl@subjectAllocation');
-
-
 $route->get('/single-cat', 'moduletestCtrl@singleCat');
-
 $route->get('/unlockTest', 'moduletestCtrl@unlockTest');
-
 $route->get('/testplay/{id}', 'moduleTestCtrl@testquizplayquestions');
 $route->get('/test-encoding', 'moduletestCtrl@testenc');
 $route->get('/testmedialink/{id}', 'moduletestCtrl@testMediaLink');
 $route->get('/mtest', 'moduletestCtrl@dlstatus');
 $route->get('/mtestroute', 'moduletestCtrl@teststartact');
-
-
-
-
 $route->get('/testconfigmail', 'moduleTestCtrl@testMailWithConfigs');
-
-
-
-
 $route->get('/dlsallocatetest/{id}', 'moduleTestCtrl@dlsAllocateTest');
-
 $route->get('/xattempts/{id}', 'moduleTestCtrl@xattempts');
-
 $route->get('/dlstesting/{id}', 'moduleTestCtrl@dlsSummaryReport');
-
 $route->get('/testtickets/{id}', 'moduleTestCtrl@testTickets');
-
-
+$route->get('/testphpmailer', 'moduleTestCtrl@testphpmailer');
+$route->get('/testmailmodule', 'moduleTestCtrl@emailmoduletest');
+$route->post('/postmeta/{id}', 'moduleTestCtrl@postmeta');
 */
 
 
-$route->get('/testphpmailer', 'moduleTestCtrl@testphpmailer');
 
-
-
-$route->get('/testmailmodule', 'moduleTestCtrl@emailmoduletest');
-
-
-
-
-$route->post('/postmeta/{id}', 'moduleTestCtrl@postmeta');
-
-
+$route->get('/testconfigmail', 'moduleTestCtrl@testConfigEmailStatus');
 
 
 $route->post('/servicepost', 'moduleTestCtrl@servicePost');
@@ -424,10 +416,6 @@ $route->post('/servicepost', 'moduleTestCtrl@servicePost');
 
 $route->post('/message', 'moduleTestCtrl@twilloPost');
 
-
-$route->get('/jwact', 'moduleTestCtrl@jwtAclTesting');
-
-$route->get('/jwplain', 'moduleTestCtrl@jwPlainTesting');
 
 
 

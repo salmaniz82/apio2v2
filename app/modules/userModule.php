@@ -98,18 +98,20 @@ class userModule extends appCtrl{
 
 	}
 
-	public function changePassword($id, $newPassword)
+	public function changePassword($newPassword, $id)
 	{
 
-		$data['password'] = $this->hashPassword($newPassword);
+		 $hashedPassword = $this->hashPassword($newPassword);
+
+		 $data['password'] = $hashedPassword;
 
 		if($this->DB->update($data, $id))
 		{
 			return true;
 		}
-		else {
-			return $this->DB;
-		}
+
+		return false;
+		
 	}
 
 

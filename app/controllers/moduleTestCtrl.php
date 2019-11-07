@@ -800,4 +800,19 @@
 
 
 
+    public function testConfigEmailStatus()
+    {
+
+
+        $emailModule = $this->load('module', 'email');
+
+        $resp = $emailModule->testEmailConfigModule();
+
+        var_dump($resp);
+
+
+    }
+
+
+
 }

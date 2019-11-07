@@ -87,6 +87,8 @@
 			$data['last_id'] = $last_Id;
 			$statusCode = 200;
 
+			$data['message'] = "New Question Added Successfully";
+
 
 			if(isset($_POST['mediaIds']))
 			{
@@ -99,11 +101,11 @@
 				$questionMediaModule = $this->load('module', 'questionsMedia');
 				if($questionMediaModule->saveQuestionMedia($last_Id, $mediaPost))
 				{
-					$data['message'] = "New Question Added Successfully";
+					$data['message'] = "New Question Added Successfully with media";
 					$statusCode = 200;
 				}
 				else {
-					$data['message'] = "Failed to attach media to question";
+					$data['message'] = "Saved but failed to attach media to question";
 					$statusCode = 406;
 				}
 
@@ -147,8 +149,7 @@
 
 		}
 
-
-		View::responseJson($data, $statusCode);
+		return View::responseJson($data, $statusCode);
 
 	}
 
@@ -170,7 +171,48 @@
 
 		}
 
-		View::responseJson($data, $statusCode);
+		return View::responseJson($data, $statusCode);
+
+	}
+
+
+	public function statusToggle()
+	{
+
+		if(!jwACL::isLoggedIn()) 
+			return $this->uaReponse();	
+
+
+		/*
+		bind permission
+		!admin check ownership
+		*/
+
+
+		$_POST = Route::$_PUT;
+		$id = $this->getID();
+
+		$statusValue = $_POST['status'];
+
+		if($this->module->statusToggle($statusValue, $id))
+		{
+
+			$stsText = ($statusValue == 1) ? 'enabled' : 'disabled';
+			$data['message'] = "Question status : " . $stsText;
+			$data['status'] = true;
+			$statusCode = 200;
+
+		}
+
+		else {
+
+			$data['message'] = "Failed while updating status";
+			$data['status'] = true;
+			$statusCode = 500;
+
+		}
+
+		return View::responseJson($data, $statusCode);
 
 	}
 

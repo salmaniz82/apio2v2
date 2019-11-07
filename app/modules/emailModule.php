@@ -23,7 +23,7 @@ class emailModule extends appCtrl {
 	public function getMailer()
 	{
 		
-		$mail = new PHPMailer(true);
+		$mail = new PHPMailer();
 		return $mail;
 
 	}
@@ -70,29 +70,18 @@ class emailModule extends appCtrl {
 
 		$sentToAddress = $dataPayload['email'];
 
-		$mail = $this->getConfigMailer();
+        $mail = $this->getConfigMailer();
 
-		$mail->isHTML(true);
+        $mail->isHTML(true);
 
-		$mail->Subject = "Registration Successfull - iSkillmetrics";
+        $mail->Subject = "Registration Successfull - iSkillmetrics";
 
-		$mail->FromName = 'iSkillmetrics';
+        $mail->FromName = 'iSkillmetrics';
 
-		$mail->addAddress($sentToAddress);
+        $mail->addAddress($sentToAddress);
 
-		$mail->Body = Route::getCurlHtml(SITE_URL.'pages/signup?user_id='.$userId);
+        $mail->Body = Route::getCurlHtml(SITE_URL.'pages/signup?user_id='.$userId);
 
-       /*
-        if(!$mail->send())
-        {
-
-            return false;
-        }
-
-        else {
-            return true;
-        }
-        */
 
         /*
         try {
@@ -109,22 +98,24 @@ class emailModule extends appCtrl {
         }
         */
 
+        /*    
+        return $mail->send();
+        */
 
-         if(!$mail->send())
-        {
 
-            return false;
-        }
+        try {
 
-        else {
+            $mail->send();
+
             return true;
+            
+        } catch (Exception $e) {
+
+           return false;
+            
         }
 
 
-         
-
-        
-        
 	}
 
 
@@ -134,32 +125,118 @@ class emailModule extends appCtrl {
         extract($payload);
 
         $inviteId;
+        $toEmail;
         $toAddress;
-        $sentToAddress = $toEmail;
-
+        
 
         $mail = $this->getConfigMailer();
         $mail->isHTML(true);
         $mail->Subject = "Quiz Invitation - iSkillmetrics";
         $mail->FromName = 'iSkillmetrics';
-        $mail->addAddress($sentToAddress, $toAddress);
+        $mail->addAddress($toEmail, $toAddress);
         $mail->Body = Route::getCurlHtml(SITE_URL.'pages/invite-exam/'.$inviteId);
 
 
-        if(!$mail->send())
-        {
+        /*    
+        try {
 
-            return false;
+
+            if($mail->send())
+            {
+                return true;
+            }
+
+            
+        } catch (Exception $e) {
+
+            return $mail->ErrorInfo;
+            
         }
+        */
+        
+       
+        /*    
+        return $mail->send();
+        */
 
-        else {
+
+
+        try {
+
+            $mail->send();
 
             return true;
+            
+        } catch (Exception $e) {
 
+           return false;
+            
         }
 
     }
 
+
+
+
+    public function testEmailConfigModule()
+    {
+
+
+
+        $sentToAddress = 'salmaniz.82@gmail.com'; 
+
+        $toAddress = 'salman ahmed';
+
+
+        $mail = $this->getConfigMailer();
+        $mail->isHTML(true);
+        $mail->Subject = "Status Update";
+        $mail->FromName = 'iSkillmetrics';
+        $mail->addAddress($sentToAddress, $toAddress);
+        $mail->Body = "<p> This is inform you </p>"; 
+
+        try {
+
+            $mail->send();
+
+            return true;
+            
+        } catch (Exception $e) {
+
+           return false;
+            
+        }
+
+
+    }
+
+
+
+    public function triggerForgetPassword($payload)
+    {
+
+        extract($payload);
+
+        $mail = $this->getConfigMailer();
+        $mail->isHTML(true);
+        $mail->Subject = "Password Recovery - iSkillmetrics";
+        $mail->FromName = 'iSkillmetrics';
+        $mail->addAddress($email);
+        $mail->Body = Route::getCurlHtml(SITE_URL.'pages/changepassword?actionid='.$id);
+
+        try {
+
+            $mail->send();
+
+            return true;
+            
+        } catch (Exception $e) {
+
+           return false;
+            
+        }
+
+    }
 
 
 }

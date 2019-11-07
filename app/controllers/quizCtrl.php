@@ -301,9 +301,6 @@
 
 		// fetch teacher quiz list
 
-
-
-
 	}
 
 
@@ -1363,10 +1360,7 @@
     public function dlsToggleHandler($dataPayload, $quiz_id)
     {
 
-
-
-    	$quizQuestionModule = $this->load('module', 'quizQuestions');
-
+	   	$quizQuestionModule = $this->load('module', 'quizQuestions');
     	if($quizQuestionModule->isDlsQualifiedNitroMode($quiz_id))
     	{
 
@@ -1375,7 +1369,6 @@
     		
     			$data['message'] = 'DLS : Enabled';	
     			$statusCode = 200;
-
     		}	
 
     		else {
@@ -1391,13 +1384,61 @@
     		$statusCode = 406;
 
     	}
-
     	
     	return View::responseJson($data, $statusCode);
-
 
     }
 
 
 
+    public function invitationQuizListHandler()
+	{
+
+
+			if(!jwACL::isLoggedIn()) 
+			return $this->uaReponse();
+
+			$enroll_id = $this->getID();
+			$candidate_id = $this->jwtUserId();
+
+
+			$invitationModule = $this->load('module', 'invitations');
+
+
+			if(!$invitationModule->validateInvitation($enroll_id, $candidate_id))
+			{
+				$data['message'] = "Invalid invitation request";
+				$statusCode = 406;
+				return View::responseJson($data, $statusCode);
+
+			}
+
+			
+			if($attempted = $this->module->getAttemptedInvitedQuizList($candidate_id, $enroll_id))
+			{
+					$data['attempted'] = $attempted;
+			}
+			else {
+					$data['attempted'] = 0;
+			}
+			
+			if($quiz = $this->module->getPendingInvitedQuiList($candidate_id, $enroll_id))
+			{
+				$data['quiz'] = $quiz;
+				$data['status'] = true;
+				$statusCode = 200;			
+			}
+
+			else {
+				$data['quiz'] = 0;
+				$statusCode = 200;
+				
+			}
+
+			
+			return View::responseJson($data, $statusCode);
+
+		}
+
 }
+

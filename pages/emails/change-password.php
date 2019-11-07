@@ -1,3 +1,29 @@
+<?php 
+
+$data = $data[0];
+
+$siteHomeUrl = 'https://alpha.iskillmetrics.com';
+
+$actiontoken = $data['accesstoken'];
+
+$redirectUrl = "https://alpha.iskillmetrics.com/recover?accesstoken=".$actiontoken;
+
+
+/*
+
+[id] => 3
+            [accesstoken] => eyJpZCI6MywidXNlcl9pZCI6NjcsImVtYWlsIjoic3RkMDFAZG9tYWluLmNvbSJ9
+            [datecreated] => 05 Nov 2019
+            [timecreated] => 10:11 PM
+            [name] => studentone
+            [email] => std01@domain.com
+
+
+*/
+
+?>
+
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:v="urn:schemas-microsoft-com:vml">
  <head>
@@ -251,7 +277,9 @@ table.MsoNormalTable {
       <table align="center" border="0" cellpadding="20" cellspacing="0" class="contenttable" lang="x-content" style="border-collapse: collapse; min-width: 280px; mso-table-lspace: 0pt; mso-table-rspace: 0pt; width: 500px;" width="500">
        <tbody>
         <tr>
-         <td align="center" style="color: #b0b0b0; font-size: 13px; font-weight: 400; line-height: 18px; padding: 20px 20px 20px 20px;"><font color="#b0b0b0" size="2" style="font-family: 'Open Sans', 'Source Sans Pro', sans-serif; font-weight: 400; text-size-adjust: 100%;"> Having trouble viewing in your inbox? <a href="#" style="text-decoration: none;">View this email in your browser.</a> </font></td>
+
+          <td>&nbsp;</td>
+         
         </tr>
        </tbody>
       </table>
@@ -274,7 +302,9 @@ table.MsoNormalTable {
                   <table align="left" border="0" cellpadding="0" cellspacing="0" class="tablemobile" lang="x-tablem" style="border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt; direction: ltr; vertical-align: top; display: inline-block;">
                    <tbody>
                     <tr>
-                     <td align="center" style="line-height: 100%; padding-bottom: 0px; padding-left: 0px; padding-right: 0px; padding-top: 0px;"><a href="#" style="color: inherit; text-decoration: none;"> <img alt="" border="0" height="21" src="https://robust.email/files/template_2/images/logo.png" style="display: block; max-width: 220px; min-width: 150px; height: 21px" width="180" /> </a></td>
+                     <td align="center" style="line-height: 100%; padding-bottom: 0px; padding-left: 0px; padding-right: 0px; padding-top: 0px;">
+                      <a href="<?=$siteHomeUrl?>" style="color: inherit; text-decoration: none;"> 
+                      <img width="150" height="17" src="https://api.iskillmetrics.com/assets/images/iskillmetrics-logo-email.png"> </a></td>
                     </tr>
                    </tbody>
                   </table>
@@ -298,21 +328,7 @@ table.MsoNormalTable {
                     <tr>
                      <td align="center" style="padding-bottom: 0px; padding-left: 0px; padding-right: 0px; padding-top: 0px;">
                       <table align="center" border="0" cellpadding="0" cellspacing="0" style="border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
-                       <tbody>
-                        <tr>
-                         <td align="center" style="color: #777777; font-size: 12px; line-height: 18px; padding-bottom: 0px; padding-left: 0px; padding-right: 0px; padding-top: 0px;"><a href="#" style="text-decoration: none; color: #777777;"><font color="#777777" size="2" style="font-family: 'Montserrat', 'Gotham Rounded', 'Gotham', 'Noto Sans', 'Open Sans', 'Source Sans Pro', 'Segoe UI','Segoe UI Web Regular','Segoe UI Symbol','Helvetica Neue',Arial,sans-serif; font-size: 12px; text-size-adjust: 100%; text-transform: uppercase;">  Account </font></a></td>
-                         <td align="center" style="padding-bottom: 0px; padding-left: 10px; padding-right: 0px; padding-top: 0px;">
-                          <table align="center" bgcolor="#5c6bc0" border="0" cellpadding="0" cellspacing="0" style="border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
-                           <tbody>
-                            <tr>
-                             <td align="center" style="color: #ffffff; font-size: 12px; line-height: 16px; padding-bottom: 3px; padding-left: 8px; padding-right: 8px; padding-top: 3px;"><a href="#" style="color: #ffffff; text-decoration: none;"> <font color="#ffffff" size="2" style="font-family: 'Montserrat', 'Gotham Rounded', 'Gotham', 'Noto Sans', 'Open Sans', 'Source Sans Pro', 'Segoe UI','Segoe UI Web Regular','Segoe UI Symbol','Helvetica Neue',Arial,sans-serif; font-size: 12px; text-size-adjust: 100%; text-transform: uppercase;"> Login </font> </a></td>
-                            </tr>
-                           </tbody>
-                          </table>
-                         </td>
-                        </tr>
-                       </tbody>
-                      </table>
+                       
                      </td>
                     </tr>
                    </tbody>
@@ -396,7 +412,13 @@ table.MsoNormalTable {
               <table align="center" border="0" cellpadding="0" cellspacing="0" class="tablemobile" lang="x-tablem" style="border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="400">
                <tbody>
                 <tr>
-                 <td align="left" style="color: #777777; font-size: 13px; line-height: 18px; padding-bottom: 0px; padding-left: 0px; padding-right: 0px; padding-top: 20px;"><font color="777777" size="2" style="font-family: 'Noto Sans', 'Open Sans', sans-serif; text-size-adjust: 100%;"> Someone (hopefully you) has requested to change your account password on: 28-NOV-2016 3:00AM PST <br />
+                 <td align="left" style="color: #777777; font-size: 13px; line-height: 18px; padding-bottom: 0px; padding-left: 0px; padding-right: 0px; padding-top: 20px;"><font color="777777" size="2" style="font-family: 'Noto Sans', 'Open Sans', sans-serif; text-size-adjust: 100%;"> 
+                  
+                  <h5>Hi <?=$data['name']?>,</h5>
+
+                  Someone (hopefully you) has requested to change your account password on: <?=$data['datecreated'];?> at  <?=$data['timecreated'];?> <br /> 
+
+                  <br/> <span>using your email i.e <strong><?=$data['email']?></strong></span>
                    <br /> To update your password, follow the link below: </font></td>
                 </tr>
                 <tr>
@@ -407,7 +429,10 @@ table.MsoNormalTable {
                   <table align="left" border="0" cellpadding="0" cellspacing="0" style="border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
                    <tbody>
                     <tr>
-                     <td align="center" bgcolor="#f0f0f0" style="border-radius: 2px; color: #777777; font-size: 10px; line-height: 13px; padding-bottom: 5px; padding-left: 10px; padding-right: 10px; padding-top: 5px;"><a href="#" style="color: #777777; text-decoration: none;"> <font color="#777777" size="1" style="font-family: 'Montserrat', 'Gotham Rounded', 'Gotham', 'Noto Sans', 'Open Sans', 'Source Sans Pro', 'Segoe UI','Segoe UI Web Regular','Segoe UI Symbol','Helvetica Neue',Arial,sans-serif; text-size-adjust: 100%; text-transform: uppercase;"> Update Password </font> </a></td>
+                     <td align="center" bgcolor="#ffcc00" style="border-radius: 2px; color: #ffffff; font-size: 10px; line-height: 13px; padding-bottom: 5px; padding-left: 10px; padding-right: 10px; padding-top: 5px;">
+
+
+                      <a href="<?=$redirectUrl?>" style="color: #777777; text-decoration: none;"> <font color="#777777" size="1" style="font-family: 'Montserrat', 'Gotham Rounded', 'Gotham', 'Noto Sans', 'Open Sans', 'Source Sans Pro', 'Segoe UI','Segoe UI Web Regular','Segoe UI Symbol','Helvetica Neue',Arial,sans-serif; text-size-adjust: 100%; text-transform: uppercase;"> Update Password </font> </a></td>
                     </tr>
                    </tbody>
                   </table>
@@ -417,7 +442,7 @@ table.MsoNormalTable {
                  <td align="center" height="20" style="color: transparent; font-size: 1px; height: 20px; line-height: 20px; padding: 0px 0px 0px 0px;"> &nbsp; </td>
                 </tr>
                 <tr>
-                 <td align="left" style="color: #777777; font-size: 13px; line-height: 18px; padding-bottom: 0px; padding-left: 0px; padding-right: 0px; padding-top: 0px;"><font color="777777" size="2" style="font-family: 'Noto Sans', 'Open Sans', sans-serif; text-size-adjust: 100%;"> If you did not request a password reset then IMMEDIATELY call the local police and tell them your account may have been hacked. </font></td>
+                 <td align="left" style="color: #777777; font-size: 13px; line-height: 18px; padding-bottom: 0px; padding-left: 0px; padding-right: 0px; padding-top: 0px;"><font color="777777" size="2" style="font-family: 'Noto Sans', 'Open Sans', sans-serif; text-size-adjust: 100%;"> If you did not request a password reset then IMMEDIATELY contact support staff and inform report this suspicious activity that may lead to account hijacking. </font></td>
                 </tr>
                </tbody>
               </table>
@@ -469,7 +494,7 @@ table.MsoNormalTable {
       <table align="center" bgcolor="transparent" border="0" cellpadding="0" cellspacing="0" class="contenttable" lang="x-content" style="border-collapse: collapse; min-width: 280px; mso-table-lspace: 0pt; mso-table-rspace: 0pt; width: 500px;" width="500">
        <tbody>
         <tr>
-         <td align="center" style="color: #b0b0b0; font-size: 13px; font-weight: 400; line-height: 18px; padding: 20px 30px 20px 30px;"><font color="#b0b0b0" size="2" style="font-family: 'Open Sans', 'Source Sans Pro', sans-serif; font-weight: 400; text-size-adjust: 100%;"> <a href="#" style="text-decoration: none;">unsubscribe</a> to no longer receive posts from us <br /> Copyright&copy; 2016 Robust Designs LLC </font></td>
+         <td align="center" style="color: #b0b0b0; font-size: 13px; font-weight: 400; line-height: 18px; padding: 20px 30px 20px 30px;"><font color="#b0b0b0" size="2" style="font-family: 'Open Sans', 'Source Sans Pro', sans-serif; font-weight: 400; text-size-adjust: 100%;"> Copyright &copy; iSkillmetrics  <?=DATE('Y')?> </font></td>
         </tr>
        </tbody>
       </table>

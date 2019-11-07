@@ -28,9 +28,6 @@
 	}
 
 
-
-
-
 	public function selfRegister()
 	{
 
@@ -66,49 +63,56 @@
 	public function changePassword()
 	{
 
-		return View::render('emails/change-password');		
+		$residueModule = $this->load('module', 'residue');
+
+		$id = $_GET['actionid'];
+
+
+
+		if($data = $residueModule->recoverInformation($id))
+		{
+			return View::render('emails/change-password', $data);
+		}
+
 
 	}
 
 	public function registerEnroll()
 	{
 
+
+
 	}
 
 	public function registered()
 	{
 
-	}
 
+
+	}
 
 
 	public function enrolled()
 	{
 
+
+
 	}
-
-
-	
 
 
 	public function examResult()
 	{
 
-	}
 
-	
+
+	}
 
 
 	public function inviteBatch()
 	{
 
 
-
-
 	}
-
-
-
 
 
 

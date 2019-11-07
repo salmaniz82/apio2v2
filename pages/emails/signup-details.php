@@ -285,7 +285,7 @@ table.MsoNormalTable {
                     <tr>
                      <td align="center" style="line-height: 100%; padding-bottom: 0px; padding-left: 0px; padding-right: 0px; padding-top: 0px;">
 
-                      <a href="#" style="color: inherit; text-decoration: none;"> 
+                      <a href="<?=$siteHomeUrl?>" style="color: inherit; text-decoration: none;"> 
 
                       <!--  
 
@@ -293,7 +293,7 @@ table.MsoNormalTable {
 
                     -->
 
-                      <img width="200" height="23" src="https://api.iskillmetrics.com/assets/images/iskillmetrics-logo-email.png">
+                      <img width="150" height="17" src="https://api.iskillmetrics.com/assets/images/iskillmetrics-logo-email.png">
 
                     </a>
 

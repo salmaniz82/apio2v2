@@ -239,4 +239,31 @@ class profileCtrl extends appCtrl {
 
 
 
+	public function slugAvailable()
+	{
+
+		$slug = $_POST['slug'];	
+
+
+		if($this->module->isSlugTaken($slug))
+		{
+			
+			$data['message'] = "Slug already taken";
+			$statusCode = 406;
+
+		}
+
+		else {
+
+			$data['message'] = "Slug is available";
+			$statusCode = 200;				
+
+		}
+
+		return View::responseJson($data, $statusCode);
+
+	}
+
+
+
 }
