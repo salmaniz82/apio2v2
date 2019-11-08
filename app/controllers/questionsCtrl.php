@@ -217,4 +217,87 @@
 	}
 
 
+
+	public function singlequestion()
+	{
+
+		$queID = $this->getID();
+		$user_id = jwACL::authUserId();
+		$role = jwACL::authRole();
+
+		if($question = $this->module->getsingle($user_id, $role, $queID))
+		{
+			$data['question'] = $question[0];
+			$statusCode = 200;	
+		}
+		else {
+
+			$data['message'] = 'Question data not found';
+			$statusCode = 500;	
+
+		}
+
+		return View::responseJson($data, $statusCode);
+
+	}
+
+
+	public function update()
+	{
+
+		if(!jwACL::isLoggedIn()) 
+			return $this->uaReponse();
+
+		$queID = $this->getID();
+
+		$user_id = jwACL::authUserId();
+
+		$role = jwACL::authRole();
+
+		$_POST = Route::$_PUT;
+
+
+		$questionType = $_POST['type_id'];
+
+		$keys = array('queDesc', 'answer');
+
+		if($questionType == 1 || $questionType == 3)
+		{
+			array_push($keys, 'optionA', 'optionB', 'optionC', 'optionD');
+		}
+
+		else if($questionType == 2)
+		{
+			array_push($keys, 'optionA', 'optionB');	
+		}
+
+
+		$dataPayload = $this->module->DB->sanitize($keys);
+
+		if($this->module->updateQuestionBasic($dataPayload, $queID))
+		{
+
+			$data['message'] = "Question updated successfully";
+			$data['payload'] = $dataPayload;
+
+			$statusCode = 200;
+
+		}
+
+		else {
+
+			$data['message'] = "Failed updating question";
+			$statusCode = 500;
+		}
+
+		return View::responseJson($data, $statusCode);
+
+	}
+
+
+
+
+
+
+
 }

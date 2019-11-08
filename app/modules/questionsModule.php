@@ -116,4 +116,55 @@
 			
 	}
 
+
+
+	public function getsingle($user_id, $role, $queID)
+	{
+
+
+		$sql = "SELECT que.id as 'question_id', que.category_id, que.section_id, que.type_id, que.level_id,  que.created_at, que.user_id, u.email as 'author', que.status as 'status', que.queDesc, que.optionA, que.optionB, que.optionC, que.optionD,
+			que.consumed as 'hits',  
+			cat.name as category, sub.name as 'subject', que.section_id as 'subject_id',   
+			lvl.levelEN, lvl.levelAR, 
+			typ.typeEN, 
+			que.answer,   
+
+			que.scope as 'scope' 
+
+			from questions que 
+			
+			INNER JOIN categories cat on cat.id = que.category_id 
+			INNER JOIN users u on u.id = que.user_id 
+			INNER JOIN categories sub on sub.id = que.section_id 
+			INNER JOIN level lvl on que.level_id = lvl.id 
+			INNER JOIN type typ on typ.id = que.type_id ";
+
+			$sql .= " WHERE que.id = $queID ";
+
+			$sql .= "ORDER BY que.status DESC, que.consumed DESC";
+
+
+		if($data = $this->DB->rawSql($sql)->returnData())
+		{
+			return $data;
+		}
+
+		return false;
+
+	}
+
+
+
+	public function updateQuestionBasic($payload, $id)
+	{
+
+		if($this->DB->update($payload, $id))
+		{
+			return true;
+		}
+
+		return false;
+
+	}
+
 }

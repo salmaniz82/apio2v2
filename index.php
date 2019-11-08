@@ -326,6 +326,10 @@ $route->post('/quiz-question-sycnronize', 'quizQuestionsCtrl@processSynchronize'
 
 $route->get('/questions?', 'questionsCtrl@index');
 
+$route->get('/question/{id}', 'questionsCtrl@singlequestion');
+
+$route->put('/question/{id}', 'questionsCtrl@update');
+
 $route->post('/questions', 'questionsCtrl@save');
 
 $route->get('/question-section-summary', 'questionsCtrl@summaryCount');

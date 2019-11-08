@@ -55,7 +55,7 @@ class emailModule extends appCtrl {
         }
 
         $mail->isHTML(true);
-        $mail->From = 'no-reply@iskillmetrics.com';
+        $mail->setFrom('no-reply@iskillmetrics.com', 'iSkillMetrics');
 
         return $mail;
 
