@@ -14,7 +14,9 @@
 	public function index()
 	{
 
-		if($media = $this->module->listall())
+		$user_id = jwACL::authUserId();
+
+		if( $media = $this->module->listall($user_id) )
 		{
 			$data['media'] = $media;
 			$statusCode = 200;

@@ -13,12 +13,12 @@
 
 	
 
-	public function listall()
+	public function listall($user_id)
 	{
 
 
-		$sql = "SELECT m.id, m.category_id, cat.name as 'category', m.title, m.filepathurl, m.type, format_bytes(m.size) as 'size' , m.user_id from media m
-		INNER JOIN categories cat on cat.id = m.category_id";
+		$sql = "SELECT m.id, m.category_id, cat.name as 'category', m.title, m.filepathurl, m.type, format_bytes(m.size) as 'size', m.user_id from media m 
+		INNER JOIN categories cat on cat.id = m.category_id WHERE m.user_id = $user_id";
 
 		$media = $this->DB->rawsql($sql)->returnData();
 

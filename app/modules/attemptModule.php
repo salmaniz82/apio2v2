@@ -194,11 +194,27 @@ class attemptModule {
 	}
 
 
+	public function clearAttemptsOnResetEnroll($enrollID)
+	{
 
-	
+		$this->DB->delete(['enroll_id', $enrollID], false);
+		return $this->DB->resource;
+
+	}
 
 
 
+	public function clearActivity($payload, $id)
+	{
+
+		if($this->DB->update($payload, $id))
+		{
+			return true;
+		}
+
+		return false;
+
+	}
 
 
 

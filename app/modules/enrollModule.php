@@ -237,8 +237,26 @@
 	}
 
 
+	public function delete($id)
+	{
+
+		$this->DB->delete($id);
+		return $this->DB->resource;
+
+	}
 
 
+	public function update($payload, $id)
+	{
+
+		$this->DB->update($payload, $id);
+		
+		return $this->DB->resource;
+
+	}
+
+
+	
 
 
 

@@ -39,7 +39,7 @@ class appCtrl {
 	{
 
 		$data['status'] = false;
-    	$data['message'] = "Access Denied: Unauthorized";
+    	$data['message'] = "Access Denied: No permission granted";
 	    $statusCode = 403;
     	return view::responseJson($data, $statusCode);
 	}

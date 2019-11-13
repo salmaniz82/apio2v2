@@ -226,7 +226,7 @@
 
 
 		$sql = "SELECT qz.id as 'quizId', sta.id as 'attemptId', std.id as 'student_id', en.id as 'enroll_id',  std.name, std.email,  qz.title, qz.category_id, qz.maxScore, qz.minScore, qz.duration, 
-		qz.noques, qz.user_id, en.attempts, en.retake,  sta.attempted_at as attempted_at, sta.score as 'score',
+		qz.noques, qz.user_id, en.attempts, en.retake,  sta.attempted_at as attempted_at, sta.score as 'score', sta.is_active, 
 
 		SUBSTR(SEC_TO_TIME(sta.timeLeft), 4 ,5) as timeLeft, sta.endState,  
 

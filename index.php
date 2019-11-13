@@ -34,6 +34,11 @@ $route->get('/dashboard', 'dashboardCtrl@router');
 $route->get('/dasboard/activity?', 'dashboardCtrl@activity');
 
 
+$route->put('/dashboard/markactivityinactive/{id}', 'dashboardCtrl@clearEndActivity');
+
+
+
+
 $route->get('/routes', function() {
 
 	global $routeList;
@@ -338,6 +343,12 @@ $route->put('/questions/status-toggle/{id}', 'questionsCtrl@statusToggle');
 
 $route->get('/enroll/{id}', 'enrollmentCtrl@listEnrolledStudents');
 
+
+$route->put('/enroll-reset/{id}', 'enrollmentCtrl@resetdefault');
+
+
+$route->delete('/enroll/{id}', 'enrollmentCtrl@removeEnrollment');
+
 $route->put('/enroll/schedule-datetime/{id}/{quiz_id}', 'enrollmentCtrl@udpateScheduleDatetime');
 
 $route->post('/enroll', 'enrollmentCtrl@saveEnrollment');
@@ -349,6 +360,14 @@ $route->get('/media', 'mediaCtrl@index');
 $route->post('/media', 'mediaCtrl@save');
 
 $route->get('/mediabyid/{id}', 'mediaCtrl@singleItemById');
+
+
+/* option images */
+
+
+$route->post('/queoptionimages/{optionLabel}', 'optionImagesCtrl@saveandreturn');
+
+
 
 $route->get('/activeAct', 'quizCtrl@currentAct');
 

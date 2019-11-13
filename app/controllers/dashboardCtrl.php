@@ -156,11 +156,45 @@
 	    	}
 		}
 
+	}
 
 
+		public function clearEndActivity()
+		{
 
+
+			if(!jwACL::isLoggedIn()) 
+				return $this->uaReponse();
+
+			
+			$attemptID = $this->getID();
+
+			$attemptModule = $this->load('module', 'attempt');
+
+
+			$payload = array(
+
+				'is_active'=> 0
+			);
+
+
+			if($attemptModule->clearActivity($payload, $attemptID))
+			{
+				$data['message'] = "Marked as inactive";
+				$statusCode = 200;
+			}
+
+			else {
+
+				$data['message'] = "Failed to mark as inactive";
+				$statusCode = 500;
+
+			}
+
+			return View::responseJson($data, $statusCode);	
+
+		}
 
 	}
 
 
-}

@@ -239,4 +239,72 @@
 	}
 
 
+
+	public function removeEnrollment()
+	{
+
+		if(!jwACL::isLoggedIn()) 
+			return $this->uaReponse();
+
+		$id = $this->getID();
+
+		if($this->module->delete($id))
+		{
+			$data['message'] = "Enrollment removed Successfully";
+			$statusCode = 200;
+			
+		}
+
+		else {
+
+			$data['message'] = "Failed while removing enrollment";
+			$statusCode = 500;
+
+		}
+
+
+		return View::responseJson($data, $statusCode);
+
+
+	}
+
+
+	public function resetdefault()
+	{
+
+		if(!jwACL::isLoggedIn()) 
+			return $this->uaReponse();
+
+		
+		$enrollID = $this->getID();
+
+		$enrollResetPayload = array(
+			'attempts' => 0,
+			'retake'=> 0
+		);
+
+		$attemptModule = $this->load('module', 'attempt');
+
+
+
+		if($this->module->update($enrollResetPayload, $enrollID) && $attemptModule->clearAttemptsOnResetEnroll($enrollID))
+		{
+			
+			$data['message'] = "Enrollment reset to default successfully";
+			$statusCode = 200;
+
+		}
+
+		else {
+
+			$data['message'] = "Failed while reseting enrollment";
+			$statusCode = 500;
+
+		}
+
+		return View::responseJson($data, $statusCode);
+
+	}
+
+
 }
