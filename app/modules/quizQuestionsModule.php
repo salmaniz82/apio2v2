@@ -690,6 +690,22 @@ class quizQuestionsModule extends appCtrl {
 				
 					 $questionCount = $this->DB->noRows;
 
+					for($i=0; $i<sizeof($questions); $i++)
+					{
+
+
+						$question_id = $questions[$i]['questionId'];
+							
+						if($media = $this->getQuestionMedia($question_id))
+						{					
+							
+							$questions[$i]['media'] = $media;
+						}
+
+					}
+
+
+
 					if($levelKeyDB == 1)
 					{					
 						$collections[$subj['subjects']]['composite']['easy'] = $questions;
