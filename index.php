@@ -115,7 +115,11 @@ $route->post('/profile/logo', 'profileCtrl@updateLogo');
 
 $route->put('/profile', 'profileCtrl@updateInfo');
 
+
 $route->post('/profile', 'profileCtrl@save');
+
+
+$route->get('/profile-authlogo', 'profileCtrl@authProfileLogo');
 
 
 

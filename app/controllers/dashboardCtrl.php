@@ -4,6 +4,7 @@
 	
 	public $enrollModule;
 	public $attemptModule;
+	public $profileModule;
 
 	
 	public function __construct()
@@ -11,6 +12,7 @@
 		
 		$this->enrollModule = $this->load('module', 'enroll');
 		$this->attemptModule = $this->load('module', 'attempt');	
+		$this->profileModule = $this->load('module', 'profile');
 
 
 	}
@@ -85,6 +87,11 @@
     	{
     		$data['actvity'] = $activity;  			
     	}
+
+
+    	$data['logo'] = $this->profileModule->autoProfileLogo($this->jwtUserId());
+
+
 
     	$data['message']  = "dashboard";
 

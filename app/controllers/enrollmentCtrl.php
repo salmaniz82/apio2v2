@@ -73,15 +73,26 @@
 			return View::responseJson($data, $statusCode);
 			die();
 		}
-		
-		
-
 
 
 		$userModule = $this->load('module', 'user');
 
 		if($user_id = $userModule->pluckIdByEmail($email))
 		{
+
+
+			$userDetails = $userModule->userById($user_id);
+			$userDetails = $userDetails[0];
+
+			if($userDetails['role'] != 'students' && $userDetails['role'] != 'candidate')
+			{
+				
+				$data['message'] = "User type for enrollement not allowed";
+				$data['role'] = $userDetails['role'];
+				$statusCode = 406;
+				return View::responseJson($data, $statusCode);
+
+			}
 
 
 			// duplicate check

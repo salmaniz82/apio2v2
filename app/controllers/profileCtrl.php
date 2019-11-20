@@ -265,5 +265,36 @@ class profileCtrl extends appCtrl {
 	}
 
 
+	public function authProfileLogo()
+	{
+
+
+		if(!jwACL::isLoggedIn()) 
+			return $this->uaReponse();	
+
+		$user_id = jwACL::authUserId();
+
+		if($logo = $this->module->autoProfileLogo($user_id))
+		{
+			$data['logo'] = $logo;
+			$statusCode = 200;		
+		}
+		else {
+
+			$data['message'] = 'logo is not uploaded';
+			$statusCode = 406;
+
+		}
+
+
+
+		return View::responseJson($data, $statusCode);
+
+
+
+
+	}
+
+
 
 }

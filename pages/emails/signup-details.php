@@ -326,7 +326,7 @@ table.MsoNormalTable {
                         <tr>
                          <td align="center" style="color: #777777; font-size: 12px; line-height: 18px; padding-bottom: 0px; padding-left: 0px; padding-right: 0px; padding-top: 0px;"><a href="#" style="text-decoration: none; color: #777777;"><font color="#777777" size="2" style="font-family: 'Montserrat', 'Gotham Rounded', 'Gotham', 'Noto Sans', 'Open Sans', 'Source Sans Pro', 'Segoe UI','Segoe UI Web Regular','Segoe UI Symbol','Helvetica Neue',Arial,sans-serif; font-size: 12px; text-size-adjust: 100%; text-transform: uppercase;">  Status </font></a></td>
                          <td align="center" style="padding-bottom: 0px; padding-left: 10px; padding-right: 0px; padding-top: 0px;">
-                          <table align="center" bgcolor="#5c6bc0" border="0" cellpadding="0" cellspacing="0" style="border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
+                          <table align="center" bgcolor="#3db862" border="0" cellpadding="0" cellspacing="0" style="border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
                            <tbody>
                             <tr>
                              <td align="center" style="background-color: <?php echo ($user['status'] == 1) ? '#3db862;' : 'red;' ?>  color: #ffffff; font-size: 12px; line-height: 16px; padding-bottom: 3px; padding-left: 8px; padding-right: 8px; padding-top: 3px;"><a href="#" style="color: #ffffff; text-decoration: none;"> <font color="#ffffff" size="2" style="font-family: 'Montserrat', 'Gotham Rounded', 'Gotham', 'Noto Sans', 'Open Sans', 'Source Sans Pro', 'Segoe UI','Segoe UI Web Regular','Segoe UI Symbol','Helvetica Neue',Arial,sans-serif; font-size: 12px; text-size-adjust: 100%; text-transform: uppercase;"> <?php echo ($user['status'] == 1) ? 'Active' : 'InActive' ?> </font> </a></td>
@@ -405,7 +405,7 @@ table.MsoNormalTable {
                  <td align="center" height="20" style="color: transparent; font-size: 1px; height: 20px; line-height: 20px; padding: 0px 0px 0px 0px;"> &nbsp; </td>
                 </tr>
                 <tr>
-                 <td align="center" style="color: #5c6bc0; font-size: 16px; line-height: 20px; padding-bottom: 0px; padding-left: 0px; padding-right: 0px; padding-top: 0px;"><font color="#5c6bc0" size="3" style="font-family: 'Montserrat', 'Gotham Rounded', 'Gotham', 'Noto Sans', 'Open Sans', 'Source Sans Pro', 'Segoe UI','Segoe UI Web Regular','Segoe UI Symbol','Helvetica Neue',Arial,sans-serif; text-size-adjust: 100%; text-transform: uppercase;"> Thanks for signing up! <br /> Here are your credentials </font></td>
+                 <td align="center" style="color: #3db862; font-size: 16px; line-height: 20px; padding-bottom: 0px; padding-left: 0px; padding-right: 0px; padding-top: 0px;"><font color="#fda629" size="3" style="font-family: 'Montserrat', 'Gotham Rounded', 'Gotham', 'Noto Sans', 'Open Sans', 'Source Sans Pro', 'Segoe UI','Segoe UI Web Regular','Segoe UI Symbol','Helvetica Neue',Arial,sans-serif; text-size-adjust: 100%; text-transform: uppercase;"> Thanks for signing up! <br /> Here are your credentials </font></td>
                 </tr>
                </tbody>
               </table>
@@ -430,7 +430,7 @@ table.MsoNormalTable {
                   <table align="center" border="0" cellpadding="0" cellspacing="0" class="tablemobile" lang="x-tablem" style="border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
                    <tbody>
                     <tr>
-                     <td align="center" bgcolor="#68829E" height="30" valign="middle" style="height: 30px; line-height: 100%; padding-bottom: 2px; padding-left: 10px; padding-right: 10px; padding-top: 2px;"><img alt="" border="0" height="12" src="https://robust.email/files/template_2/images/email-icon0.png" style="height: 12px; width: 16px;" width="16" /></td>
+                     <td align="center" bgcolor="#3db862" height="30" valign="middle" style="height: 30px; line-height: 100%; padding-bottom: 2px; padding-left: 10px; padding-right: 10px; padding-top: 2px;"><img alt="" border="0" height="12" src="https://robust.email/files/template_2/images/email-icon0.png" style="height: 12px; width: 16px;" width="16" /></td>
                      <td align="left" bgcolor="#ffffff" height="30" style="color: #777777; font-size: 13px; height: 30px; line-height: 16px; padding-bottom: 2px; padding-left: 15px; padding-right: 15px; padding-top: 2px;"><font color="#777777" size="2" style="font-family: 'Noto Sans', 'Open Sans', sans-serif; text-size-adjust: 100%;"> <a href="mailto:username@host.com" style="color: #777777; text-decoration: none;">
                        <?= $user['email']?>
                      </a> </font></td>
@@ -439,7 +439,7 @@ table.MsoNormalTable {
                      <td align="center" height="5" style="color: transparent; font-size: 1px; height: 5px; line-height: 5px; padding: 0px 0px 0px 0px;"> &nbsp; </td>
                     </tr>
                     <tr>
-                     <td align="center" bgcolor="#68829E" valign="middle" height="30" style="height: 30px; line-height: 100%; padding-bottom: 2px; padding-left: 15px; padding-right: 15px; padding-top: 2px;"><img alt="" border="0" height="15" src="https://robust.email/files/template_2/images/lock_0.png" style="height: 15px; width: 12px;" width="12" /></td>
+                     <td align="center" bgcolor="#3db862" valign="middle" height="30" style="height: 30px; line-height: 100%; padding-bottom: 2px; padding-left: 15px; padding-right: 15px; padding-top: 2px;"><img alt="" border="0" height="15" src="https://robust.email/files/template_2/images/lock_0.png" style="height: 15px; width: 12px;" width="12" /></td>
                      <td align="left" bgcolor="#ffffff" height="30" style="color: #777777; font-size: 13px; height: 30px; line-height: 16px; padding-bottom: 2px; padding-left: 15px; padding-right: 15px; padding-top: 2px;"><font color="#777777" size="2" style="font-family: 'Noto Sans', 'Open Sans', sans-serif; text-size-adjust: 100%;"> <?= $user['ticket']?> </font></td>
                     </tr>
                    </tbody>
@@ -508,7 +508,7 @@ table.MsoNormalTable {
             </tr>
            </tbody>
           </table>
-          <table align="center" bgcolor="#5c6bc0" border="0" cellpadding="0" cellspacing="0" class="contenttable" lang="x-content" style="border-collapse: collapse; min-width: 280px; mso-table-lspace: 0pt; mso-table-rspace: 0pt; width: 500px;" width="500">
+          <table align="center" bgcolor="#3db862" border="0" cellpadding="0" cellspacing="0" class="contenttable" lang="x-content" style="border-collapse: collapse; min-width: 280px; mso-table-lspace: 0pt; mso-table-rspace: 0pt; width: 500px;" width="500">
            <tbody>
             <tr>
              <td align="center" style="padding-bottom: 20px; padding-left: 20px; padding-right: 20px; padding-top: 20px;">
