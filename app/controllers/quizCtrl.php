@@ -73,6 +73,7 @@
 		if($quiz = $this->module->getQuizById($quizID))
 		{
 			$data['quiz'] = $quiz;
+			$data['status'] = true;
 			$statusCode = 200;
 		}
 
@@ -1436,6 +1437,30 @@
 			}
 
 			
+			return View::responseJson($data, $statusCode);
+
+		}
+
+
+		public function canidateSelfProgressDetails()
+		{
+		
+			$attemptId = $this->getID();
+			$canidateId = $this->jwtUserId();
+			if($progress = $this->module->candidateSelfProgressReport($attemptId, $canidateId))
+			{
+
+				$data['progress'] = $progress;
+				$data['status'] = true;
+				$statusCode = 200;
+			}
+
+			else {
+				$data['message'] = 'Cannot fetch candidate progress';
+				$data['status'] = false;
+				$statusCode = 500;
+			}
+
 			return View::responseJson($data, $statusCode);
 
 		}

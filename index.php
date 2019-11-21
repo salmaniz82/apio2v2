@@ -288,6 +288,7 @@ $route->put('/quiz-status-toggle/{id}', 'quizCtrl@statusToggle');
 
 $route->get('/quiz/progress/{id}', 'quizCtrl@quizProgress');
 
+
 /* quiz overview uses same data */
 
 $route->get('/quiz/subjects/{id}', 'subjectCtrl@index');
@@ -304,6 +305,8 @@ $route->post('/quizwizardsubjects', 'subjectCtrl@wsubjects');
 
 
 /* STUDENT QUIZ LIST */
+
+$route->get('/std-self-progress/{id}', 'quizCtrl@canidateSelfProgressDetails');
 
 $route->get('/std-quiz-list', 'quizCtrl@studentQuizListHandler');
 

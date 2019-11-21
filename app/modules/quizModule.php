@@ -59,14 +59,19 @@
 
 		$sql = "SELECT qz.id, qz.code, qz.title, qz.category_id, cat.name as 'category', 
 		qz.maxScore, qz.minScore, qz.duration, qz.startDateTime, qz.endDateTime, qz.noques, qz.user_id, qz.status as 'status',
-		qz.enrollment as 'enrollment', qz.dls, qz.uniqueOnRetake, qz.showScore, qz.showResult, qz.showGrading, qz.showGPA, qz.venue,  
+		qz.enrollment as 'enrollment', qz.dls, qz.uniqueOnRetake, qz.showScore, qz.showResult, qz.showGrading, qz.showGPA, qz.venue,
+
+		DATE_FORMAT(qz.endDateTime, '%d %b %Y') as formatedEndDate, 
+		DATE_FORMAT(qz.endDateTime, '%h:%m %p') as formatedEndTime,
+
+
 
 		(SELECT count(id) as enrolledStudent from enrollment WHERE quiz_id = $quiz_id GROUP by quiz_id ) as enrolledStudent 
 
 
 		 from quiz qz
 		INNER JOIN categories cat on cat.id = category_id
-		WHERE qz.id = $quiz_id LIMIT 1;";
+		WHERE qz.id = $quiz_id LIMIT 1";
 
 		if($quiz = $this->DB->rawSql($sql)->returnData())
 			{
@@ -130,7 +135,7 @@
 		qz.noques, qz.user_id, qz.showScore, qz.showResult, qz.showGrading, qz.showGPA, 
 
 
-		en.attempts, en.retake,  sta.attempted_at, sta.score, 
+		en.attempts, en.retake,  sta.attempted_at, 
 		IF(qz.endDateTime > NOW(), 'valid', 'expired') as 'validity' 
 		FROM quiz qz 
 		INNER JOIN enrollment en on en.quiz_id = qz.id 
@@ -427,5 +432,33 @@
 	}
 
 
+
+	public function candidateSelfProgressReport($attempt_id, $student_id)
+	{
+		$sql = "SELECT qz.id as 'id', sta.id as 'attemptId', en.id as 'enroll_id', qz.title, qz.category_id, qz.maxScore, qz.minScore, qz.duration,
+		qz.noques, qz.user_id, qz.showScore, qz.showResult, qz.showGrading, qz.showGPA, 
+		en.attempts, en.retake,  sta.attempted_at, DATE_FORMAT(qz.endDateTime, '%d %b %Y %h:%m %p') as formatedAttemptDateTime, 
+        IF(qz.showScore = 1, sta.score, 'N/A') as score,
+        IF(qz.showScore = 1, ((sta.score * 100) / qz.maxScore), 'N/A') as per,
+        IF(qz.showGrading = 1, (SELECT gd.grade from grading gd WHERE  round( ((sta.score * 100) / qz.maxScore) ) BETWEEN gd.spmin AND gd.spmax LIMIT 1 ), 'N/A') as grade,
+        IF(qz.showGPA = 1, (SELECT gd.gpa from grading gd WHERE  round( ((sta.score * 100) / qz.maxScore) ) BETWEEN gd.spmin AND gd.spmax LIMIT 1), 'N/A') as gpa,
+        IF(qz.showResult = 1, (case when sta.score >= qz.minScore then true else false end), 'N/A') as resultStatus,
+        sta.is_active 
+		FROM quiz qz 
+		INNER JOIN enrollment en on en.quiz_id = qz.id 
+		INNER JOIN stdattempts sta on sta.enroll_id = en.id 
+        WHERE sta.id = $attempt_id AND en.student_id = $student_id ORDER BY sta.attempted_at DESC";
+
+		if($quiz = $this->DB->rawSql($sql)->returnData())
+			{
+				return $quiz;	
+			}
+
+			else {
+				return false;
+			}
+
+
+	}
 
 }
