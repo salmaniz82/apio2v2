@@ -34,7 +34,7 @@ class emailModule extends appCtrl {
 	{
 
 		$mail = new PHPMailer(true);
-		$mail->IsMail();                                      // Set mailer to use SMTP
+		$mail->isSMTP();                                      // Set mailer to use SMTP
 		$mail->CharSet = 'utf-8';
         $mail->Host = 'mail.iskillmetrics.com';  // Specify main and backup SMTP servers
         $mail->SMTPAuth = true;                               // Enable SMTP authentication

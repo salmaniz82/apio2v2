@@ -131,10 +131,7 @@ class userModule extends appCtrl{
 	public function userByEmail($email)
 	{
 
-		/*
-		$sql = "SELECT id, role_id, name, email, password, isLocked, lockedDateTime, loginAttempts, status, 
-		TIMESTAMPDIFF(SECOND, lockedDateTime, NOW()) AS 'Secs' from users where email = '{$email}' LIMIT 1";
-		*/
+		
 
 		$sql = "SELECT users.id, role_id, roles.role as 'role', name, email, password, 
 			isLocked, lockedDateTime, loginAttempts, status, 
@@ -289,6 +286,42 @@ class userModule extends appCtrl{
 
 		return false;
 
+	}
+
+
+	public function taggedUsersList($entity_id)
+	{
+
+		$sql = "SELECT u.id, u.name, u.email, u.status, u.isLocked, u.lockedDatetime, (case when u.created_by = $entity_id then true else false end) as isOwnedBy, r.role as role from users u
+		INNER JOIN roles r on r.id = u.role_id
+		INNER JOIN taggedusers tu on tu.user_id = u.id
+		WHERE tu.entity_id = $entity_id";
+
+		if($users = $this->DB->rawSql($sql)->returnData())
+		{
+			return $users;
+		}
+
+		return false;
+	}
+
+
+
+	public function singleTaggedUser($userId, $entity_id)
+	{
+
+		$sql = "SELECT u.id, u.name, u.email, u.status, u.isLocked, u.lockedDatetime, 
+		(case when u.created_by = $entity_id then true else false end) as isOwnedBy, r.role as role from users u 
+		INNER JOIN roles r on r.id = u.role_id 
+		INNER JOIN taggedusers tu on tu.user_id = u.id 
+		WHERE u.id = $userId AND tu.entity_id = $entity_id LIMIT 1";
+
+		if($user = $this->DB->rawSql($sql)->returnData())
+		{
+			return $user;
+		}
+
+		return false;
 	}
 
 

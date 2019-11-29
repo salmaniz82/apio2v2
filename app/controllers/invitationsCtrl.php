@@ -91,7 +91,6 @@
 		if($inviteId = $this->module->saveInvitation($addPayload))
 		{
 
-			
 			$data['inviteId'] = $inviteId;
 
 			$uriPayload = array(
@@ -116,7 +115,6 @@
 			}
 
 			return $this->TriggerInvitationEmail($inviteId);
-		
 
 		}
 

@@ -361,9 +361,9 @@
         $emailModule = $this->load('module', 'email');
         $mail = $emailModule->getMailer();
 
-        $mail->SMTPDebug = true;
+      //  $mail->SMTPDebug = true;
         $mail->CharSet = 'utf-8';
-        $mail->IsMail();                                      // Set mailer to use SMTP
+        $mail->isSMTP();                                      // Set mailer to use SMTP
         $mail->Host = 'mail.iskillmetrics.com';  // Specify main and backup SMTP servers
         $mail->SMTPAuth = true;                               // Enable SMTP authentication
         $mail->Username = 'no-reply@iskillmetrics.com';       // SMTP username
@@ -384,13 +384,10 @@
             $mail->Port = 465;                                    // TCP port to connect to 465 for ssl 587 for tsl
         }
 
-        
-        $mail->From = 'no-reply@iskillmetrics.com';
-        $mail->FromName = 'Testing From Local';
+        $mail->setFrom('no-reply@iskillmetrics.com', 'iSkillMetrics');
 
 
-
-        $mail->addAddress('salmaniz.82@gmail.com', 'Salman Ahmed');
+        $mail->addAddress('mani_salmanahmed@hotmail.com', 'Salman Ahmed');
         
         $mail->isHTML(true); 
                                          // Set email format to HTML

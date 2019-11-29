@@ -155,6 +155,8 @@ $route->delete('/users/{id}', 'userCtrl@destroy');
 
 $route->post('/register-enroll', 'userCtrl@registerEnroll');
 
+$route->get('/my-users', 'userCtrl@entityTaggedUserList');
+
 
 /* residue */
 
@@ -431,11 +433,13 @@ $route->get('/dlsallocatetest/{id}', 'moduleTestCtrl@dlsAllocateTest');
 $route->get('/xattempts/{id}', 'moduleTestCtrl@xattempts');
 $route->get('/dlstesting/{id}', 'moduleTestCtrl@dlsSummaryReport');
 $route->get('/testtickets/{id}', 'moduleTestCtrl@testTickets');
-$route->get('/testphpmailer', 'moduleTestCtrl@testphpmailer');
 $route->get('/testmailmodule', 'moduleTestCtrl@emailmoduletest');
 $route->post('/postmeta/{id}', 'moduleTestCtrl@postmeta');
 */
 
+
+
+$route->get('/testphpmailer', 'moduleTestCtrl@testphpmailer');
 
 
 $route->get('/testconfigmail', 'moduleTestCtrl@testConfigEmailStatus');

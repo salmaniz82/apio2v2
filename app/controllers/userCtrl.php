@@ -20,6 +20,9 @@
 	public function index()
 	{
 
+
+
+
 		if($data['users'] = $this->module->allUsers())
 		{
 			
@@ -54,8 +57,19 @@
 	public function save()
 	{
 
+			$authenticatedRequest = false;
+			$sendMail = false;
+
+
+
+			if(isset($_POST['sendEmail']) && $_POST['sendEmail'] == true)
+			{
+				$sendMail = true;				
+			}
+
 
 			$roleModule = $this->load('module', 'role');
+			$taggedUserModule  = $this->load('module', 'taggedusers');
 
 			$boudUserToCategory = false;	
 
@@ -68,8 +82,12 @@
 
 			if(jwACL::isLoggedIn())
 			{
+
+				$authenticatedRequest = true;
 				// some authenticated user is creating the user to it must have a created_by user id with it.
-				$dataPayload['created_by'] = jwACL::authUserId();				
+				$dataPayload['created_by'] = jwACL::authUserId();
+				$authenticatedRole = jwACL::authRole();
+
 			}
 
 			if(!isset($_POST['role_id']))
@@ -115,49 +133,76 @@
 				if($last_id = $this->module->addNewUser($dataPayload) )
 				{
 
-
 					if($roleName == 'students' || $roleName == 'candidate')
 					{
 
 						// load module and insert the ticket
 
+						if(isset($dataPayload['created_by']) && $dataPayload['created_by'] != null)
+						{
+							
+							// if auth role is entity then attemp to tag users
 
-						$data['ticket'] = "attempt to create ticket and send email";
+							if($authenticatedRequest && $authenticatedRole == 'entity')
+							{
+								
+								$taggedUserModule->linkusertoentity($last_id, $dataPayload['created_by']);
 
-						$preliminaryModule = $this->load('module','preliminary');
+							}
 
-						$ticketsPayload = array('user_id'=> $last_id, 'ticket' => $_POST['password']);
 
-						if($preliminaryModule->addTickets($ticketsPayload))
+						}
+
+						if($sendMail)
 						{
 
-							$data['ticket'] = "ticket created";
+							$data['ticket'] = "attempt to create ticket and send email";
 
-							$emailModule =  $this->load('module', 'email');
+							$preliminaryModule = $this->load('module','preliminary');
 
-							$newUserDetails = array(
+							$ticketsPayload = array('user_id'=> $last_id, 'ticket' => $_POST['password']);
 
-							'user_id' => $last_id,
-							'email' => $dataPayload['email']
-
-							);
-
-							if($emailModule->sendRegistrationEmail($newUserDetails))
+							if($preliminaryModule->addTickets($ticketsPayload))
 							{
 
-								$data['email'] = "Sent";
-								$preliminaryModule->removeTicket(['user_id', $last_id]);
+								$data['ticket'] = "ticket created";
+
+								$emailModule =  $this->load('module', 'email');
+
+								$newUserDetails = array(
+
+								'user_id' => $last_id,
+								'email' => $dataPayload['email']
+
+								);
+
+								if($emailModule->sendRegistrationEmail($newUserDetails))
+								{
+
+									$data['email'] = "Sent";
+									$preliminaryModule->removeTicket(['user_id', $last_id]);
+								}
+								else {
+										$data['email'] = "Email not sent";
+								}
+
 							}
+
 							else {
-									$data['email'] = "Email not sent";
+
+								$data['ticket'] = "cannot be created";
 							}
+
+
 
 						}
 
 						else {
 
-							$data['ticket'] = "cannot be created";
+							$data['email'] = "Disable unchecked email not triggered";
+
 						}
+
 
 					}
 
@@ -220,7 +265,16 @@
 					$data['permissions'] = ($assignedPermissions) ? 'Permission Assigned' : 'Cannot assign default permission';
 					$data['status'] = true;
 
-					$data['lastCreatedUser'] = $this->module->userById($last_id);
+					if($authenticatedRequest && $authenticatedRole == 'entity')
+					{
+						$data['lastCreatedUser'] = $this->module->singleTaggedUser($last_id, $dataPayload['created_by']);
+					}
+
+					else {
+
+						$data['lastCreatedUser'] = $this->module->userById($last_id);
+
+					}
 
 
 				}
@@ -233,9 +287,69 @@
 			}
 			else{
 
-				$statusCode = 500;
-				$data['message'] = "User With Email Already Exists";
-				$data['status'] = false;				
+
+				if($existingUser = $this->module->userByEmail($dataPayload['email']))
+				{
+
+					$existingUser = $existingUser[0];
+
+					$existingUserID = $existingUser['id'];
+
+					if($existingUser['role_id'] == $dataPayload['role_id'])
+					{
+						
+
+						if($this->module->singleTaggedUser($existingUserID, $dataPayload['created_by']))
+						{
+
+							$data['message'] = "User already exist, duplicate operation denied";
+							$statusCode = 500;
+							return View::responseJson($data, $statusCode);
+
+						}
+
+
+						// request and exisiting roles are the same
+						if($authenticatedRequest && $authenticatedRole == 'entity')
+						{
+							/*if request is authenticated then tag user to entity*/
+							$taggedUserModule->linkusertoentity($existingUserID, $dataPayload['created_by']);
+							$data['message'] = "New user added";
+							$data['lastCreatedUser'] = $this->module->singleTaggedUser($existingUserID, $dataPayload['created_by']);
+							$statusCode = 200;
+						}
+
+						else
+						{
+
+							$statusCode = 500;
+							$data['message'] = "Email already exists";
+							$data['status'] = false;
+
+						}
+
+						
+
+						
+					}
+
+					else {
+
+						$statusCode = 500;
+						$data['message'] = "cannot create user role resolution conflict";
+						$data['status'] = false;
+
+					}
+
+				}
+
+				else {
+					// failed fetching existing user
+					$statusCode = 500;
+					$data['message'] = "Failed procedure while creating user";
+					$data['status'] = false;
+				}
+
 			}
 
 			return View::responseJson($data, $statusCode);
@@ -328,6 +442,9 @@
 	{
 
 
+		$sendRegistrationEmail = (isset($_POST['sendRegisterEmail']) && $_POST['sendRegisterEmail'] == true ) ? true : false;
+
+		$sendInviteEmail = (isset($_POST['sendInviteEmail']) && $_POST['sendInviteEmail'] == true ) ? true : false;
 
 
 		$quiz_id = $_POST['examID'];
@@ -341,6 +458,7 @@
 		}
 
 		$quizModule = $this->load('module', 'quiz');
+
 		if(1 != $quizModule->quizEnrollmentEnabled($quiz_id))
 		{
 			// break the flow
@@ -355,7 +473,8 @@
 		}
 
 
-
+			$taggedUserModule  = $this->load('module', 'taggedusers');
+			$enrollmentModule = $this->load('module', 'enroll');
 		
 		
 			// if role is not give then it must be a student
@@ -375,12 +494,22 @@
 				if($last_id = $this->module->addNewUser($dataPayload) )
 				{
 
+					/*
+					check if user is tagged if not then do it
+					*/
 
-					$preliminaryModule = $this->load('module','preliminary');
+					$taggedUserModule->linkusertoentity($last_id, $dataPayload['created_by']);
 
-					$ticketsPayload = array('user_id'=> $last_id, 'ticket' => $_POST['password']);
-					if($preliminaryModule->addTickets($ticketsPayload))
+
+					if($sendRegistrationEmail)
 					{
+
+						$preliminaryModule = $this->load('module','preliminary');
+
+						$ticketsPayload = array('user_id'=> $last_id, 'ticket' => $_POST['password']);
+
+						if($preliminaryModule->addTickets($ticketsPayload))
+						{
 
 						/* start trigger email */
 						$emailModule =  $this->load('module', 'email');
@@ -401,11 +530,18 @@
 							else {
 									$data['email'] = "Email not sent";
 							}
+						}
+					}
+
+					else {
+
+						$data['email'] = "Register email not activaed";
 
 					}
 
-					
+
 					$statusCode = 200;
+					
 					$data['message'] = "Registration User Created Successfully";
 
 					$userPermissionModule = $this->load('module', 'userpermissions');
@@ -414,7 +550,7 @@
 
 					$data['permissions'] = ($assignedPermissions) ? 'Permission Assigned' : 'Cannot assign default permission';
 					
-					$enrollmentModule = $this->load('module', 'enroll');
+					
 
 					if($enrollmentModule->enrolltoQuiz($last_id, $quiz_id))
 					{
@@ -436,11 +572,54 @@
 			}
 			else{
 
-				$statusCode = 500;
-				$data['message'] = "User With Email Already Exists";
-				$data['status'] = false;				
+
+				if($existingUser = $this->module->userByEmail($dataPayload['email']))
+				{
+
+					$existingUser = $existingUser[0];
+
+					$existingUserID = $existingUser['id'];
+
+					if($existingUser['role_id'] != 4)
+					{
+						$data['message'] = "User is not in scope for enrollment";
+						$statusCode = 406;
+						return View::responseJson($data, $statusCode);
+
+					}
+
+					if($this->module->singleTaggedUser($existingUser, $dataPayload['created_by']))
+					{
+
+							$data['message'] = "User already exist, try enroll";
+							$statusCode = 406;
+							return View::responseJson($data, $statusCode);
+
+					}
+
+					$taggedUserModule->linkusertoentity($existingUserID, $dataPayload['created_by']);
+
+					
+					if($enrollmentModule->enrolltoQuiz($existingUserID, $quiz_id))
+					{
+						
+						$data['message'] = "Registration & Enrollment Successfull";
+						$statusCode = 200;
+						$data['status'] = true;
+
+					}
+					else {
+
+						$data['message'] = "Registration done but failed while enrollment";
+						$statusCode = 406;
+						$data['status'] = false;
+
+					}
+
+					
 			}
-			return View::responseJson($data, $statusCode);
+
+				return View::responseJson($data, $statusCode);
 	}
 
 
@@ -476,6 +655,41 @@
 		}
 
 		return View::responseJson($data, $statusCode);	
+
+	}
+
+
+
+	public function entityTaggedUserList()
+	{
+
+		if(!jwACL::isLoggedIn()) 
+			return $this->uaReponse();	
+		
+
+
+		$entity_id = jwACL::authUserId();
+		
+		if($data['users'] = $this->module->taggedUsersList($entity_id))
+		{
+			
+			$data['status'] = true;
+			$statusCode = 200;
+		}
+		else {
+			$data['message'] = "No Users Found";
+			$statusCode = 206;
+		}
+
+		$roleModules = $this->load('module', 'role');
+		$data['roles'] = $roleModules->returnAllRoles($this->jwtRoleId());
+
+
+		$categoryModule = $this->load('module', 'category');	
+		$data['topCategories'] = $categoryModule->flatRootList();
+
+		return View::responseJson($data, $statusCode);
+
 
 	}
 
