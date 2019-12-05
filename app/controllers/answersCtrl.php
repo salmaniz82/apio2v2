@@ -91,6 +91,8 @@ class answersCtrl extends appCtrl
 
 		$attemptModule = $this->load('module', 'attempt');
 
+		$isDls = $attemptModule->isQuizDLSbyAttempt_id($attempt_id);
+
 
 		if(isset($_POST['quizMeta']) && sizeof($_POST['quizMeta']) != 0)
 		{
@@ -107,13 +109,8 @@ class answersCtrl extends appCtrl
         	{
             	$data['postMetaStatus'] = "Meta Inforation is saved";
         	}
-        	
-
 
 		}
-
-
-
 
 
 		$dlsReportModule = $this->load('module', 'dlsreport');
@@ -126,10 +123,59 @@ class answersCtrl extends appCtrl
 			
 			$this->module->markAnswers($attempt_id);
 
-			$this->module->saveCalculatedSubjectsScore($attempt_id);
+			
 
+			$intercept = $attemptModule->interceptForAttempt($attempt_id);
+
+			$interceptData = $intercept[0];
+
+			if($interceptData['intercept'] && !$isDls)
+			{
+				
+				// ready to run intercept procedure
+
+				$data['intercept'] = "enabled";
+
+				$interceptModule = $this->load('module', 'intercept');
+
+				$direction = $interceptData['direction'];
+
+				$lastLimit = $interceptData['lastLimit'];
+
+				if($direction == "Pass")
+				{
+					
+					/* run pass procedure */
+					$interceptModule->runPassProcedure($attempt_id, $interceptData);
+
+					$data['interpetfor'] = "pass";
+
+				}
+
+				else if ($direction == "Fail")
+				{			
+
+					$interceptModule->runFaiProcedure($attempt_id, $interceptData);
+					/*
+						run fail procedure
+					*/
+
+				}
+
+				else {
+					
+					/* undefined direction */
+
+				}
+
+
+
+			}
+
+
+			$this->module->saveCalculatedSubjectsScore($attempt_id);
 							
-			if($attemptModule->isQuizDLSbyAttempt_id($attempt_id))
+			if($isDls)
 			{
 				$dlsReportModule->saveDlsReport($attempt_id);
 				$dlsReportModule->updateScoresheetDlsMatrix($attempt_id);
@@ -137,7 +183,6 @@ class answersCtrl extends appCtrl
 			
 			/*
 			$score = $this->module->getCalcuatedScoreSum($attempt_id);
-
 			$this->module->setBasicScore($attempt_id, $score);
 			*/
 

@@ -39,7 +39,7 @@ class emailModule extends appCtrl {
         $mail->Host = 'mail.iskillmetrics.com';  // Specify main and backup SMTP servers
         $mail->SMTPAuth = true;                               // Enable SMTP authentication
         $mail->Username = 'no-reply@iskillmetrics.com';       // SMTP username
-        $mail->Password = 'w?C35UF?xMa[';                     // SMTP password
+        $mail->Password = 'S-atUbFrh;$M';                     // SMTP password
 
         if(SITE_URL == 'http://api.io2v3.dvp/')
         {

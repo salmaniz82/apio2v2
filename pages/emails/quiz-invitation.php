@@ -396,10 +396,10 @@ table.MsoNormalTable {
             </tr>
             <tr>
              <td align="center" style="padding-bottom: 12px; padding-left: 20px; padding-right: 20px; padding-top: 0px;">
-              <table align="center" bgcolor="#f8f8f8" border="0" cellpadding="20" cellspacing="0" class="tablemobile" lang="x-tablem" style="-moz-box-shadow: 0px 0px 5px #dddddd; -webkit-box-shadow: 0px 0px 5px #dddddd; background-color: #f8f8f8; border-collapse: collapse; box-shadow: 0px 0px 5px #dddddd; mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="300">
+              <table align="center" bgcolor="#f8f8f8" border="0" cellpadding="20" cellspacing="0" class="tablemobile" lang="x-tablem" style="-moz-box-shadow: 0px 0px 5px #dddddd; -webkit-box-shadow: 0px 0px 5px #dddddd; background-color: #f8f8f8; border-collapse: collapse; box-shadow: 0px 0px 5px #dddddd; mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
                <tbody>
                 <tr>
-                 <td align="center" bgcolor="#2196f3" style="background-color: #2196f3; padding-bottom: 0px; padding-left: 20px; padding-right: 20px; padding-top: 0px;">
+                 <td align="center" bgcolor="#3db862" style="background-color: #3db862; padding-bottom: 0px; padding-left: 20px; padding-right: 20px; padding-top: 0px;">
                   <table align="center" border="0" cellpadding="0" cellspacing="0" class="tablemobile" lang="x-tablem" style="border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
                    <tbody>
                     <tr>
@@ -414,7 +414,7 @@ table.MsoNormalTable {
                      </td>
                     </tr>
                     <tr>
-                     <td align="center" style="color: #ffffff; font-size: 13px; line-height: 18px; padding-bottom: 0px; padding-left: 0px; padding-right: 0px; padding-top: 0px;"><font color="#ffffff" size="2" style="font-family: 'Montserrat', 'Gotham Rounded', 'Gotham', 'Noto Sans', 'Open Sans', 'Source Sans Pro', 'Segoe UI','Segoe UI Web Regular','Segoe UI Symbol','Helvetica Neue',Arial,sans-serif; text-size-adjust: 100%;"> <?= $toName ?> </font></td>
+                     <td align="center" style="color: #ffffff; font-size: 13px; line-height: 18px; padding-bottom: 0px; padding-left: 0px; padding-right: 0px; padding-top: 0px;"><font color="#ffffff" size="2" style="font-family: 'Montserrat', 'Gotham Rounded', 'Gotham', 'Noto Sans', 'Open Sans', 'Source Sans Pro', 'Segoe UI','Segoe UI Web Regular','Segoe UI Symbol','Helvetica Neue',Arial,sans-serif; text-size-adjust: 100%;"> <?= ucwords($toName) ?> </font></td>
                     </tr>
                     <tr>
                      <td align="center" height="20" style="color: transparent; font-size: 1px; height: 20px; line-height: 20px; padding: 0px 0px 0px 0px;"> &nbsp; </td>
@@ -454,10 +454,10 @@ table.MsoNormalTable {
                <tbody>
                 <tr>
                  <td align="center" style="padding-bottom: 0px; padding-left: 10px; padding-right: 0px; padding-top: 0px;">
-                  <table align="right" bgcolor="#8f8fef" border="0" cellpadding="0" cellspacing="0" style="background-color: #8f8fef; border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
+                  <table align="right" bgcolor="#3db862" border="0" cellpadding="0" cellspacing="0" style="background-color: #3db862; border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
                    <tbody>
                     <tr>
-                     <td align="center" style="color: #ffffff; font-size: 12px; line-height: 16px; padding-bottom: 5px; padding-left: 20px; padding-right: 20px; padding-top: 5px;"><a href="<?= $redirectUrl?>" style="text-decoration: none;"> <font color="#FFFFFF" size="2" style="font-family: 'Montserrat', 'Gotham Rounded', 'Gotham', 'Noto Sans', 'Open Sans', 'Source Sans Pro', 'Segoe UI','Segoe UI Web Regular','Segoe UI Symbol','Helvetica Neue',Arial,sans-serif; font-size: 12px; text-size-adjust: 100%;"> Proceed </font> </a></td>
+                     <td align="center" style="color: #ffffff; font-size: 12px; line-height: 16px; padding-bottom: 10px; padding-left: 20px; padding-right: 20px; padding-top: 10px;"><a href="<?= $redirectUrl?>" style="text-decoration: none;"> <font color="#FFFFFF" size="2" style="font-family: 'Montserrat', 'Gotham Rounded', 'Gotham', 'Noto Sans', 'Open Sans', 'Source Sans Pro', 'Segoe UI','Segoe UI Web Regular','Segoe UI Symbol','Helvetica Neue',Arial,sans-serif; font-size: 12px; text-size-adjust: 100%;"> Proceed </font> </a></td>
                     </tr>
                    </tbody>
                   </table>

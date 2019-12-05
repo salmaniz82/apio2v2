@@ -1,6 +1,12 @@
 <?php class moduleTestCtrl extends appCtrl {
 
 
+    public function entityTaggedUserList()
+    {
+        echo "working";
+    }
+
+
     public function loadgump()
     {
 
@@ -806,6 +812,28 @@
         $resp = $emailModule->testEmailConfigModule();
 
         var_dump($resp);
+
+
+    }
+
+
+
+    public function attemptIntercept()
+    {
+        $attemptId = $this->getID();
+
+        $attemptModule  = $this->load('module', 'attempt');
+
+        $interceptModule = $this->load('module', 'intercept');
+
+
+        $intercept = $attemptModule->interceptForAttempt($attemptId);
+
+        $intercept = $intercept[0]; 
+
+        
+        $interceptModule->runPassProcedure($attemptId, $intercept);
+        
 
 
     }

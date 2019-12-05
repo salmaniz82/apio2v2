@@ -165,6 +165,12 @@
 			{
 				if($last_id = $this->module->enrolltoQuiz($user_id, $quiz_id))
 				{
+
+
+					$taggedUserModule  = $this->load('module', 'taggedusers');
+
+					$taggedUserModule->linkusertoentity($last_id, $entity_id);
+
 					
 					if($sendInvite)
 					{
@@ -482,6 +488,117 @@
 		}
 
 		return View::responseJson($data, $statusCode);		
+
+	}
+
+
+
+	public function defineIntercept()
+	{
+
+
+		if(!jwACL::isLoggedIn()) 
+			return $this->uaReponse();
+
+		
+		if(!jwACL::has('enroll-intercept')) 
+			return $this->accessDenied();
+		
+
+		$_POST = Route::$_PUT;
+
+		$enrollID = $this->getID();
+
+
+		$quizId = $this->getParam('quizId');
+
+		
+		$quizModule = $this->load('module', 'quiz');
+
+		if($quizModule->isDLSEnabledQuiz($quizId))
+		{
+			$data['message'] = "Dls Quiz cannot be intercepted";
+			$statusCode = 406;
+			return View::responseJson($data, $statusCode);
+		}
+
+		$keys  = array('intercept', 'direction', 'lastLimit');
+
+		$dataPayload = $this->module->DB->sanitize($keys);
+
+		if($this->module->update($dataPayload, $enrollID))
+		{
+
+			$data['message'] = "Intercept updated successfully";
+			$statusCode = 200;
+			
+
+		}
+
+		else {
+
+			$data['message'] = "Failed while updateing values for intercept";
+			$statusCode = 500;
+			
+
+		}
+
+		return View::responseJson($data, $statusCode);
+
+
+		/*
+
+		define intecept 
+
+		1. dissalow for dyamic quiz
+		1. get enrollID
+
+		2. define type : pass / fail 
+		3. last limit
+			3.a 10 + pass
+			3.b 10 - fail 
+			for randomization
+
+
+		4. if fail is equal or less continue
+		5. if pass is equal or greater continue
+
+		
+		6. room for randomization 
+			6.a : fail -10 then defined value
+			6.b : pass +10 for pass value
+
+
+
+		7. for varation in subject distridution
+
+
+		intercept proceudure in actions
+
+		8. exam finshed answers posted
+		9. score calucated
+		10. if intercept is enabled
+		11. get type pass / fail
+		12. get threshold limit value : 
+		13. create range by + or - 10% depending upon type
+		14. fail if subject score is less than or equal to limit contine as routine don't intercept
+		15. pass if subject score is greater than defined limit continue don't intercept
+
+		16. Pass intercept
+			a. if score is less than limit
+			b. activate pass intercept procedure	
+			c. get subject passing score
+			d. get obtained subject score
+			e. get subject point per questions
+			f. get no questions required to pass
+			g. get obtained no right questions
+			h. calculate no. of correction required in questions. (questionRequireToPass - rigthQuestionFromObtained)
+			f. noQuestionToIntercept = (questionRequireToPass - rigthQuestionFromObtained)
+
+		*/
+
+
+
 
 	}
 

@@ -217,6 +217,25 @@ class attemptModule {
 	}
 
 
+	public function interceptForAttempt($attemptId)
+	{
+
+		$sql = "SELECT en.id, en.intercept, en.direction, en.lastLimit from enrollment en
+		INNER JOIN stdattempts stdx on stdx.enroll_id = en.id 
+		WHERE stdx.id = $attemptId";
+
+
+		if($intercept = $this->DB->rawSql($sql)->returnData())
+		{
+			return $intercept;
+		}
+
+		return false;
+
+
+	}
+
+
 
 }
 

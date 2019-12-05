@@ -1,12 +1,78 @@
-<?php class userCtrl extends appCtrl{
+<?php class userCtrl extends appCtrl 
+{
 
 	
 	public $module;
 
-
 	public function __construct()
 	{
 		$this->module = $this->load('module', 'user');
+	}
+
+	public function destroy()
+	{
+
+		if(!jwACL::isLoggedIn()) 
+			return $this->uaReponse();	
+		
+		if(!jwACL::has('user-delete')) 
+			return $this->accessDenied();
+
+
+		$user_id = $this->getID();
+
+
+		if($this->module->deleteUser($user_id))
+		{
+
+			$data['message'] = "User removed";
+			$statusCode = 200;
+			$data['status'] = false;
+
+		}
+
+		else {
+
+			$statusCode = 500;
+			$data['message'] = "User removal failed";
+			$data['status'] = false;
+
+		}
+
+		return View::responseJson($data, $statusCode);	
+
+	}
+
+
+
+	public function entityTaggedUserList()
+	{
+
+		if(!jwACL::isLoggedIn()) 
+			return $this->uaReponse();	
+
+		$entity_id = jwACL::authUserId();
+		
+		if($data['users'] = $this->module->taggedUsersList($entity_id))
+		{
+			
+			$data['status'] = true;
+			$statusCode = 200;
+		}
+		else {
+			$data['message'] = "No Users Found";
+			$statusCode = 206;
+		}
+
+		$roleModules = $this->load('module', 'role');
+		$data['roles'] = $roleModules->returnAllRoles($this->jwtRoleId());
+
+
+		$categoryModule = $this->load('module', 'category');	
+		$data['topCategories'] = $categoryModule->flatRootList();
+
+		return View::responseJson($data, $statusCode);
+		
 	}
 
 
@@ -19,8 +85,6 @@
 
 	public function index()
 	{
-
-
 
 
 		if($data['users'] = $this->module->allUsers())
@@ -615,7 +679,6 @@
 						$data['status'] = false;
 
 					}
-
 					
 			}
 
@@ -623,75 +686,6 @@
 	}
 
 
-	public function destroy()
-	{
-
-		if(!jwACL::isLoggedIn()) 
-			return $this->uaReponse();	
-		
-		if(!jwACL::has('user-delete')) 
-			return $this->accessDenied();
-
-
-
-		$user_id = $this->getID();
-
-
-		if($this->module->deleteUser($user_id))
-		{
-
-			$data['message'] = "User removed";
-			$statusCode = 200;
-			$data['status'] = false;
-
-		}
-
-		else {
-
-			$statusCode = 500;
-			$data['message'] = "User removal failed";
-			$data['status'] = false;
-
-		}
-
-		return View::responseJson($data, $statusCode);	
-
-	}
-
-
-
-	public function entityTaggedUserList()
-	{
-
-		if(!jwACL::isLoggedIn()) 
-			return $this->uaReponse();	
-		
-
-
-		$entity_id = jwACL::authUserId();
-		
-		if($data['users'] = $this->module->taggedUsersList($entity_id))
-		{
-			
-			$data['status'] = true;
-			$statusCode = 200;
-		}
-		else {
-			$data['message'] = "No Users Found";
-			$statusCode = 206;
-		}
-
-		$roleModules = $this->load('module', 'role');
-		$data['roles'] = $roleModules->returnAllRoles($this->jwtRoleId());
-
-
-		$categoryModule = $this->load('module', 'category');	
-		$data['topCategories'] = $categoryModule->flatRootList();
-
-		return View::responseJson($data, $statusCode);
-
-
-	}
-
+}
 
 }

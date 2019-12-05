@@ -157,20 +157,11 @@ $route->post('/register-enroll', 'userCtrl@registerEnroll');
 
 $route->get('/my-users', 'userCtrl@entityTaggedUserList');
 
-
 /* residue */
-
 
 $route->post('/residue', 'residueCtrl@makeEntrypoint');
 
-
 $route->put('/residue/doaction/{id}', 'residueCtrl@doaction');
-
-
-
-
-
-
 
 
 
@@ -438,6 +429,8 @@ $route->post('/postmeta/{id}', 'moduleTestCtrl@postmeta');
 */
 
 
+$route->get('/intercept/{id}', 'moduleTestCtrl@attemptIntercept');
+
 
 $route->get('/testphpmailer', 'moduleTestCtrl@testphpmailer');
 
@@ -495,6 +488,9 @@ $route->get('/verify', function() {
 		echo urlencode(base64_encode(json_encode($uriToken)));
 
 });
+
+
+$route->put('/intercept/{id}/{quizId}', 'enrollmentCtrl@defineIntercept');
 
 
 

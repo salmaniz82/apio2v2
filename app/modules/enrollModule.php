@@ -17,7 +17,7 @@
 		
 		$sql = "SELECT en.id, en.student_id, en.quiz_id, en.dtsScheduled, en.invited, 
 		std.name, std.email, en.dateEnrolled as 'dateEnrolled', en.attempts, en.retake,
-		qz.user_id 
+		qz.user_id, en.intercept, en.direction, en.lastLimit  
 		from enrollment en 
 		inner join users std on std.id = en.student_id 
         inner join quiz qz on qz.id = en.quiz_id 
