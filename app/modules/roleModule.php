@@ -22,7 +22,7 @@ class roleModule {
 
 		else {
 
-			$sql = "SELECT * FROM roles where id IN ('3', '4')";
+			$sql = "SELECT * FROM roles where id IN ('3', '4', '6')";
 
 			return $this->DB->rawSql($sql)->returnData();
 

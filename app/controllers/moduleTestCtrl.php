@@ -833,8 +833,11 @@
 
         
         $interceptModule->runPassProcedure($attemptId, $intercept);
-        
 
+        $interceptModule->runFailProcedure($attemptId, $intercept);
+
+        
+        
 
     }
 

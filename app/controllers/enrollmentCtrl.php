@@ -526,6 +526,47 @@
 
 		$dataPayload = $this->module->DB->sanitize($keys);
 
+		$quizDetails = $quizModule->getQuizById($quizId);
+
+		$quizDetails = $quizDetails[0];
+
+
+		$passPerCentage = ($quizDetails['minScore'] / $quizDetails['maxScore']) * 100;
+
+		$data['passPErcentage'] = $passPerCentage;
+
+		if($dataPayload['direction'] == 'Pass' && $dataPayload['lastLimit'] < $passPerCentage)
+		{
+			$data['message'] = "Passing below quiz " . $passPerCentage . " % not allowed ";
+			$statusCode = 500;
+			return View::responseJson($data, $statusCode);
+		}
+
+		else if($dataPayload['direction'] == 'Fail' && ($dataPayload['lastLimit'] >= $passPerCentage) )
+		{
+			$data['message'] = "Fail limit must be lower than passing i.e $passPerCentage";
+			$statusCode = 500;
+			return View::responseJson($data, $statusCode);
+		}
+
+
+		else if($dataPayload['direction'] == 'Pass' && $dataPayload['lastLimit'] > 100)
+		{
+			$data['message'] = " Pass Percentage canot be highier than 100";
+			$statusCode = 500;
+			return View::responseJson($data, $statusCode);
+		}
+
+		
+
+		else if ($dataPayload['lastLimit'] < 0 ||  $dataPayload['lastLimit'] > 100)
+		{
+			$data['message'] = "Limit must be in a range of 100";
+			$statusCode = 500;
+			return View::responseJson($data, $statusCode);	
+		}
+
+
 		if($this->module->update($dataPayload, $enrollID))
 		{
 
@@ -544,61 +585,6 @@
 		}
 
 		return View::responseJson($data, $statusCode);
-
-
-		/*
-
-		define intecept 
-
-		1. dissalow for dyamic quiz
-		1. get enrollID
-
-		2. define type : pass / fail 
-		3. last limit
-			3.a 10 + pass
-			3.b 10 - fail 
-			for randomization
-
-
-		4. if fail is equal or less continue
-		5. if pass is equal or greater continue
-
-		
-		6. room for randomization 
-			6.a : fail -10 then defined value
-			6.b : pass +10 for pass value
-
-
-
-		7. for varation in subject distridution
-
-
-		intercept proceudure in actions
-
-		8. exam finshed answers posted
-		9. score calucated
-		10. if intercept is enabled
-		11. get type pass / fail
-		12. get threshold limit value : 
-		13. create range by + or - 10% depending upon type
-		14. fail if subject score is less than or equal to limit contine as routine don't intercept
-		15. pass if subject score is greater than defined limit continue don't intercept
-
-		16. Pass intercept
-			a. if score is less than limit
-			b. activate pass intercept procedure	
-			c. get subject passing score
-			d. get obtained subject score
-			e. get subject point per questions
-			f. get no questions required to pass
-			g. get obtained no right questions
-			h. calculate no. of correction required in questions. (questionRequireToPass - rigthQuestionFromObtained)
-			f. noQuestionToIntercept = (questionRequireToPass - rigthQuestionFromObtained)
-
-		*/
-
-
-
 
 	}
 

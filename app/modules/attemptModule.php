@@ -220,9 +220,10 @@ class attemptModule {
 	public function interceptForAttempt($attemptId)
 	{
 
-		$sql = "SELECT en.id, en.intercept, en.direction, en.lastLimit from enrollment en
+		$sql = "SELECT en.id, en.intercept, en.direction, en.lastLimit, qz.minScore, qz.maxScore from enrollment en 
 		INNER JOIN stdattempts stdx on stdx.enroll_id = en.id 
-		WHERE stdx.id = $attemptId";
+		INNER JOIN quiz qz on qz.id = en.quiz_id 
+		WHERE stdx.id = $attemptId limit 1";
 
 
 		if($intercept = $this->DB->rawSql($sql)->returnData())

@@ -12,23 +12,33 @@
 
 	public function index()
 	{	
-		/*
-			list quiz list for all users
-			admin will see all list
-			teacher will see his own
-			student will see the courses he is enrolled in
-		*/
+
 
 
 		if(!jwACL::isLoggedIn()) 
 			return $this->uaReponse();
 
-		$allowedRoles = [1,2];
+
+
+
+		$allowedRoles = [1,2, 6];
     	if( JwtAuth::validateToken() && in_array((int) JwtAuth::$user['role_id'], $allowedRoles) )
 		{
 
 			$user_id = $this->jwtUserId();
 			$role_id = $this->jwtRoleId();
+
+			if($role_id == 6)
+			{
+				/*
+				creator entity id
+				*/
+
+				$user_id = JwtAuth::$user['created_by'];
+
+
+				
+			}
 
 			if($quiz = $this->module->fetchQuizList($user_id, $role_id))
 			{
@@ -369,6 +379,12 @@
 			return $this->uaReponse();
 
 
+		if(!jwACL::has('quiz-enroll-toggle') && !jwACL::isAdmin()) 
+			return $this->accessDenied();
+
+				
+
+
 		$quiz_id = $this->getID();
 		$_POST = Route::$_PUT;
 
@@ -475,6 +491,10 @@
 		
 		if(!jwACL::isLoggedIn()) 
 			return $this->uaReponse();
+
+
+		if(!jwACL::has('quiz-status-toggle') && !jwACL::isAdmin()) 
+			return $this->accessDenied();
 
 
 		$quiz_id = $this->getID();
@@ -1213,11 +1233,10 @@
     	if(!jwACL::isLoggedIn()) 
 			return $this->uaReponse();	
 
-		/*
-		no permission in db
-		if(!jwACL::has('quiz-delete')) 
+		
+		if(!jwACL::has('quiz-delete') && !jwACL::isAdmin()) 
 			return $this->accessDenied();
-		*/
+		
 
     	
     	$id = $this->getID();

@@ -133,7 +133,7 @@ class userModule extends appCtrl{
 
 		
 
-		$sql = "SELECT users.id, role_id, roles.role as 'role', name, email, password, 
+		$sql = "SELECT users.id, users.created_by, role_id, roles.role as 'role', name, email, password, 
 			isLocked, lockedDateTime, loginAttempts, status, 
 			TIMESTAMPDIFF(SECOND, lockedDateTime, NOW()) AS 'Secs' from users 
 			INNER JOIN roles on users.role_id = roles.id 

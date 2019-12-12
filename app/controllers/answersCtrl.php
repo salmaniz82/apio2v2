@@ -153,13 +153,13 @@ class answersCtrl extends appCtrl
 				}
 
 				else if ($direction == "Fail")
-				{			
+				{	
 
-					$interceptModule->runFaiProcedure($attempt_id, $interceptData);
-					/*
-						run fail procedure
-					*/
+					$data['interpetfor'] = "fail";
 
+					$interceptModule->runFailProcedure($attempt_id, $interceptData);
+
+					
 				}
 
 				else {
@@ -233,7 +233,7 @@ class answersCtrl extends appCtrl
 		else 
 		{
 			$data['message'] = "Answer were not saved to database";
-			$statusCode = 400;
+			$statusCode = 500;
 			$data['status'] = false;
 		}
 
