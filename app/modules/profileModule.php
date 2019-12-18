@@ -149,14 +149,12 @@ class profileModule {
 	public function autoProfileLogo($user_id)
 	{
 
-		if($slug = $this->DB->pluck('logo')->Where("user_id = '".$user_id."'"))
+		if($logo = $this->DB->pluck('logo')->Where("user_id = '".$user_id."'"))
 		{
-			return $slug;
+			return $logo;
 		}
 
-		else {
 			return false;
-		}
 
 	}
 

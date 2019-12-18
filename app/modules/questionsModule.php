@@ -19,8 +19,8 @@
 		$user_id = jwACL::authUserId();
 		$role = jwACL::authRole();
 
-		$sql = "SELECT que.id as 'question_id', que.created_at,  u.email as 'author', que.status as 'status', que.queDesc, que.optionA, que.optionB, que.optionC, que.optionD,
-			que.consumed as 'hits',  
+		$sql = "SELECT que.id as 'question_id', que.created_at,  u.email as 'author', que.status as 'status', SUBSTRING(fnStripTags(que.queDesc), 1,350) as excerptDesc, que.queDesc, que.optionA, que.optionB, que.optionC, que.optionD,
+			que.consumed as 'hits', (case when CHAR_LENGTH(fnStripTags(que.queDesc)) > 350 then true else false end) as hasExcerpt,  
 			cat.name as category, sub.name as 'subject', que.section_id as 'subject_id',   
 			lvl.levelEN, lvl.levelAR, 
 			typ.typeEN, 

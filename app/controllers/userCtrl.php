@@ -197,9 +197,6 @@
 				if($last_id = $this->module->addNewUser($dataPayload) )
 				{
 
-					if($roleName == 'students' || $roleName == 'candidate')
-					{
-
 						// load module and insert the ticket
 
 						if(isset($dataPayload['created_by']) && $dataPayload['created_by'] != null)
@@ -213,7 +210,6 @@
 								$taggedUserModule->linkusertoentity($last_id, $dataPayload['created_by']);
 
 							}
-
 
 						}
 
@@ -268,7 +264,7 @@
 						}
 
 
-					}
+					
 
 
 					if($assignContributor)

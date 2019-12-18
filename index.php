@@ -13,14 +13,14 @@ $routeList = false;
 
 if(SITE_URL == 'http://api.io2v3.dvp/')
 {
-	 sleep(1);		
+	sleep(1);		
 }
 
 
 
 $route->get('/', function() {
 	
-	$data = "Welcome to IO2 v3 API";
+	$data = "iSkillMetrics API Base";
 	view::responseJson($data, 200);
 
 });
@@ -466,8 +466,9 @@ $route->get('/pages/enrolled?', 'emailTemplateCtrl@enrolled');
 $route->get('/pages/examresult?', 'emailTemplateCtrl@examResult');
 
 
-
 $route->get('/pages/invite-batch?', 'emailTemplateCtrl@inviteBatch');
+
+
 
 
 
@@ -491,6 +492,22 @@ $route->get('/verify', function() {
 
 
 $route->put('/intercept/{id}/{quizId}', 'enrollmentCtrl@defineIntercept');
+
+
+
+$route->get('/pages/staticpage', 'pagesCtrl@staticPage');
+
+
+$route->get('/pages-scoresheet/{quiz_id}/{attempt_id}', 'pagesCtrl@scoresheet');
+
+
+
+
+$route->get('/pdftest', 'pdfCtrl@testInstaller');
+
+$route->post('/scorecard-pdf/{quiz_id}/{attempt_id}', 'pdfCtrl@scorecardPDF');
+
+
 
 
 

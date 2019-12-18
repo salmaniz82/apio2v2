@@ -769,6 +769,9 @@
 				$data['count'] = sizeof($questions);
 
 
+				$data['entityLogo'] = $this->module->getQuizEntityLogo($quiz_id);
+
+
 
 			}
 
@@ -889,6 +892,7 @@
 
 			$data['action'] = 'play';
 
+			$data['entityLogo'] = $this->module->getQuizEntityLogo($quiz_id);
 
 		}
 		
@@ -1090,9 +1094,30 @@
     public function currentAct()
     {
 
+    	if(!jwACL::isLoggedIn()) 
+			return $this->uaReponse();
+
+		if(!jwACL::has('activity-monitor')) 
+			return $this->accessDenied();	
+
 
     	$attemptModule = $this->load('module', 'attempt');
-    	$entity_id = jwACL::authUserId();
+
+    	$authenticatedRole = jwACL::authRole();
+    	
+
+    	if($authenticatedRole == 'proctor')
+    	{
+    		$entity_id = JwtAuth::$user['created_by'];
+    	} 
+
+    	else if($authenticatedRole == 'entity') {
+
+    		$entity_id = jwACL::authUserId();
+
+    	}
+
+
 
     	if($activity = $attemptModule->activeMonitoring($entity_id))
     	{
@@ -1483,6 +1508,9 @@
 			return View::responseJson($data, $statusCode);
 
 		}
+
+
+		
 
 }
 

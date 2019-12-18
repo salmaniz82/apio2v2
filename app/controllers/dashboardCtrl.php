@@ -104,7 +104,32 @@
 
 		set_time_limit(0);
 
-		$entity_id = $this->jwtUserId();
+		
+
+
+		if(!jwACL::isLoggedIn()) 
+			return $this->uaReponse();
+
+		if(!jwACL::has('activity-monitor')) 
+			return $this->accessDenied();	
+
+
+		$authenticatedRole = jwACL::authRole();
+
+
+		if($authenticatedRole == 'entity')
+    	{
+    		$entity_id = jwACL::authUserId();
+    	} 
+
+    	else if($authenticatedRole == 'proctor') {
+
+    		
+    		$entity_id = JwtAuth::$user['created_by'];
+
+    	}
+
+
 
 		$activity = $this->attemptModule->activeMonitoring($entity_id);
 

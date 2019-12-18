@@ -13,6 +13,38 @@ class attemptModule {
 	}
 
 
+	public function getAttemptDetails($attemptID)
+	{
+
+
+		$sql = "SELECT stda.id, stda.attempted_at, 
+
+		(SELECT gd.grade from grading gd WHERE  round( ((stda.score * 100) / qz.maxScore) ) BETWEEN gd.spmin AND gd.spmax LIMIT 1 ) as grade,  
+ 
+        (SELECT gd.gpa from grading gd WHERE  round( ((stda.score * 100) / qz.maxScore) ) BETWEEN gd.spmin AND gd.spmax LIMIT 1) as gpa,
+
+        (case when stda.score >= qz.minScore then true else false end) as resultStatus,
+
+		DATE_FORMAT(stda.attempted_at, '%d %b %Y') as formatedDate, 
+		DATE_FORMAT(stda.attempted_at, '%h:%m %p') as formatedTime,
+
+		qz.title, u.name, u.email from stdattempts stda
+			INNER JOIN enrollment en on en.id = stda.enroll_id
+			INNER join quiz qz on qz.id = en.quiz_id 
+			INNER JOIN users u on u.id = en.student_id 
+			WHERE stda.id = $attemptID limit 1";
+
+
+			if($data = $this->DB->rawSql($sql)->returnData())
+			{
+				return $data;	
+			}
+
+			return false;
+
+
+	}
+
 
 
 

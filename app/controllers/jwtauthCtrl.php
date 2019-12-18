@@ -26,6 +26,36 @@ class jwtauthCtrl extends appCtrl {
 		      }
 	}
 
+
+	public function attachProfileLogoWithPayload($userId)
+	{
+
+
+		$profileModule = $this->load('module', 'profile');
+
+
+		if($logo = $profileModule->autoProfileLogo($userId))
+		{
+			/*
+			check if file exist and its readable and its an image
+			*/
+
+			if(!file_exists(ABSPATH.$logo))
+			{
+				return false;
+			}
+
+			return $logo;
+
+		}
+
+
+		return false;
+
+
+	}
+
+
 	public function login()
 	{
 
@@ -83,6 +113,12 @@ class jwtauthCtrl extends appCtrl {
 	    			$user[0]['permissions'] = $permissions;	
 	    		}
 
+	    		if($user[0]['role'] == 'entity')
+	        	{
+	        		$user[0]['profileLogo'] = $this->attachProfileLogoWithPayload($user[0]['id']);	
+
+	        	}
+
 
 	    		$payload = $user[0];
 	    		$token = JwtAuth::generateToken($payload);
@@ -90,7 +126,8 @@ class jwtauthCtrl extends appCtrl {
 	        	$data['message'] = 'user found';
 	        	$data['token'] = $token;
 	        	$data['user'] = $payload;
-        	
+	        	
+
 	        	$statusCode = 200;
 
 	    	}

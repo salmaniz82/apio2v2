@@ -168,7 +168,8 @@ class quizQuestionsModule extends appCtrl {
 	public function listMatchQuestions($quiz_id)
 	{
 		$sql = "SELECT qq.id, qq.status as 'qqStatus', que.id as questionId, que.queDesc, que.optionA, que.optionB, que.optionC, que.optionD,
-			que.consumed as 'hits',  
+			que.consumed as 'hits', SUBSTRING(fnStripTags(que.queDesc), 1,350) as excerptDesc, 
+			(case when CHAR_LENGTH(fnStripTags(que.queDesc)) > 350 then true else false end) as hasExcerpt, 
 			cat.name as category, sub.name as 'subject', que.section_id as 'subject_id',   
 			lvl.levelEN, lvl.levelAR, 
 			typ.typeEN, 

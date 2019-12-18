@@ -458,7 +458,22 @@
 				return false;
 			}
 
-
 	}
+
+		public function getQuizEntityLogo($quizId)
+		{
+
+			$sql = "SELECT qz.id, pro.logo from quiz qz 
+			inner join profile pro on pro.user_id = qz.user_id 
+			where qz.id = $quizId LIMIT 1";
+
+			if($logo = $this->DB->rawSql($sql)->returnData())
+			{
+				return $logo;
+			}
+
+			return false;
+	
+		}
 
 }
