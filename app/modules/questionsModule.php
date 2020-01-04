@@ -56,6 +56,7 @@
 			$sql .= "ORDER BY que.status DESC, que.consumed DESC";
 
 
+
 		$data = $this->DB->rawSql($sql)->returnData();
 
 		if($data != null)
@@ -167,4 +168,27 @@
 
 	}
 
+
+	public function bulkQuestionUpload($payload)
+	{
+		if($this->DB->multiInsert($payload))
+		{
+			return true;
+		}
+
+		return false;
+	}
+
 }
+
+
+/*
+
+Delete last N NUMBERS of records from tables 
+
+DELETE from questions where id IN(SELECT * FROM (
+    SELECT id FROM questions ORDER BY id DESC LIMIT 20
+) sub
+ORDER BY id ASC);
+
+*/

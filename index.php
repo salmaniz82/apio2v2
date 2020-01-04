@@ -68,9 +68,6 @@ $route->get('/hashpass', 'userCtrl@udpatePasswordHash');
 
 
 
-
-
-
 /*
 
 $route->get('/cat/child-by-id/{catID}', 'categoryCtrl@dDirectChildrenById');
@@ -337,6 +334,11 @@ $route->put('/question/{id}', 'questionsCtrl@update');
 
 $route->post('/questions', 'questionsCtrl@save');
 
+
+$route->post('/questions-bulk', 'questionsCtrl@uploadCSV');
+
+
+
 $route->get('/question-section-summary', 'questionsCtrl@summaryCount');
 
 $route->put('/questions/status-toggle/{id}', 'questionsCtrl@statusToggle');
@@ -493,21 +495,26 @@ $route->get('/verify', function() {
 
 $route->put('/intercept/{id}/{quizId}', 'enrollmentCtrl@defineIntercept');
 
-
-
 $route->get('/pages/staticpage', 'pagesCtrl@staticPage');
 
-
 $route->get('/pages-scoresheet/{quiz_id}/{attempt_id}', 'pagesCtrl@scoresheet');
-
-
-
 
 $route->get('/pdftest', 'pdfCtrl@testInstaller');
 
 $route->post('/scorecard-pdf/{quiz_id}/{attempt_id}', 'pdfCtrl@scorecardPDF');
 
 
+$route->get('/assert', function() {
+
+
+	$fruits = array('apple', 'orange', 'mango');
+
+	$orangeIndex = array_search('mango', $fruits);
+
+	
+	echo $orangeIndex;
+
+});
 
 
 

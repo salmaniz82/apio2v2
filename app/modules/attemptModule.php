@@ -268,6 +268,112 @@ class attemptModule {
 
 	}
 
+	public function returnXamountOfRecentQuizResults($entity_id, $limit)
+	{
+		$sql = "SELECT sta.id as attemptID, en.id as enrollID, 
+
+		qz.id, qz.code, qz.title, qz.maxScore, qz.minScore, 
+
+		c.name as candidate, c.email as candidateEmail,
+
+		sta.score as obtainedScore, ROUND((sta.score / qz.maxScore) * 100, 2) as percentageObtained,
+
+		DATE_FORMAT(sta.attempted_at, '%d %b %Y') as fmDate, DATE_FORMAT(sta.attempted_at, '%h:%i %p') as fmTime,
+
+		sta.attempted_at as rawDatetime, 
+
+		(case when sta.score >= qz.minScore then true else false end) as resultStatus 
+
+		from quiz qz 
+
+		INNER JOIN enrollment en on en.quiz_id = qz.id 
+
+		INNER JOIN users c on c.id = en.student_id 
+
+		INNER JOIN stdattempts as sta on sta.enroll_id = en.id 
+
+		where 
+			qz.user_id = $entity_id AND 
+			sta.score IS NOT NULL AND 
+			sta.is_active = 0 AND 
+			sta.id IN (
+			SELECT max(stax.id) as id from stdattempts stax 
+					INNER JOIN enrollment enx on enx.id = stax.enroll_id 
+					INNER JOIN quiz qzx on qzx.id = enx.quiz_id 
+					WHERE 
+					qzx.user_id = $entity_id AND 
+					stax.score IS NOT NULL AND 
+					stax.is_active = 0 
+					group by enroll_id)
+			ORDER BY sta.id desc LIMIT $limit";
+
+
+		if($recentFinished = $this->DB->rawSql($sql)->returnData())
+		{
+			return $recentFinished;
+		}
+
+
+		return false;
+
+
+	}
+
+
+	public function returnTopPerformer($entity_id, $limit)
+	{
+		$sql = "SELECT sta.id as attemptID, en.id as enrollID, 
+
+		qz.id, qz.code, qz.title, qz.maxScore, qz.minScore, 
+
+		c.name as candidate, c.email as candidateEmail,
+
+		sta.score as obtainedScore, ROUND((sta.score / qz.maxScore) * 100, 2) as percentageObtained,
+
+		DATE_FORMAT(sta.attempted_at, '%d %b %Y') as fmDate, DATE_FORMAT(sta.attempted_at, '%h:%i %p') as fmTime,
+
+		sta.attempted_at as rawDatetime, 
+
+		(case when sta.score >= qz.minScore then true else false end) as resultStatus 
+
+		from quiz qz 
+
+		INNER JOIN enrollment en on en.quiz_id = qz.id 
+
+		INNER JOIN users c on c.id = en.student_id 
+
+		INNER JOIN stdattempts as sta on sta.enroll_id = en.id 
+
+		where 
+			qz.user_id = $entity_id AND 
+			sta.score IS NOT NULL AND 
+			sta.is_active = 0 AND 
+			sta.id IN (
+			SELECT max(stax.id) as id from stdattempts stax 
+					INNER JOIN enrollment enx on enx.id = stax.enroll_id 
+					INNER JOIN quiz qzx on qzx.id = enx.quiz_id 
+					WHERE 
+					qzx.user_id = $entity_id AND 
+					stax.score IS NOT NULL AND 
+					stax.is_active = 0 
+					group by enroll_id)
+
+					HAVING resultStatus = 1 
+			ORDER BY percentageObtained desc LIMIT $limit";
+			
+
+
+		if($topPerformant = $this->DB->rawSql($sql)->returnData())
+		{
+			return $topPerformant;
+		}
+
+
+		return false;
+
+
+	}
+
 
 
 }

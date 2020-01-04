@@ -743,11 +743,8 @@
 				for($i=0; $i<sizeof($questions); $i++)
 				{
 
-
 					$question_id = $questions[$i]['questionId'];
-
-		
-					
+			
 					if($media = $quizQuestionModule->getQuestionMedia($question_id))
 					{					
 						
@@ -758,9 +755,7 @@
 
 				// $data['questions'] = $this->encodeData($questions);
 
-
-				$data['questions'] = $questions;
-			
+				$data['questions'] = $questions;	
 
 				// $attemptModule->toggleActive($attempt_id, "1");
 
@@ -769,9 +764,20 @@
 				$data['count'] = sizeof($questions);
 
 
-				$data['entityLogo'] = $this->module->getQuizEntityLogo($quiz_id);
+				
+				if($logo = $this->module->getQuizEntityLogo($quiz_id))
+				{
+					$data['entityLogo'] = $logo;	
+				}
+
+				else {
+
+					$data['entityLogo'] = false;
+
+				}
 
 
+				
 
 			}
 
@@ -784,6 +790,7 @@
 		}
 
 		else {
+			$data['message'] = 'question cannot be loaded';
 			$statusCode = 500;
 		}
 

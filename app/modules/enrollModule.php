@@ -256,5 +256,41 @@
 	}
 
 
+	public function allPendingEnrollments($user_id, $role_id)
+	{
+
+			
+		$sql ="SELECT c.name, qz.id, qz.title, DATE_FORMAT(en.dtsScheduled, '%a %d %b %h:%i %p') as at  
+			from quiz qz 
+			INNER JOIN enrollment en on en.quiz_id = qz.id 
+			INNER JOIN users c on en.student_id = c.id
+			WHERE en.attempts = 0";
+
+
+			if($role_id != 1)
+			{
+				$sql .= " AND qz.user_id = $user_id";
+			}
+
+
+			$sql .= " ORDER BY en.dtsScheduled ASC";
+
+
+
+			if($data = $this->DB->rawSql($sql)->returnData())
+			{
+				return $data;
+			}
+
+				return false;
+
+	}
+
+
+
+
+	
+
+
 
 }

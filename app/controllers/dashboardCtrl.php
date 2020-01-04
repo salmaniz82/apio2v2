@@ -77,7 +77,7 @@
 	public function entityDashboard()
 	{
 
-		if($schedule = $this->enrollModule->weekSchedule($this->jwtUserId(), $this->jwtRoleId()) )
+		if($schedule = $this->enrollModule->allPendingEnrollments($this->jwtUserId(), $this->jwtRoleId()) )
 		{
 			$data['weekSchedule'] = $schedule;
 			
@@ -88,9 +88,18 @@
     		$data['actvity'] = $activity;  			
     	}
 
+    	if($recentFinished = $this->attemptModule->returnXamountOfRecentQuizResults($this->jwtUserId(), 20))
+    	{
+    		$data['recentFinished']	= $recentFinished;
+    	}
+
+    	if($topPerformer = $this->attemptModule->returnTopPerformer($this->jwtUserId(), 20))
+    	{
+    		$data['topPerformer'] = $topPerformer;
+    	}
+
 
     	$data['logo'] = $this->profileModule->autoProfileLogo($this->jwtUserId());
-
 
 
     	$data['message']  = "dashboard";
@@ -227,6 +236,36 @@
 
 		}
 
+
+
+
+
 	}
 
 
+/*
+
+SET @entity_id = 80;
+
+SELECT sta.id as attemptID, en.id as enrollID, qz.id, qz.code, qz.title, qz.maxScore, qz.minScore, c.name as candidate, c.email as candidateEmail,
+
+sta.score as obtainedScore 
+
+from quiz qz 
+
+INNER JOIN enrollment en on en.quiz_id = qz.id 
+
+INNER JOIN users c on c.id = en.student_id 
+
+INNER JOIN stdattempts as sta on sta.enroll_id = en.id 
+
+where 
+user_id = @entity_id AND 
+sta.score IS NOT NULL AND 
+sta.is_active = 0 AND 
+sta.id IN (SELECT max(stax.id) as id from stdattempts stax INNER JOIN enrollment enx on enx.id = stax.enroll_id INNER JOIN quiz qzx on qzx.id = enx.quiz_id WHERE qzx.user_id = @entity_id AND stax.score IS NOT NULL and stax.is_active = 0 group by enroll_id);
+
+
+
+
+*/
