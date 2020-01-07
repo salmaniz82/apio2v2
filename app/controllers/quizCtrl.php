@@ -732,8 +732,13 @@
 
 		if($quiz = $this->module->getQuizInfo($quiz_id))
 		{
+
+
 			
 			$data['quiz'] = $quiz;
+
+			$data['imagesPreload'] = array();
+
 			$requiredQuestions = $quiz[0]['noques'];
 
 			if($questions = $quizQuestionModule->listQuizPlayQuestionsDistro($quiz_id))
@@ -743,17 +748,66 @@
 				for($i=0; $i<sizeof($questions); $i++)
 				{
 
+					
 					$question_id = $questions[$i]['questionId'];
-			
+
+					
+					if($this->stringIsAbsoluteImagePath($questions[$i]['optionA']))
+					{
+
+						$data['imagesPreload'][] = $questions[$i]['optionA'];
+
+					}
+
+					
+
+					if($this->stringIsAbsoluteImagePath($questions[$i]['optionB']))
+					{
+						
+						$data['imagesPreload'][] = $questions[$i]['optionB'];
+					}
+
+					if($this->stringIsAbsoluteImagePath($questions[$i]['optionC']))
+					{
+						$data['imagesPreload'][] = $questions[$i]['optionC'];
+
+					}
+
+					if($this->stringIsAbsoluteImagePath($questions[$i]['optionD']))
+					{
+						
+						$data['imagesPreload'][] = $questions[$i]['optionD'];
+
+					}
+
+					
+
+
 					if($media = $quizQuestionModule->getQuestionMedia($question_id))
 					{					
 						
 						$questions[$i]['media'] = $media;
+
+
+						foreach ($media as $key => $imgObject) {
+
+							// array_push($data['imagesPreload'], $imgObject['filepathurl']);
+
+							$data['imagesPreload'][] = $imgObject['filepathurl'];
+							
+						}
+
+
+						
+
+
 					}
 
 				}
 
 				// $data['questions'] = $this->encodeData($questions);
+
+				$data['imagesPreload'] = array_values(array_unique($data['imagesPreload']));
 
 				$data['questions'] = $questions;	
 

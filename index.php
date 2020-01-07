@@ -506,13 +506,7 @@ $route->post('/scorecard-pdf/{quiz_id}/{attempt_id}', 'pdfCtrl@scorecardPDF');
 
 $route->get('/assert', function() {
 
-
-	$fruits = array('apple', 'orange', 'mango');
-
-	$orangeIndex = array_search('mango', $fruits);
-
-	
-	echo $orangeIndex;
+echo  "string is returned";
 
 });
 

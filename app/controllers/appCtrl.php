@@ -183,4 +183,28 @@ class appCtrl {
 
 
 
+	public function stringIsAbsoluteImagePath($string)
+	{
+
+		if(preg_match('/(http(s?):)([\/|.|\w|\s|-])*\.(?:jpg|gif|png|jpeg|svg)/', $string))
+		{
+			return true;
+		}
+
+		return false;
+	}
+
+
+	public function startsWithUrl($string)
+	{
+		if(preg_match('/^(http(s?))/', $string))
+		{
+			return true;
+		}
+
+		return false;
+	}
+
+
+
 }
