@@ -106,7 +106,8 @@
 	public function statusToggle($stsValue, $id)
 	{
 
-		$payload = array('status'=> $id);
+		$payload = array('status'=> $stsValue);
+
 
 		if($this->DB->update($payload, $id))
 		{
@@ -177,6 +178,49 @@
 		}
 
 		return false;
+	}
+
+
+
+	public function isOwnerofQuestion($questionId, $authID)
+	{
+		
+		$sql = "SELECT id from questions where id = $questionId AND (user_id = $authID OR entity_id = $authID) LIMIT 1";
+
+		if($this->DB->rawSql($sql)->returnData())
+		{
+			return true;
+		}
+
+		return false;
+
+
+	}
+
+
+	public function checkActivateAllocation($questionID)
+	{
+		
+		/*
+		pre removal checks
+		0. stdQuestion : candiate already consumed that and results were generated based on that questions : dissallow
+		1. activeAlloctionTest
+		2. activeRemoval = 'not having any side effects'
+		3. disableWontAllow further usage from global space
+		*/
+
+		$sql = "SELECT count(qq.id) as quizQuestionId from questions que 
+			INNER JOIN quizquestions qq on que.id = qq.question_id 
+			WHERE qq.status = 1 AND que.id = $questionID GROUP BY que.id";
+
+
+		if($count = $this->DB->rawSql($sql)->returnData())
+		{
+			return $count[0]['quizQuestionId'];
+		}
+
+		return false;
+
 	}
 
 }

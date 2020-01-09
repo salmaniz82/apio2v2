@@ -382,11 +382,18 @@
 		if(!jwACL::has('quiz-enroll-toggle') && !jwACL::isAdmin()) 
 			return $this->accessDenied();
 
-				
 
 
 		$quiz_id = $this->getID();
 		$_POST = Route::$_PUT;
+
+		$userID = jwACL::authUserId();
+
+		if(!$this->module->isOwnedByUser($quiz_id, $userID) && !jwACL::isAdmin())
+			return $this->ownerDisqualifyResponse();
+
+
+
 
 
 		$quizQuestionModule = $this->load('module', 'quizQuestions');
@@ -499,6 +506,13 @@
 
 		$quiz_id = $this->getID();
 		$_POST = Route::$_PUT;
+
+
+
+		$userID = jwACL::authUserId();
+
+		if(!$this->module->isOwnedByUser($quiz_id, $userID) && !jwACL::isAdmin())
+			return $this->ownerDisqualifyResponse();
 
 
 		$dataPayload['status'] = $_POST['status'];
@@ -1269,11 +1283,9 @@
 			return $this->uaReponse();	
 
 
-		/*
-		no permission in db
-		if(!jwACL::has('quiz-update')) 
+		if(!jwACL::has('quiz-modify-datetime')) 
 			return $this->accessDenied();
-		*/
+		
 
 
 		$id = $this->getID();
@@ -1322,11 +1334,17 @@
 		
 		if(!jwACL::has('quiz-delete') && !jwACL::isAdmin()) 
 			return $this->accessDenied();
-		
 
     	
     	$id = $this->getID();
 
+
+    	$userID = jwACL::authUserId();
+
+		if(!$this->module->isOwnedByUser($id, $userID) && !jwACL::isAdmin())
+			return $this->ownerDisqualifyResponse();
+
+		
     	if($this->module->deleteQuiz($id))
     	{
 

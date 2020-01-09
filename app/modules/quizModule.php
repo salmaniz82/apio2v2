@@ -476,4 +476,20 @@
 	
 		}
 
+
+
+		public function isOwnedByUser($quizID, $ownerID)
+		{
+
+			$sql = "SELECT id from quiz where id = {$quizID} AND user_id = {$ownerID} limit 1";
+
+			if($this->DB->rawSql($sql)->returnData())
+			{
+				return true;
+			}
+
+			return false;
+
+		}
+
 }

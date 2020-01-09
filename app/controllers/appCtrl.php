@@ -45,6 +45,17 @@ class appCtrl {
 	}
 
 
+	public function ownerDisqualifyResponse()
+	{
+
+		$data['status'] = false;
+    	$data['message'] = "Ownership rejected for this operation";
+	    $statusCode = 403;
+    	return view::responseJson($data, $statusCode);
+
+	}
+
+
 	public function emptyRequestResponse()
 	{
 

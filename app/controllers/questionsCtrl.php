@@ -180,17 +180,23 @@
 	{
 
 		if(!jwACL::isLoggedIn()) 
-			return $this->uaReponse();	
+			return $this->uaReponse();
 
 
-		/*
-		bind permission
-		!admin check ownership
-		*/
+		if(!jwACL::has('question-status-toggle')) 
+			return $this->accessDenied();
 
 
 		$_POST = Route::$_PUT;
 		$id = $this->getID();
+
+
+		$authID = jwACL::authUserId();
+
+
+		if(!$this->module->isOwnerofQuestion($id, $authID) && !jwACL::isAdmin())
+			return $this->ownerDisqualifyResponse();
+
 
 		$statusValue = $_POST['status'];
 

@@ -325,4 +325,22 @@ class userModule extends appCtrl{
 	}
 
 
+	public function isOwnedAuthUser($recordID, $authID)
+	{
+
+		$sql = "SELECT id from users where id = $recordID AND created_by = $authID";
+
+
+		if($this->DB->rawSql($sql)->returnData())
+		{
+			return true;
+		}
+
+		return false;
+
+	}
+
+	
+
+
 }

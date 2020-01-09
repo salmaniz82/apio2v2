@@ -21,6 +21,14 @@
 
 		$user_id = $this->getID();
 
+		$authID = jwACL::authUserId();
+
+
+		if(!$this->module->isOwnedAuthUser($user_id, $authID) && !jwACL::isAdmin())
+		{
+			return $this->ownerDisqualifyResponse();	
+		}
+
 
 		if($this->module->deleteUser($user_id))
 		{
@@ -438,10 +446,22 @@
 		if(!jwACL::has('user-status-toggle')) 
 			return $this->accessDenied();
 
-
-
 		$_POST = Route::$_PUT;
 		$user_id = $this->getID();
+
+
+
+
+		$authID = jwACL::authUserId();
+
+
+		if(!$this->module->isOwnedAuthUser($user_id, $authID) && !jwACL::isAdmin())
+		{
+			return $this->ownerDisqualifyResponse();	
+		}
+
+
+
 		$data['status'] = $_POST['status'];
 		if($this->module->statusToggle($data, $user_id))
 		{
@@ -474,11 +494,32 @@
 
 	public function changePassword()
 	{
+		
+		if(!jwACL::isLoggedIn()) {
+			return $this->uaReponse();
+
+			die();
+		}
+		
+
+
+
 		$_POST = Route::$_PUT;
 		$id = $this->getID();
 		
 
-		$password = trim($_POST['password']);
+		$password = (isset($_POST['password'])) ? trim($_POST['password']) : null;
+
+
+		$authID = jwACL::authUserId();
+
+
+		if(!$this->module->isOwnedAuthUser($id, $authID) && !jwACL::isAdmin())
+		{
+			return $this->ownerDisqualifyResponse();	
+		}
+
+
 
 		
         if($res = $this->module->changePassword($password, $id))
@@ -490,7 +531,7 @@
         else {
 
         	$data['status'] = false;
-        	$data['message'] = " Failed Password Updated";
+        	$data['message'] = "Failed Password Updated";
 			$statusCode = 500;
         }
 

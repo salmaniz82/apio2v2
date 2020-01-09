@@ -720,7 +720,7 @@
 
             if(JwtAuth::validateToken())
             {
-                echo "authenticated";
+                echo "token" . JwtAuth::hasToken();
             }
             else {
                 echo "token is not authenticated";

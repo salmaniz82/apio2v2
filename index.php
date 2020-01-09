@@ -431,6 +431,9 @@ $route->post('/postmeta/{id}', 'moduleTestCtrl@postmeta');
 */
 
 
+$route->get('/jwttest', 'moduleTestCtrl@jwPlainTesting');
+
+
 $route->get('/intercept/{id}', 'moduleTestCtrl@attemptIntercept');
 
 
