@@ -725,4 +725,254 @@
 
 }
 
+
+	public function uploadCandidates()
+	{
+
+		if(!jwACL::isLoggedIn()) 
+			return $this->uaReponse();
+
+		$fileRowsLimit = 100;
+
+		$mimes = array('application/vnd.ms-excel','text/plain','text/csv','text/tsv', 'application/octet-stream');
+
+
+		if(!isset($_FILES['file']))
+		{
+			
+			$data['message'] = "No File Provided cannot proceed further";
+			$statusCode = 406;
+			return View::responseJson($data, $statusCode);
+		}
+
+		else if(!in_array($_FILES["file"]["type"], $mimes) )
+		{
+
+
+			$data['message'] = "File type is not supported";
+			$statusCode = 406;
+			return View::responseJson($data, $statusCode);
+			
+		}
+
+		else {
+
+
+				$target_dir = "uploads/datafiles/users/";
+
+				$filename = sanitizeFilename(basename($_FILES["file"]["name"]));
+
+				$target_file = $target_dir.$filename;
+				
+		}
+
+
+		if(file_exists($target_file))
+		{
+			unlink($target_file);	
+		}
+
+
+		if(!move_uploaded_file($_FILES["file"]["tmp_name"], $target_file))
+		{
+
+				$data['message'] = "unable to upload file";
+				return View::responseJson($data, 500);
+		}
+
+
+
+		$fileRowsLimit = 100;
+
+		$csv = array_map('str_getcsv', file($target_file));
+
+		$fileRowsCount = sizeof($csv) - 1;
+
+
+		if($fileRowsCount > $fileRowsLimit)
+		{
+				$data['message'] = $fileRowsLimit . " rows of data is allowed for upload provied with " . $fileRowsCount;
+				$statusCode = 406;
+				return View::responseJson($data, $statusCode);
+
+				die();
+		}
+
+
+		$requiredColumns = array('name', 'email');
+
+		/* make sure all require columns exists in the file */
+		foreach ($requiredColumns as $value) 
+		{	
+
+				if(!$idx = array_search($value, $csv[0]))
+				{
+						$data['message'] = "Required column ". $value . " not provided in file ";
+						return View::responseJson($data, 406);
+				}
+
+		}
+
+
+			$entity_id = jwACL::authUserId();
+
+
+			$roleIndex = array_push($csv[0], 'role_id');
+			$creatorIndex = array_push($csv[0], 'created_by');
+			$passwordIndex = array_push($csv[0], 'password');
+			$statusIndex = array_push($csv[0], 'status');
+
+			$nameIndex = array_search('name', $csv[0]);
+			$emailIndex = array_search('email', $csv[0]);
+
+			$infoPayload = array();
+
+
+			for($i=0; $i<sizeof($csv); $i++)
+			{
+
+
+				if($i > 0 ) 
+				{
+
+						if($csv[$i][$nameIndex] == "" || strlen($csv[$i][$nameIndex]) < 3)
+						{
+
+							$data['message'] = "Provided name is invalid valid at line" . $i + 1;
+							$statusCode = 406;
+							return View::responseJson($data, 406);
+
+							die();
+
+						}
+
+						if($csv[$i][$emailIndex] == "")
+						{
+
+							$data['message'] = "Invalid email at line " . $i + 1;
+							$statusCode = 406;
+							return View::responseJson($data, 406);
+
+							die();
+
+						}
+
+
+						$csv[$i][$roleIndex] =  '4';
+						$csv[$i][$creatorIndex] = $entity_id;
+
+						$password = $this->module->generateRandomPassword();
+
+						$infoPayload[$i] = array('email'=> $csv[$i][$emailIndex], 'password'=> $password);
+						$csv[$i][$passwordIndex] = $this->module->hashPasswordLowCost($password);
+						$csv[$i][$statusIndex] = 1;
+
+
+
+				}
+
+			}	
+
+
+
+		/*
+		$data['message'] = "all good so far";
+		$statusCode = 200;
+		return View::responseJson($data, 200);
+		*/
+
+		/*
+		payload required fields
+			role_id
+			name
+			email
+			password
+			created_by
+			status
+		*/
+
+
+			$finalArray = array('name', 'email', 'password', 'role_id', 'created_by', 'status');
+
+
+
+			$unmatchedArrayKeys = [];
+
+			for($nk = 0; $nk < sizeof($csv[0]); $nk++ )
+			{
+
+			
+				if(array_search($csv[0][$nk], $finalArray) === false)
+				{
+
+					array_push($unmatchedArrayKeys, $nk);
+
+				};
+		
+
+			}
+
+
+			foreach(array_keys($csv) as $key) {
+
+				foreach ($unmatchedArrayKeys as $ukey => $removeIndex) {
+
+					unset($csv[$key][$removeIndex]);
+				
+				}
+
+			}
+
+
+			$lastMaxId = $this->module->lastCreatedUserByEntity($entity_id) || null;
+
+			$csvColValue = array_values($csv[0]);
+
+			$cols = array_shift($csv);
+
+			$dataset['cols'] = $cols;
+
+			$dataset['vals'] = $this->module->DB->escArray($csv);
+
+			$recordLength = sizeof($dataset['vals']);
+
+
+			if($this->module->uploadBulkCanidates($dataset))
+			{
+
+				$data['message'] = $recordLength . " candidates uploaded successfully";
+
+				$data['info'] = $infoPayload;
+
+				/*
+				catch that value in response and show that in as a list 
+				*/
+				$statusCode = 200;
+
+				$data['assginedUsers'] = $this->module->postUploadTaggEntityAssgiment($entity_id, $lastMaxId);
+
+				$userpermissionsModule = $this->module = $this->load('module', 'userpermissions');
+
+				$data['permission'] = ($userpermissionsModule->postUserUploadCanidatePermissionAssignment($entity_id, $lastMaxId)) ? 'Persmission Assgined' : 'Failed while assiging permissions';
+
+			}
+
+			else {
+
+				$data['message'] = "Failed while uploading candidates";
+				$statusCode = 500;
+
+				$data['debug'] = $this->module->DB;
+			}
+
+			unlink($target_file);	
+			
+			return View::responseJson($data, $statusCode);
+			
+
+	}
+
+
+
+
 }

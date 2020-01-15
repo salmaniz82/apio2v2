@@ -154,6 +154,8 @@ $route->post('/register-enroll', 'userCtrl@registerEnroll');
 
 $route->get('/my-users', 'userCtrl@entityTaggedUserList');
 
+$route->post('/my-users/upload', 'userCtrl@uploadCandidates');
+
 /* residue */
 
 $route->post('/residue', 'residueCtrl@makeEntrypoint');
@@ -431,7 +433,7 @@ $route->post('/postmeta/{id}', 'moduleTestCtrl@postmeta');
 */
 
 
-$route->get('/jwttest', 'moduleTestCtrl@jwPlainTesting');
+$route->get('/checkesc', 'moduleTestCtrl@checkESCvalues');
 
 
 $route->get('/intercept/{id}', 'moduleTestCtrl@attemptIntercept');

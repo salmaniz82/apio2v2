@@ -317,6 +317,45 @@ class userpermissionsModule {
 
 
 
+	public function postUserUploadCanidatePermissionAssignment($entity_id, $maxId = null)
+	{
+
+
+		$sql  = "INSERT IGNORE INTO userpermissions (user_id, permission_id, status) 
+			SELECT u.id as user_id, p.id as permission_id, rp.status as status from users u  
+			INNER JOIN roles r on r.id = u.role_id 
+			INNER JOIN rolepermissions rp on rp.role_id = r.id 
+			INNER JOIN permissions p on p.id = rp.permission_id 
+			where u.role_id = 4 AND created_by = $entity_id ";
+
+			if($maxId != null)
+			{
+			  $sql .= "AND u.id > $maxId ";	
+			}
+
+			if($this->DB->rawSql($sql))
+	    	{
+	    		return $this->DB->connection->affected_rows;
+	    	}
+	    	
+	    	return false;	
+
+
+	}
+
+
+	/*
+	post mass insert via upload
+	INSERT IGNORE INTO userpermissions (user_id, permission_id) 
+	SELECT u.id as user_id, p.id as permission_id from users u  
+	INNER JOIN roles r on r.id = u.role_id 
+	INNER JOIN rolepermissions rp on rp.role_id = r.id 
+	INNER JOIN permissions p on p.id = rp.permission_id 
+	where u.role_id = 4 AND created_by $entity_id AND u.id > 137;
+	*/
+
+
+
 	/*
 
 	GETTING ALL PERMISSION ASSOCIATED TO USER FILTER BY ROLE TYPE

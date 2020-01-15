@@ -306,6 +306,8 @@
 	{
 
 
+
+
 		if(!jwACL::isLoggedIn()) 
 			return $this->uaReponse();
 
@@ -320,7 +322,7 @@
 
 		else if(jwACL::authRole() == 'entity')
 		{
-			
+
 			$entity_id = $this->jwtUserId();
 			$scope = 'private';
 			
@@ -328,7 +330,7 @@
 
 		else if(jwACL::authRole() == 'content developer')
 		{
-			$entity_id = null;
+			$entity_id = NULL;
 			$scope = 'public';
 		}
 
@@ -407,16 +409,16 @@
 			}
 
 
-
+			$connection = $this->module->DB->connection;
 
 			$requiredColumns = array('question', 'a', 'b', 'c', 'd', 'answer', 'type', 'difficulty');
 
 
 			
 
-			$difficulty = array('easy', 'medium', 'difficult');
+			$difficulty = array('unmatched', 'easy', 'medium', 'difficult');
 
-			$type = array('radio', 'true/false', 'checkbox', 'text');
+			$type = array('unmatched', 'radio', 'true/false', 'checkbox', 'text');
 
 			$optionalColumns = array('difficulty', 'type');
 
@@ -442,8 +444,8 @@
 
 
 			$userIndex = array_push($csv[0], 'user_id');
-			$userIndex = array_push($csv[0], 'entity_id');
-			$userIndex = array_push($csv[0], 'scope');
+			$entityIndex = array_push($csv[0], 'entity_id');
+			$scopeIndex = array_push($csv[0], 'scope');
 			
 			$categoryIndex = array_push($csv[0], 'category_id');
 			$sectionIndex = array_push($csv[0], 'section_id');
@@ -511,7 +513,7 @@
 						else {
 
 
-							$csv[$i][$diffIndex] = $replacedIndexDifficulty + 1;
+							$csv[$i][$diffIndex] = $replacedIndexDifficulty;
 
 						}
 
@@ -534,7 +536,7 @@
 
 						else {
 
-							$csv[$i][$typeIndex] = $replacedTypeIndex + 1;
+							$csv[$i][$typeIndex] = $replacedTypeIndex;
 
 						}
 
@@ -672,12 +674,12 @@
 
 					$typeID = $csv[$key][$typefIndex];
 
-					$queDesc = $csv[$key][$quefIndex];
-					$optionA = $csv[$key][$afIndex];
-					$optionB = $csv[$key][$bfIndex];
-					$optionC = $csv[$key][$cfIndex];
-					$optionD = $csv[$key][$dfIndex];
-					$answer = strtolower($csv[$key][$answerfIndex]);
+					$queDesc = mysqli_real_escape_string($connection, $csv[$key][$quefIndex]);
+					$optionA = mysqli_real_escape_string($connection, $csv[$key][$afIndex]);
+					$optionB = mysqli_real_escape_string($connection, $csv[$key][$bfIndex]);
+					$optionC = mysqli_real_escape_string($connection, $csv[$key][$cfIndex]);
+					$optionD = mysqli_real_escape_string($connection, $csv[$key][$dfIndex]);
+					$answer = mysqli_real_escape_string($connection, strtolower($csv[$key][$answerfIndex]));
 
 					$levelID = $csv[$key][$levelfIndex];
 
@@ -711,9 +713,15 @@
 
 					}
 
+					/*
+
+					$type = array('unmatched', 'radio', 'true/false', 'checkbox', 'text');
+
+					*/
 
 
-					if($typeID == 1)
+
+					if($typeID == 2)
 					{
 						if(!in_array($answer, array('a', 'b')))
 						{
@@ -725,10 +733,10 @@
 
 
 
-					if($typeID == 0 || $typeID == 2)
+					if($typeID == 1 || $typeID == 3)
 					{				
 
-						/* options must not be empty */
+						/* expecting 0 to be radio & 2 to be checkboxes*/
 						/* answer must not be empty */
 
 
@@ -809,11 +817,8 @@
 
 			$cols = array_shift($csv);
 
-
-
-
 			$dataset['cols'] = $cols;
-			$dataset['vals'] = $csv;
+			$dataset['vals'] = $this->module->DB->escArray($csv);
 
 
 			$statusCode = 200;
@@ -839,16 +844,10 @@
 
 			}
 
+
 			return View::responseJson($data, $statusCode);
 
-			/*
-
-			level and type id is not subsituted on the file 
-
-
-			*/
-
-
+			
 	}
 
 }

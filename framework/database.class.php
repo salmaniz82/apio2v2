@@ -189,7 +189,7 @@ class Database
             $cols = implode(', ', array_values($dataset['cols']));
             $vals = $dataset['vals'];
 
-            $this->escArray($dataset['vals']);
+            $dataset['vals'] = $this->escArray($dataset['vals']);
 
             $query = "INSERT INTO $this->table ( " ;
 
@@ -358,12 +358,23 @@ class Database
     public function escArray($dataarray)
     {
 
-        $link = $this->connection;
-        array_walk_recursive($dataarray, function(&$val) use ($link) {
+        $escapedValue = [];
 
-            $val = $link->real_escape_string($val);
+        foreach ($dataarray as $key => $row) {
 
-        });
+            if(is_array($row))
+            {
+                foreach ($row as $index => $details) {
+
+                $escapedValue[$key][$index] = mysqli_real_escape_string($this->connection, $details);
+                    
+                }
+            }
+            
+
+        }
+
+        return $escapedValue;
 
     }
 

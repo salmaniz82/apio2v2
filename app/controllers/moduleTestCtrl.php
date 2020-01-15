@@ -1,6 +1,16 @@
 <?php class moduleTestCtrl extends appCtrl {
 
 
+    public $module;
+
+
+    public function __construct()
+    {
+
+        $this->module = $this->load('module', 'questions');
+
+    } 
+
     public function entityTaggedUserList()
     {
         echo "working";
@@ -835,9 +845,13 @@
         $interceptModule->runPassProcedure($attemptId, $intercept);
 
         $interceptModule->runFailProcedure($attemptId, $intercept);
+    }
 
-        
-        
+
+    public function checkESCvalues()
+    {
+
+
 
     }
 

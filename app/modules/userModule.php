@@ -127,6 +127,18 @@ class userModule extends appCtrl{
 
 	}
 
+	public function hashPasswordLowCost($password)
+	{
+
+		$hashedPassword = password_hash($password, PASSWORD_BCRYPT, array(
+		'cost' => 4
+		));
+
+
+		return $hashedPassword;
+
+	}
+
 
 	public function userByEmail($email)
 	{
@@ -338,6 +350,60 @@ class userModule extends appCtrl{
 
 		return false;
 
+	}
+
+
+	public function lastCreatedUserByEntity($entityId)
+	{
+		$sql = "SELECT max(id) as lastMax from users where created_by = $entityId";
+
+		if($lastUserId = $this->DB->rawSql($sql)->returnData())
+		{
+			return $lastUserId[0]['lastMax'];
+		}
+
+		return false;
+
+
+	}
+
+
+	public function uploadBulkCanidates($payload)
+	{
+		if($this->DB->multiInsert($payload))
+		{
+			return true;
+		}
+
+		return false;
+	}
+
+
+	public function postUploadTaggEntityAssgiment($entity_id, $lastMax = null)
+	{
+		
+		if($lastMax != null)
+		{
+			$sql = "INSERT IGNORE INTO taggedusers (user_id, entity_id) 
+			SELECT id as user_id, created_by as entity_id from users where created_by = $entity_id AND id > 137";	
+		}
+
+		else {
+
+			$sql = "INSERT IGNORE INTO taggedusers (user_id, entity_id) 
+			SELECT id as user_id, created_by as entity_id from users where created_by = $entity_id";
+
+		}
+
+
+		if($this->DB->rawSql($sql))
+		{
+			return $this->DB->connection->affected_rows;
+		}
+
+
+		return false;
+		
 	}
 
 	
