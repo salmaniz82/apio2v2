@@ -144,6 +144,33 @@ class subjectModule {
 
 
 
+	public function canDLSToggleQuestion($quiz_id, $qqId)
+	{
+		$sql = "SELECT que.section_id as 'subject_id', sec.name as 'subjects', count(sec.id) as 'allocated',
+			sub.quePerSection as 'quePerSection', IF(sub.quePerSection < count(sec.id), 1, 0) AS 'enableStatusToggle'
+            
+			from quizquestions qq 
+			inner join questions que on que.id = qq.question_id 
+			inner join categories sec on sec.id = que.section_id 
+            inner join subjects sub on sub.subject_id = que.section_id 
+            
+			where qq.quiz_id = $quiz_id AND sub.quiz_id = $quiz_id AND qq.status = 1 
+			AND que.section_id IN (SELECT subject_id from subjects where quiz_id = $quiz_id)   
+            
+            AND que.level_id IN (SELECT que.level_id from questions que INNER JOIN quizquestions qq on qq.question_id = que.id WHERE qq.id = $qqId) 
+			GROUP BY sec.id, que.level_id, sec.name, sub.quePerSection";
+
+			if($subjectsToggleRow = $this->DB->rawSql($sql)->returnData())
+			{
+				return $subjectsToggleRow[0];
+			}
+			
+				return false;
+
+	}
+
+
+
 
 	public function questionsCountSummaryOnWizard($threshold, $subjectIds, $entityId = null)
 	{

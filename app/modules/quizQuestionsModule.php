@@ -165,6 +165,70 @@ class quizQuestionsModule extends appCtrl {
 	}
 
 
+	public function dlsgetUnallocatedQuestionIds($quiz_id, $entity_id)
+	{
+
+		$level_ids = array(1,2,3);
+
+
+		$rows = $this->calclauteDLSynPerSubjectDiffLevel($quiz_id);
+
+		
+		$sql = " SELECT GROUP_CONCAT(question_id) as question_id, count(question_id) as quecount from ( ";	
+
+		for($i = 0; $i<sizeof($rows); $i++)
+        { 
+
+        	$subject_id = $rows[$i]['section_id'];
+            $pullLimit = $rows[$i]['pullLimit'];
+            $level_id = $rows[$i]['level_id'];
+
+            $limit = ($pullLimit < 0) ? 0 : $pullLimit;
+
+
+            	$sql .= " ( ";
+
+
+            	$sql .= "SELECT que.id as question_id from quiz qz 
+                INNER JOIN questions que on que.category_id = qz.category_id 
+                WHERE qz.id = $quiz_id AND que.status = 1 
+                AND (que.quiz_id = $quiz_id OR que.quiz_id IS NULL) 
+                AND (que.entity_id = $entity_id OR que.entity_id IS NULL) 
+                AND que.consumed <= qz.threshold 
+                AND que.section_id = $subject_id  
+                AND que.level_id = $level_id   
+                AND que.id NOT IN (SELECT question_id from quizquestions where quiz_id = $quiz_id) LIMIT $limit ";
+
+
+				$sql .= " ) ";  
+
+
+			
+
+
+            if($i + 1 < sizeof($rows))
+                {
+                    $sql .= " UNION "; 
+                }
+
+        }
+
+        $sql .= " ) converge";
+
+        $data = $this->DB->rawSql($sql)->returnData();
+
+			if($data[0]['quecount'] != 0)
+			{
+				return $data;	
+			}
+
+				return false;
+
+
+	}
+
+
+
 	public function listMatchQuestions($quiz_id)
 	{
 		$sql = "SELECT qq.id, qq.status as 'qqStatus', que.id as questionId, que.queDesc, que.optionA, que.optionB, que.optionC, que.optionD,
@@ -219,6 +283,8 @@ class quizQuestionsModule extends appCtrl {
 
 		$sql = "SELECT qq.id, qq.status as 'qqStatus', que.id as questionId, que.queDesc, que.optionA, que.optionB, que.optionC, que.optionD,
 				que.consumed as 'hits', 
+				SUBSTRING(fnStripTags(que.queDesc), 1,350) as excerptDesc, 
+			(case when CHAR_LENGTH(fnStripTags(que.queDesc)) > 350 then true else false end) as hasExcerpt,
 			cat.name as category, 
 			lvl.levelEN, lvl.levelAR, 
 			typ.typeEN, 
@@ -754,6 +820,23 @@ class quizQuestionsModule extends appCtrl {
 
 	}
 
+	public function calclauteDLSynPerSubjectDiffLevel($quiz_id)
+	{
+
+
+		$sql  = "SELECT que.section_id, que.level_id, cat.name, COUNT(qq.id) as allocated, ROUND(qz.maxAllocation / qz.noques * sub.quePerSection) as limitPerSubject, qz.noques, qz.maxAllocation, sub.quePerSection, 
+			ROUND(qz.maxAllocation / qz.noques * sub.quePerSection - COUNT(qq.id)) as pullLimit 
+			from quizquestions qq 
+			INNER JOIN quiz qz on qz.id = qq.quiz_id 
+			INNER JOIN questions que on qq.question_id = que.id 
+			INNER JOIN categories cat on cat.id = que.section_id 
+			INNER JOIN subjects sub on sub.quiz_id = qz.id AND sub.subject_id = que.section_id 
+			where qq.quiz_id = $quiz_id AND qq.status = 1
+			GROUP BY que.section_id, que.level_id";
+			return $this->DB->rawSql($sql)->returnData();
+
+	}
+
 
 
 	public function dlsQuizQueAllocatedSummary($quiz_id)
@@ -1022,6 +1105,77 @@ class quizQuestionsModule extends appCtrl {
 
 			
 	}
+
+
+		public function dlsbackupunallocatedIDs($quiz_id, $maxFactor, $entity_id)
+	{
+
+		$level_ids = array(1,2,3);
+
+		$level_id = 3;
+
+
+		$sql = " SELECT GROUP_CONCAT(question_id) as question_id, count(question_id) as quecount from ( ";	
+
+		for($i = 0; $i<sizeof($maxFactor); $i++)
+        { 
+
+        	$subject_id = $maxFactor[$i]['subject_id'];
+            $pullLimit = $maxFactor[$i]['maxFactor'];
+            $limit = ($pullLimit < 0) ? 0 : $pullLimit;
+
+		$sql .= " ( 
+
+		 SELECT que.id as question_id from quiz qz 
+                INNER JOIN questions que on que.category_id = qz.category_id 
+                WHERE qz.id = $quiz_id AND que.status = 1 
+                AND (que.quiz_id = $quiz_id OR que.quiz_id IS NULL) 
+                AND (que.entity_id = $entity_id OR que.entity_id IS NULL) 
+                AND que.consumed <= qz.threshold 
+                AND que.section_id = $subject_id  
+                AND que.level_id = $level_id 
+                AND que.id NOT IN (SELECT question_id from quizquestions where quiz_id = $quiz_id) LIMIT $limit 
+
+            ) ";
+
+
+            if($i + 1 < sizeof($maxFactor))
+                {
+                    $sql .= " UNION "; 
+                }
+
+        }
+
+
+        $sql .= " ) converge";
+
+
+
+        echo $sql;
+
+        return false;
+
+
+
+        $data = $this->DB->rawSql($sql)->returnData();
+
+        return $data;
+
+			if($data[0]['quecount'] != 0)
+			{
+				return $data;	
+			}
+
+				return false;
+
+
+	}
+
+
+
+
+
+	
 
 
 

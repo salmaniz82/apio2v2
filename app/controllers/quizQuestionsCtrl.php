@@ -123,7 +123,19 @@
 
 		$quiz_id = $this->getID();
 
+		$quizModule = $this->load('module', 'quiz');
+
 		$this->module->globalThresholdByQuizId($quiz_id);
+
+
+		if($quizModule->isDLSEnabledQuiz($quiz_id))
+		{
+
+			return $this->dlsQuestionsSynchronizeCheck($quiz_id);
+
+		}
+
+		
 
 		$entity_id = $this->jwtUserId();
 
@@ -141,11 +153,40 @@
 			$data['noQues'] = 0;
 			$data['message'] = "All Question are already sync";
 			$data['status'] = false;
-			$statusCode = 404;
+			$statusCode = 204;
 		}
 
 
-		View::responseJson($data, $statusCode);
+		return View::responseJson($data, $statusCode);
+
+	}
+
+
+	public function dlsQuestionsSynchronizeCheck($quizId)
+	{
+
+		
+		$entity_id = $this->jwtUserId();
+
+
+		if($newQuesAvailable = $this->module->dlsgetUnallocatedQuestionIds($quizId, $entity_id))
+		{
+			$data['queIDs'] = $newQuesAvailable[0]['question_id'];
+			$data['noQues'] = $newQuesAvailable[0]['quecount'];
+			$data['status'] = true;
+			$data['message'] = $data['noQues'] . " New Questions Available";
+			$statusCode = 200;
+		}
+
+		else {
+			$data['querystatus'] = $newQuesAvailable;
+			$data['noQues'] = 0;
+			$data['message'] = "All Question are already sync";
+			$data['status'] = false;
+			$statusCode = 204;
+		}
+
+		return View::responseJson($data, $statusCode);
 
 	}
 
@@ -197,15 +238,32 @@
 
     	$_POST = Route::$_PUT;
 
+    	$qqid = $_POST['qqId'];
+
         $quiz_id = (int) Route::$params['quiz_id'];
         $subject_id = (int) Route::$params['subject_id'];
 
         $subjectModule = $this->load('module', 'subject');
-        $subjectsState = $subjectModule->canToggleQuizQuestions($quiz_id, $subject_id);
+
+        $quizModule = $this->load('module', 'quiz');
+
+        if(!$quizModule->isDLSEnabledQuiz($quiz_id))
+        {
+        	$subjectsState = $subjectModule->canToggleQuizQuestions($quiz_id, $subject_id);
+        }
+
+        else {
+
+        	$subjectsState = $subjectModule->canDLSToggleQuestion($quiz_id, $qqid);
+        	
+        }
+
+
+        
 
 
         $dataPayload['status'] = $_POST['status'];
-        $qqid = $_POST['qqId'];
+        
 
 
         if($dataPayload['status'] == 0 && is_array($subjectsState) && $subjectsState['enableStatusToggle'] == 0)
