@@ -341,7 +341,7 @@
 
 		$section_id = $_POST['section_id'];
 
-		$user_id = $user_id = jwACL::authUserId();
+		$user_id = jwACL::authUserId();
 
 		$status = 1;
 
@@ -444,7 +444,14 @@
 
 
 			$userIndex = array_push($csv[0], 'user_id');
-			$entityIndex = array_push($csv[0], 'entity_id');
+
+
+			if(!is_null($entity_id))
+			{
+				$entityIndex = array_push($csv[0], 'entity_id');	
+			}
+			
+
 			$scopeIndex = array_push($csv[0], 'scope');
 			
 			$categoryIndex = array_push($csv[0], 'category_id');
@@ -492,7 +499,14 @@
 
 
 						array_push($csv[$i], $user_id);
-						array_push($csv[$i], $entity_id);
+
+						if(!is_null($entity_id))
+						{
+							array_push($csv[$i], $entity_id);
+						}
+
+						
+
 						array_push($csv[$i], $scope);
 						array_push($csv[$i], $category_id);
 						array_push($csv[$i], $section_id);
@@ -592,7 +606,13 @@
 			*/
 
 
-			$finalArray = array('queDesc', 'optionA', 'optionB', 'optionC', 'optionD', 'answer', 'type_id', 'level_id', 'category_id', 'section_id', 'user_id', 'scope', 'status', 'entity_id');
+			$finalArray = array('queDesc', 'optionA', 'optionB', 'optionC', 'optionD', 'answer', 'type_id', 'level_id', 'category_id', 'section_id', 'user_id', 'scope', 'status');
+
+
+			if(is_null(!$entity_id))
+			{
+				array_push($finalArray, 'entity_id');
+			}
 
 			$unmatchedArrayKeys = [];
 
@@ -654,6 +674,8 @@
 
 			$radioAnwers = array('a', 'b', 'c', 'd');
 			$booleanAnswers = array('a', 'b');
+
+
 
 			foreach ($csv as $key => $value) {
 
@@ -826,6 +848,11 @@
 
 			$data['length'] = sizeof($dataset['vals']);
 
+
+			
+
+
+			
 			
 			if($this->module->bulkQuestionUpload($dataset))
 			{
@@ -844,8 +871,10 @@
 
 			}
 
+			
 
-			return View::responseJson($data, $statusCode);
+
+			 return View::responseJson($data, $statusCode);
 
 			
 	}

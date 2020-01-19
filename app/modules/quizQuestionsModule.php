@@ -1171,6 +1171,42 @@ class quizQuestionsModule extends appCtrl {
 
 	}
 
+	public function cloneTemplateQuestions($syncClonedKeys, $templateArrays)
+		{
+
+
+			$sql = "INSERT INTO quizquestions (quiz_id, question_id, status) ";
+
+			$sql .= " SELECT quiz_id, question_id, status FROM ( "; 
+
+		    for ($i = 0; $i< sizeof($syncClonedKeys); $i++) {
+
+           		$templateId = $templateArrays[$i];
+
+            	$clonedId = $syncClonedKeys[$i][$templateId];
+        
+        	$sql .= " SELECT $clonedId as quiz_id, question_id, status from quizquestions where quiz_id = $templateId ";
+
+	        		if($i + 1 < sizeof($syncClonedKeys))
+	        		{
+	                		$sql .= " UNION "; 
+	        		}
+            
+        	}
+
+	        $sql .= " ) as coverge";
+
+
+
+	        if($this->DB->rawSql($sql))
+	        {
+	        	return true;
+	        }
+
+	        return false;
+
+		}
+
 
 
 

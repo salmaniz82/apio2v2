@@ -856,5 +856,40 @@
     }
 
 
+    public function assertClonedIds()
+    {
+
+
+
+            $templateQuizIDs = '150,151,152';
+
+            $quizModule = $this->load('module', 'quiz');
+
+            $templateArrays = explode(',', $templateQuizIDs);
+
+            
+
+            $entity_id = 3646;    
+            
+                if($clonedIds = $quizModule->extractClonedQuizIds($entity_id))
+                {
+
+                    $syncClonedKeys = [];
+                    for($i = 0; $i < sizeof($templateArrays); $i++) {
+
+                            $syncClonedKeys[$i] = array($templateArrays[$i] => $clonedIds[$i]['id']);
+                    }
+
+                    
+
+                    $quizModule->subjectsTemplateClone($syncClonedKeys, $templateArrays);
+
+                }   
+            
+
+        
+    }
+
+
 
 }

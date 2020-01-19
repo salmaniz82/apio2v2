@@ -205,7 +205,18 @@
 				if($last_id = $this->module->addNewUser($dataPayload) )
 				{
 
-						// load module and insert the ticket
+					// load module and insert the ticket
+					if($dataPayload['role_id'] == 2)
+					{
+
+						$quizTemplatesArray = QUIZ_TEMPLATES;		
+
+						$templateQuizIDs = implode($quizTemplatesArray, ',');
+
+						$this->triggerQuizTemplateGenerator($last_id, $templateQuizIDs);
+
+					}
+
 
 						if(isset($dataPayload['created_by']) && $dataPayload['created_by'] != null)
 						{
@@ -873,28 +884,7 @@
 
 			}	
 
-
-
-		/*
-		$data['message'] = "all good so far";
-		$statusCode = 200;
-		return View::responseJson($data, 200);
-		*/
-
-		/*
-		payload required fields
-			role_id
-			name
-			email
-			password
-			created_by
-			status
-		*/
-
-
 			$finalArray = array('name', 'email', 'password', 'role_id', 'created_by', 'status');
-
-
 
 			$unmatchedArrayKeys = [];
 
@@ -973,6 +963,42 @@
 	}
 
 
+	public function triggerQuizTemplateGenerator($entity_id, $templateQuizIDs)
+	{
+
+
+			$quizModule = $this->load('module', 'quiz');
+
+			$subjectModule = $this->load('module', 'subject');
+
+			$quizQuestionsModule = $this->load('module', 'quizQuestions');
+
+			$templateArrays = explode(',', $templateQuizIDs);
+
+
+			if($quizModule->quizTemplateClone($entity_id, $templateQuizIDs))
+			{
+				if($clonedIds = $quizModule->extractClonedQuizIds($entity_id))
+				{
+
+					$syncClonedKeys = [];
+        			for($i = 0; $i < sizeof($templateArrays); $i++) {
+
+            				$syncClonedKeys[$i] = array($templateArrays[$i] => $clonedIds[$i]['id']);
+        			}
+
+        			if($subjectModule->subjectsTemplateClone($syncClonedKeys, $templateArrays))
+        			{
+
+        				$quizQuestionsModule->cloneTemplateQuestions($syncClonedKeys, $templateArrays);
+        				
+        			}
+
+				}	
+			}
+
+			
+	}
 
 
 }

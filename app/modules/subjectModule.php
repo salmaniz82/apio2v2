@@ -206,6 +206,42 @@ class subjectModule {
 	}
 
 
+	public function subjectsTemplateClone($syncClonedKeys, $templateArrays)
+		{
+
+			$sql = "INSERT INTO subjects (quiz_id, subject_id, quePerSection, points) ";
+
+			$sql .= " SELECT quiz_id, subject_id, quePerSection, points FROM ( "; 
+
+		    for ($i = 0; $i< sizeof($syncClonedKeys); $i++) {
+
+           		$templateId = $templateArrays[$i];
+
+            	$clonedId = $syncClonedKeys[$i][$templateId];
+        
+        	$sql .= " SELECT $clonedId as quiz_id, subject_id, quePerSection, points from subjects where quiz_id = $templateId ";
+
+
+	        		if($i + 1 < sizeof($syncClonedKeys))
+	        		{
+	                		$sql .= " UNION "; 
+	        		}
+            
+        	}
+
+	        $sql .= " ) as coverge";
+
+	        if($this->DB->rawSql($sql))
+	        {
+	        	return true;
+	        }
+
+	        return false;
+
+		}
+
+
+
 }
 
 

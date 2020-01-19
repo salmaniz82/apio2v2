@@ -492,4 +492,49 @@
 
 		}
 
+
+		public function quizTemplateClone($entity_id, $templateQuizIDs)
+		{
+
+			$sql = "
+			INSERT INTO quiz (code, title, category_id, maxScore, minScore, 
+			duration, startDateTime, endDateTime, noques, user_id, enrollment, 
+			threshold, dls, dlsFrequency, uniqueOnRetake, showScore, showResult, 
+			showGrading, showGPA, maxAllocation, venue, status)
+
+			SELECT code, title, category_id, maxScore, minScore, 
+			duration, NOW() AS startDateTime, DATE_ADD(NOW(), INTERVAL 1 YEAR) AS endDateTime, 
+			noques, $entity_id as user_id, enrollment, threshold, dls, dlsFrequency, uniqueOnRetake, 
+			showScore, showResult, showGrading, showGPA, maxAllocation, venue, 
+			status from quiz WHERE id IN ( " . $templateQuizIDs .") ORDER BY id asc";
+
+
+			if($this->DB->rawSql($sql))
+			{
+				return true;
+			}
+
+			return false;
+
+		}
+
+
+		public function extractClonedQuizIds($entity_id)
+		{
+			
+			$sql = "SELECT id from quiz where user_id = $entity_id";
+
+			if($ids = $this->DB->rawSql($sql)->returnData())
+			{
+				return $ids;
+			}
+
+			return false;
+
+		}
+
+
+		
+		
+
 }
