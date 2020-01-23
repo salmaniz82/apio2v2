@@ -99,26 +99,8 @@ class quizQuestionsModule extends appCtrl {
 
 	public function synchronizeCheck($quiz_id, $entity_id = 0)
 	{
-		/*
-			pick only non matching rows from questions which are not in quizquestions
-			{
- 	   			"queIDs": "99,100,203",
-    			"noQues": "3",
-    			"status": true,
-    			"message": "3 New Questions Available"
-			}
-		*/
-
+		
 		$rows = $this->calclauteSynPerSubject($quiz_id);
-		/*
-		$sql = "SELECT GROUP_CONCAT(que.id) as question_id, count(que.id) as quecount from quiz qz
-				INNER JOIN questions que on qz.category_id = que.category_id 
-				WHERE qz.id = $quiz_id AND que.status = 1 AND (que.quiz_id = $quiz_id OR que.quiz_id IS NULL) 
-				AND (que.entity_id = $entity_id OR que.entity_id IS NULL) 
-				AND que.consumed <= qz.threshold 
-				AND que.section_id IN (SELECT subject_id from subjects where quiz_id = $quiz_id) 
-    			AND que.id NOT IN (SELECT question_id from quizquestions where quiz_id = $quiz_id)";
-    	*/
 
 
         $newSql = " SELECT GROUP_CONCAT(question_id) as question_id, count(question_id) as quecount from ( ";
@@ -648,6 +630,8 @@ class quizQuestionsModule extends appCtrl {
 
 			$collections = [];
 
+			$preloadImageCollection = array();
+
 			foreach ($subjects as $key => $subj) {
 
 			$collections[$subj['subjects']]['composite'] = array('easy' => [], 'medium'=> [], 'difficult'=> []);				
@@ -750,7 +734,49 @@ class quizQuestionsModule extends appCtrl {
 						{					
 							
 							$questions[$i]['media'] = $media;
+
+
+
+
+							foreach ($media as $key => $imgObject) {
+
+
+									$preloadImageCollection[] = $imgObject['filepathurl'];
+							
+							}
+
 						}
+
+
+					if($this->stringIsAbsoluteImagePath($questions[$i]['optionA']))
+					{
+
+						$preloadImageCollection[] = $questions[$i]['optionA'];
+
+					}
+
+					
+
+					if($this->stringIsAbsoluteImagePath($questions[$i]['optionB']))
+					{
+						
+						$preloadImageCollection[] = $questions[$i]['optionB'];
+					}
+
+					if($this->stringIsAbsoluteImagePath($questions[$i]['optionC']))
+					{
+						$preloadImageCollection[] = $questions[$i]['optionC'];
+
+					}
+
+					if($this->stringIsAbsoluteImagePath($questions[$i]['optionD']))
+					{
+						
+						$preloadImageCollection[] = $questions[$i]['optionD'];
+
+					}
+
+					
 
 					}
 
@@ -783,8 +809,13 @@ class quizQuestionsModule extends appCtrl {
 				}
 
 			}	
+
+
+			$uniqueImages = array_values(array_unique($preloadImageCollection));
+
+			
 		
-			return ['collections' => $collections, 'distribution' => $subjects];
+			return ['collections' => $collections, 'distribution' => $subjects, 'imagesPreload' => $uniqueImages];
 			
 	}
 
@@ -815,7 +846,7 @@ class quizQuestionsModule extends appCtrl {
 			INNER JOIN categories cat on cat.id = que.section_id 
 			INNER JOIN subjects sub on sub.quiz_id = qz.id AND sub.subject_id = que.section_id 
 			where qq.quiz_id = $quiz_id AND qq.status = 1
-			GROUP BY que.section_id";
+			GROUP BY que.section_id, cat.name, qz.noques, qz.maxAllocation, sub.quePerSection";
 			return $this->DB->rawSql($sql)->returnData();
 
 	}
@@ -832,7 +863,7 @@ class quizQuestionsModule extends appCtrl {
 			INNER JOIN categories cat on cat.id = que.section_id 
 			INNER JOIN subjects sub on sub.quiz_id = qz.id AND sub.subject_id = que.section_id 
 			where qq.quiz_id = $quiz_id AND qq.status = 1
-			GROUP BY que.section_id, que.level_id";
+			GROUP BY que.section_id, cat.name, qz.noques, qz.maxAllocation, sub.quePerSection";
 			return $this->DB->rawSql($sql)->returnData();
 
 	}

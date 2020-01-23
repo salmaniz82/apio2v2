@@ -121,6 +121,8 @@
 	public function questionSyncCheck()
 	{
 
+		
+
 		$quiz_id = $this->getID();
 
 		$quizModule = $this->load('module', 'quiz');
@@ -135,7 +137,6 @@
 
 		}
 
-		
 
 		$entity_id = $this->jwtUserId();
 
@@ -155,7 +156,6 @@
 			$data['status'] = false;
 			$statusCode = 204;
 		}
-
 
 		return View::responseJson($data, $statusCode);
 

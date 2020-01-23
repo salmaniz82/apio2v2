@@ -962,10 +962,17 @@
 
 			//$data['stream'] = $this->encodeData($quizQuestionModule->listQuizPlayQuestionsDLS($quiz_id, $studentId));
 
+
+
 			$data['stream'] = $quizQuestionModule->listQuizPlayQuestionsDLS($quiz_id, $studentId);
 			$data['usageXTimes'] = $attemptModule->getXTimesUsed($attempt_id);
 
 			$data['action'] = 'play';
+
+
+			$data['imagesPreload'] = array_values($data['stream']['imagesPreload']);
+
+			unset($data['stream']['imagesPreload']);
 
 			$data['entityLogo'] = $this->module->getQuizEntityLogo($quiz_id);
 
