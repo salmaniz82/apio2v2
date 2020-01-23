@@ -892,4 +892,29 @@
 
 
 
+
+    public function dbsingle()
+    {
+
+
+        
+        $connection = DbConnection::getInstance();
+
+        $sql = "SELECT 'HELLO'";
+
+        $res = $connection->conn->query($sql);
+
+        var_dump($res);
+
+
+
+
+
+
+
+
+    }
+
+
+
 }

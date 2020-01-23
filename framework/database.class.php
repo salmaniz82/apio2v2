@@ -18,8 +18,19 @@ class Database
 
 
     public function __construct()
-    {
-        // connnect to databse and establish connect in the db
+    {       
+        
+        /*
+
+        $this->connection = DbConnection::getInstance();
+
+        */
+
+        $connectInstance = DbConnection::getInstance();
+
+        $this->connection = $connectInstance->conn;
+        
+        /*
         $this->connection = new mysqli(SERVER, USER, PASSWORD, DATABASE);
         if (mysqli_connect_errno())
         {
@@ -27,8 +38,10 @@ class Database
         }
 
         $this->connection->set_charset("utf8");
+
         $this->setTimeZone();
-        
+
+        */
 
     }
 

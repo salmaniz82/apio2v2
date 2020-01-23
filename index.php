@@ -433,6 +433,9 @@ $route->post('/postmeta/{id}', 'moduleTestCtrl@postmeta');
 */
 
 
+$route->get('/dbsingle', 'moduleTestCtrl@dbsingle');
+
+
 $route->get('/checkesc', 'moduleTestCtrl@checkESCvalues');
 
 

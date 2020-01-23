@@ -15,14 +15,11 @@ require_once ABSPATH . 	'app/config.php';
 require_once ABSPATH . 	'app/controllers/appCtrl.php';
 require_once ABSPATH . 	'app/jwacl.php';
 
-
-
 /*
 	Loading Core Framework Files
 */
-
-
 require_once ABSPATH . 	'framework/route.class.php';
+require_once ABSPATH . 	'framework/connection.class.php';
 require_once ABSPATH . 	'framework/database.class.php';
 require_once ABSPATH . 	'framework/auth.class.php';
 require_once ABSPATH . 	'framework/view.class.php';
