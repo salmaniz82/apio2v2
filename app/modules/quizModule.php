@@ -1,4 +1,11 @@
-<?php class quizModule extends appCtrl {
+<?php 
+
+if ( !defined('ABSPATH') )
+	die('Forbidden Direct Access');
+
+
+
+class quizModule extends appCtrl {
 
 
 	public $DB;

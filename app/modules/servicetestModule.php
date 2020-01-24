@@ -1,4 +1,11 @@
-<?php class servicetestModule extends appCtrl
+<?php 
+
+
+if ( !defined('ABSPATH') )
+	die('Forbidden Direct Access');
+
+
+class servicetestModule extends appCtrl
 {
 	
 	public $DB;

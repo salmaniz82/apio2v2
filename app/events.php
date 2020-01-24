@@ -1,6 +1,9 @@
 <?php
 
 
+if ( !defined('ABSPATH') )
+	die('Forbidden Direct Access');
+
 Event::on('quiz-inintiate', function() {
 
 	echo "this should fire when load fired <br />";

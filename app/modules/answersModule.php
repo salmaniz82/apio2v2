@@ -1,4 +1,9 @@
 <?php 
+
+if ( !defined('ABSPATH') )
+	die('Forbidden Direct Access');
+
+
 class answersModule extends appCtrl {
 
 

@@ -1,4 +1,11 @@
 <?php 
+
+if ( !defined('ABSPATH') )
+	die('Forbidden Direct Access');
+
+
+
+
 class markedModule {
 
 

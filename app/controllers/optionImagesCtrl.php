@@ -1,4 +1,10 @@
-<?php class optionImagesCtrl extends appCtrl
+<?php 
+
+if ( !defined('ABSPATH') )
+	die('Forbidden Direct Access');
+
+
+class optionImagesCtrl extends appCtrl
 {
 
 	public $module;

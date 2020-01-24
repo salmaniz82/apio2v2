@@ -1,4 +1,9 @@
-<?php class mediaCtrl extends appCtrl{
+<?php 
+
+if ( !defined('ABSPATH') )
+	die('Forbidden Direct Access');
+
+class mediaCtrl extends appCtrl{
 
 	
 	public $module;

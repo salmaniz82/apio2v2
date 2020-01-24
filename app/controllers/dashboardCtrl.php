@@ -1,4 +1,10 @@
-<?php class dashboardCtrl extends appCtrl
+<?php 
+
+if ( !defined('ABSPATH') )
+	die('Forbidden Direct Access');
+
+
+class dashboardCtrl extends appCtrl
 {
 
 	

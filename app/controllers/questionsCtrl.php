@@ -1,4 +1,10 @@
-<?php class questionsCtrl extends appCtrl
+<?php 
+
+if ( !defined('ABSPATH') )
+	die('Forbidden Direct Access');
+
+
+class questionsCtrl extends appCtrl
 {
 
 	public $module;

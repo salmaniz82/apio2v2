@@ -1,5 +1,8 @@
 <?php 
 
+if ( !defined('ABSPATH') )
+	die('Forbidden Direct Access');
+
 require ABSPATH.'app/external/dompdf/autoload.inc.php';
 
 use Dompdf\Dompdf;

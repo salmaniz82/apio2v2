@@ -1,4 +1,10 @@
-<?php class typeModule 
+<?php 
+
+if ( !defined('ABSPATH') )
+	die('Forbidden Direct Access');
+
+
+class typeModule 
 {
 	
 	public $DB;

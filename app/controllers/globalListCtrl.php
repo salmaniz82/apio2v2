@@ -1,4 +1,9 @@
-<?php class globalListCtrl extends appCtrl {
+<?php 
+
+if ( !defined('ABSPATH') )
+    die('Forbidden Direct Access');
+
+class globalListCtrl extends appCtrl {
 
 
     public $catModule;

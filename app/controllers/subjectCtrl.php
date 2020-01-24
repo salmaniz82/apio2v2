@@ -1,4 +1,10 @@
-<?php class subjectCtrl extends appCtrl
+<?php 
+
+if ( !defined('ABSPATH') )
+	die('Forbidden Direct Access');
+
+
+class subjectCtrl extends appCtrl
 {
 
 	public $module;

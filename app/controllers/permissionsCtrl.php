@@ -1,4 +1,10 @@
-<?php class permissionsCtrl extends appCtrl
+<?php 
+
+if ( !defined('ABSPATH') )
+	die('Forbidden Direct Access');
+
+
+class permissionsCtrl extends appCtrl
 {
 
 	public $module;

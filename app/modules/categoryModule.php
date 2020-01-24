@@ -1,4 +1,10 @@
-<?php class categoryModule extends appCtrl {
+<?php 
+
+if ( !defined('ABSPATH') )
+	die('Forbidden Direct Access');
+
+
+class categoryModule extends appCtrl {
 
 	public $DB;
 

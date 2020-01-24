@@ -1,4 +1,10 @@
-<?php class userCtrl extends appCtrl 
+<?php 
+
+if ( !defined('ABSPATH') )
+	die('Forbidden Direct Access');
+
+
+class userCtrl extends appCtrl 
 {
 
 	

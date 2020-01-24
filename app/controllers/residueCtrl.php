@@ -1,4 +1,9 @@
-<?php class residueCtrl extends appCtrl
+<?php 
+
+if ( !defined('ABSPATH') )
+	die('Forbidden Direct Access');
+
+class residueCtrl extends appCtrl
 {
 
 	public $module;

@@ -1,4 +1,12 @@
-<?php class questionsMediaModule 
+<?php 
+
+
+if ( !defined('ABSPATH') )
+	die('Forbidden Direct Access');
+
+
+
+class questionsMediaModule 
 {
 	
 	public $DB;

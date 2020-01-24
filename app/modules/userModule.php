@@ -1,4 +1,9 @@
 <?php 
+
+if ( !defined('ABSPATH') )
+	die('Forbidden Direct Access');
+
+
 class userModule extends appCtrl{
 
 	public $DB;

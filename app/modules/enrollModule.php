@@ -1,4 +1,10 @@
-<?php class enrollModule 
+<?php 
+
+if ( !defined('ABSPATH') )
+	die('Forbidden Direct Access');
+
+
+class enrollModule 
 {
 	
 	public $DB;

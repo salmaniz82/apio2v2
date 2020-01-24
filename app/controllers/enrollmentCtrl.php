@@ -1,4 +1,9 @@
-<?php class enrollmentCtrl extends appCtrl
+<?php 
+
+if ( !defined('ABSPATH') )
+	die('Forbidden Direct Access');
+
+class enrollmentCtrl extends appCtrl
 {
 
 	public $module;

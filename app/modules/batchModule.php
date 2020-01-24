@@ -1,4 +1,10 @@
-<?php class batchModule extends appCtrl {
+<?php 
+
+if ( !defined('ABSPATH') )
+	die('Forbidden Direct Access');
+
+
+class batchModule extends appCtrl {
 
 
 	public function __construct()

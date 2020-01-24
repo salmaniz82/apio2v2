@@ -1,6 +1,10 @@
 <?php 
 
 
+if ( !defined('ABSPATH') )
+	die('Forbidden Direct Access');
+
+
 class profileCtrl extends appCtrl {
 
 

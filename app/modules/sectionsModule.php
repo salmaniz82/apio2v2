@@ -1,4 +1,10 @@
-<?php class sectionsModule 
+<?php 
+
+if ( !defined('ABSPATH') )
+	die('Forbidden Direct Access');
+
+
+class sectionsModule 
 {
 	
 	public $DB;

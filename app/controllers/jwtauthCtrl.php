@@ -1,4 +1,8 @@
 <?php 
+
+if ( !defined('ABSPATH') )
+	die('Forbidden Direct Access');
+
 class jwtauthCtrl extends appCtrl {
 
 

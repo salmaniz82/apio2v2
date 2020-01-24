@@ -1,4 +1,9 @@
-<?php class invitationsCtrl extends appCtrl
+<?php 
+
+if ( !defined('ABSPATH') )
+	die('Forbidden Direct Access');
+
+class invitationsCtrl extends appCtrl
 {
 
 	public $module;

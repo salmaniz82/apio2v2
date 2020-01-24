@@ -1,4 +1,10 @@
-<?php class pagesCtrl extends appCtrl {
+<?php 
+
+if ( !defined('ABSPATH') )
+	die('Forbidden Direct Access');
+
+
+class pagesCtrl extends appCtrl {
 
 
 	public function staticPage()

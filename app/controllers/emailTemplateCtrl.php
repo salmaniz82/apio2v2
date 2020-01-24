@@ -1,4 +1,10 @@
-<?php class emailTemplateCtrl extends appCtrl {
+<?php 
+
+if ( !defined('ABSPATH') )
+	die('Forbidden Direct Access');
+
+
+class emailTemplateCtrl extends appCtrl {
 
 	public $module;
 

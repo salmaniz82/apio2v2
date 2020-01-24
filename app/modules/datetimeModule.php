@@ -1,4 +1,10 @@
-<?php class dateTimeModule extends appCtrl {
+<?php 
+
+if ( !defined('ABSPATH') )
+	die('Forbidden Direct Access');
+
+
+class dateTimeModule extends appCtrl {
 
 	public function convertToMysqlTime($rawTime)
     {

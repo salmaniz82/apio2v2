@@ -1,4 +1,10 @@
-<?php class levelModule 
+<?php 
+
+if ( !defined('ABSPATH') )
+	die('Forbidden Direct Access');
+
+
+class levelModule 
 {
 	
 	public $DB;
