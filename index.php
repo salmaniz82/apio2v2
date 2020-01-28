@@ -46,6 +46,27 @@ $route->get('/routes', function() {
 
 });
 
+$route->post('/routes', function() {
+
+	global $routeList;
+	$routeList = true;
+
+});
+
+$route->put('/routes', function() {
+
+	global $routeList;
+	$routeList = true;
+
+});
+
+$route->delete('/routes', function() {
+
+	global $routeList;
+	$routeList = true;
+
+});
+
 
 
 
@@ -143,6 +164,8 @@ $route->get('/users', 'userCtrl@index');
 $route->get('/users/{id}', 'userCtrl@single');
 
 $route->post('/users', 'userCtrl@save');
+
+$route->post('/users-autogenerate', 'userCtrl@autoGenerate');
 
 $route->put('/users', 'userCtrl@update');
 
@@ -512,11 +535,7 @@ $route->get('/pdftest', 'pdfCtrl@testInstaller');
 $route->post('/scorecard-pdf/{quiz_id}/{attempt_id}', 'pdfCtrl@scorecardPDF');
 
 
-$route->get('/assert', function() {
-
-echo  "string is returned";
-
-});
+$route->get('/assert', 'moduleTestCtrl@assertList');
 
 
 

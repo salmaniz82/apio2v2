@@ -899,25 +899,28 @@ class moduleTestCtrl extends appCtrl {
 
 
 
-    public function dbsingle()
+    public function assertList()
     {
 
-
         
-        $connection = DbConnection::getInstance();
+        $userModule  = $this->load('module', 'user');
 
-        $sql = "SELECT 'HELLO'";
+        $emaiCollection  = array(
 
-        $res = $connection->conn->query($sql);
+            'sa@domain.com',
+            'std01@domain.com'
+        );
+
+
+        $emailIDString = "'" .implode("','", $emaiCollection) . "'";
+
+        $res = $userModule->findUserWithMatchedEmailsString($emailIDString);
+
 
         var_dump($res);
 
 
-
-
-
-
-
+        
 
     }
 

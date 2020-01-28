@@ -186,6 +186,20 @@ class userCtrl extends appCtrl
 			$assignContributor = ($roleName == 'contributor') ? true : false;
 
 
+
+			if(!filter_var($dataPayload['email'], FILTER_VALIDATE_EMAIL))
+			{
+				$data['message'] = 'Provided with invalid email';
+
+				return View::responseJson($data, 406);
+				die();
+
+			}
+
+
+
+
+
 			if($roleName == 'contributor' || $roleName == 'content developer')
 			{
 					$boudUserToCategory = true;
@@ -844,6 +858,8 @@ class userCtrl extends appCtrl
 
 			$infoPayload = array();
 
+			$emailCollection = array();
+
 
 			for($i=0; $i<sizeof($csv); $i++)
 			{
@@ -863,27 +879,31 @@ class userCtrl extends appCtrl
 
 						}
 
-						if($csv[$i][$emailIndex] == "")
+						if(!filter_var($csv[$i][$emailIndex], FILTER_VALIDATE_EMAIL))
 						{
 
+							
 							$data['message'] = "Invalid email at line " . $i + 1;
 							$statusCode = 406;
 							return View::responseJson($data, 406);
-
 							die();
 
 						}
 
 
 						$csv[$i][$roleIndex] =  '4';
+
 						$csv[$i][$creatorIndex] = $entity_id;
 
 						$password = $this->module->generateRandomPassword();
 
 						$infoPayload[$i] = array('email'=> $csv[$i][$emailIndex], 'password'=> $password);
+
 						$csv[$i][$passwordIndex] = $this->module->hashPasswordLowCost($password);
+
 						$csv[$i][$statusIndex] = 1;
 
+						array_push($emailCollection, $csv[$i][$emailIndex]);
 
 
 				}
@@ -919,14 +939,105 @@ class userCtrl extends appCtrl
 
 			}
 
+			/*
+				1. prepare email collection array
+				2. build implode string for in state sql
+				3. create module that would search email using in 
+				4. return payload to be used later
+				5. loop before final database extract matching ids from dataaset
+				6. just use user tagging
+			*/
 
+
+			$emailIDString = "'" .implode("','", $emailCollection) . "'";
+
+
+
+
+
+			$hasDuplicates = false;
+
+
+			if($existingMatchedUsers = $this->module->findUserWithMatchedEmailsString($emailIDString))
+			{
+
+
+
+				$hasDuplicates = true;
+				
+				$existingMatchedUsers;
+
+				$extractedDuplicateEmailList = array();
+
+				$extractedDuplicateUserIDS = array();
+
+				foreach ($existingMatchedUsers as $key => $value) {
+
+					array_push($extractedDuplicateEmailList, $value['email']);
+
+					array_push($extractedDuplicateUserIDS, $value['id']);
+						
+				}
+
+
+
+			}
+
+			
 			$lastMaxId = $this->module->lastCreatedUserByEntity($entity_id) || null;
 
 			$csvColValue = array_values($csv[0]);
 
 			$cols = array_shift($csv);
 
+
+			if($hasDuplicates)
+			{
+
+
+					$extractedDuplicateEmailList = array_values($extractedDuplicateEmailList);
+
+
+					$infoPayload = array_values($infoPayload);
+
+					for($i = 0; $i < sizeof($csv); $i++ )
+					{
+						/* remove duplicates from list */
+
+						if( in_array($csv[$i][$emailIndex], $extractedDuplicateEmailList) )
+						{
+
+							unset($csv[$i]);
+
+						};
+				
+					}
+
+
+					for($i = 0; $i < sizeof($infoPayload); $i++ )
+					{
+						/* remove duplicates from list */
+
+						if( in_array($infoPayload[$i]['email'], $extractedDuplicateEmailList) )
+						{
+
+							unset($infoPayload[$i]);
+
+						};
+				
+					}
+
+
+					
+
+
+			}
+
+
+
 			$dataset['cols'] = $cols;
+
+			$csv = array_values($csv);
 
 			$dataset['vals'] = $this->module->DB->escArray($csv);
 
@@ -946,6 +1057,16 @@ class userCtrl extends appCtrl
 				$statusCode = 200;
 
 				$data['assginedUsers'] = $this->module->postUploadTaggEntityAssgiment($entity_id, $lastMaxId);
+
+
+				if($hasDuplicates)
+				{
+					/* assign already exting users to entity if not */
+
+					$this->module->bulkUserTagEntity($entity_id, $extractedDuplicateUserIDS);
+
+				}
+
 
 				$userpermissionsModule = $this->module = $this->load('module', 'userpermissions');
 
@@ -1004,6 +1125,87 @@ class userCtrl extends appCtrl
 			}
 
 			
+	}
+
+
+	public function autoGenerate()
+	{
+
+
+		if(!jwACL::isLoggedIn()) 
+			return $this->uaReponse();
+
+		/*
+		inject permission intercept
+		*/
+
+		
+		$authenticatedRole = jwACL::authRole();
+
+		$created_by = jwACL::authUserId();
+
+		$entity_id = $created_by;
+
+
+		if($authenticatedRole != 'entity')
+		{
+
+			$data['message'] = "This operation is not available for user other than entity";
+			$statusCode = 406;
+			return View::responseJson($data, $statusCode);
+		}
+
+		$lastMaxId = $this->module->lastCreatedUserByEntity($entity_id);
+		$lastUserCount = (int) $this->module->countMaxCanidateForEntity($entity_id);
+		$fieldColumns = array('name', 'email', 'password', 'role_id', 'created_by', 'status');
+
+
+		$dataPayload = [];
+		$infoPayload = [];
+
+		for($i=0; $i<10; $i++)
+		{
+
+			$prefix = $entity_id . "u" . ( $lastUserCount  + $i + 1 );
+			$email =  $prefix.'@iskillmetrics.com';
+			$passwordPlain = $this->module->generateRandomPassword();
+			$password = $this->module->hashPasswordLowCost($passwordPlain);
+			$role_id = 4;
+			$created_by;
+			$status = 1;
+			$dataPayload[$i] = array($prefix, $email, $password, $role_id, $created_by, $status);
+			$infoPayload[$i] = array('name'=> $prefix, 'email'=> $email, 'password'=> $passwordPlain);
+
+		}
+
+		$infoPayload = array_values($infoPayload);
+
+		$dataset['cols'] = $fieldColumns;
+		$dataset['vals'] = $this->module->DB->escArray($dataPayload);
+
+
+		if($this->module->uploadBulkCanidates($dataset))
+		{
+
+				$data['message'] = 10 . " candidates genrated successfully";
+				$data['infoPayload'] = $infoPayload;
+				$statusCode = 200;
+				$data['assginedUsers'] = $this->module->postUploadTaggEntityAssgiment($entity_id, $lastMaxId);
+				$userpermissionsModule = $this->module = $this->load('module', 'userpermissions');
+				$data['permission'] = ($userpermissionsModule->postUserUploadCanidatePermissionAssignment($entity_id, $lastMaxId)) ? 'Persmission Assgined' : 'Failed while assiging permissions';
+		}
+
+		else {
+
+				$data['message'] = "Failed while creating users candidates";
+				$statusCode = 500;
+				$data['debug'] = $this->module->DB;
+			}
+
+
+			return View::responseJson($data, $statusCode);
+
+
 	}
 
 
