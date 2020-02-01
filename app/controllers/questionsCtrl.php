@@ -233,14 +233,36 @@ class questionsCtrl extends appCtrl
 	public function singlequestion()
 	{
 
+
+		if(!jwACL::isLoggedIn()) 
+			return $this->uaReponse();
+
+
+
+
 		$queID = $this->getID();
 		$user_id = jwACL::authUserId();
 		$role = jwACL::authRole();
 
+		$quizQuestionsModule = $this->load('module', 'quizQuestions');
+
+
+
 		if($question = $this->module->getsingle($user_id, $role, $queID))
 		{
+			
+
+			if($media = $quizQuestionsModule->getQuestionMedia($queID))
+			{
+				$question[0]['media'] = $media;
+			}
+
+
 			$data['question'] = $question[0];
+
 			$statusCode = 200;	
+
+			
 		}
 		else {
 

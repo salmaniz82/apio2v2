@@ -1068,6 +1068,12 @@ class userCtrl extends appCtrl
 				}
 
 
+				if($addedUsers = $this->module->fetchUserPostOperation($entity_id, $lastMaxId))
+				{
+						$data['addedUsers'] = $addedUsers;
+				}
+
+
 				$userpermissionsModule = $this->module = $this->load('module', 'userpermissions');
 
 				$data['permission'] = ($userpermissionsModule->postUserUploadCanidatePermissionAssignment($entity_id, $lastMaxId)) ? 'Persmission Assgined' : 'Failed while assiging permissions';
@@ -1191,6 +1197,13 @@ class userCtrl extends appCtrl
 				$data['infoPayload'] = $infoPayload;
 				$statusCode = 200;
 				$data['assginedUsers'] = $this->module->postUploadTaggEntityAssgiment($entity_id, $lastMaxId);
+
+				if($addedUsers = $this->module->fetchUserPostOperation($entity_id, $lastMaxId))
+				{
+					$data['addedUsers'] = $addedUsers;
+				}
+
+
 				$userpermissionsModule = $this->module = $this->load('module', 'userpermissions');
 				$data['permission'] = ($userpermissionsModule->postUserUploadCanidatePermissionAssignment($entity_id, $lastMaxId)) ? 'Persmission Assgined' : 'Failed while assiging permissions';
 		}

@@ -384,6 +384,22 @@ class userModule extends appCtrl{
 	}
 
 
+	public function countMaxCanidateForEntity($entity_id)
+	{
+
+		$sql = "SELECT count(id) as maxCount from users u where u.created_by = $entity_id";
+
+		if($maxCount = $this->DB->rawSql($sql)->returnData())
+		{
+			return $maxCount[0]['maxCount'];
+		}
+
+		return 0;	
+
+
+	}
+
+
 	public function postUploadTaggEntityAssgiment($entity_id, $lastMax = null)
 	{
 		
@@ -409,6 +425,31 @@ class userModule extends appCtrl{
 
 		return false;
 		
+	}
+
+
+	public function fetchUserPostOperation($entity_id, $lasMaxId)
+	{
+
+
+		$lastId = ($lasMaxId) ? $lasMaxId : 0;	
+
+		$sql = "SELECT u.id, u.role_id, roles.role as 'role', u.name, u.email,  
+			u.isLocked, u.lockedDateTime, u.loginAttempts, u.status from users u 
+			INNER JOIN roles on u.role_id = roles.id 
+			INNER JOIN taggedusers as tag on tag.user_id = u.id 
+			WHERE 
+			u.created_by = $entity_id AND 
+			u.id > $lastId";
+
+		if($users = $this->DB->rawSql($sql)->returnData())
+		{
+			return $users;
+		}
+
+		return false;
+
+
 	}
 
 	

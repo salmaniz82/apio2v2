@@ -535,7 +535,13 @@ $route->get('/pdftest', 'pdfCtrl@testInstaller');
 $route->post('/scorecard-pdf/{quiz_id}/{attempt_id}', 'pdfCtrl@scorecardPDF');
 
 
-$route->get('/assert', 'moduleTestCtrl@assertList');
+$route->get('/assert', function() {
+
+	$lastMAXID = false;
+	$lastId = ($lastMAXID) ? $lastMAXID : 0;
+	echo $lastId;
+	
+});
 
 
 
