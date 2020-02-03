@@ -20,7 +20,19 @@ class batchCtrl extends appCtrl
 	public function batchList()
 	{
 
+		
+
+		if(!jwACL::isLoggedIn()) 
+			return $this->uaReponse();
+
+
+		if(!jwACL::has('batch-list')) 
+	 		return $this->accessDenied();
+
+
+
 		$user_id = $this->jwtUserId();
+
 		if($batches = $this->module->listAllBatches($user_id))
 		{
 			$data['batches'] = $batches;
@@ -52,11 +64,26 @@ class batchCtrl extends appCtrl
 	public function batchItems()
 	{
 
+		
+		if(!jwACL::isLoggedIn()) 
+			return $this->uaReponse();
+
+
+		if(!jwACL::has('batch-list')) 
+	 		return $this->accessDenied();
+
+
+
 		$batchId = $this->getID();
+
 		$user_id = $this->jwtUserId();
+
 		$partProgress = $this->module->candParticipation($batchId, $user_id);
+
 		$data['batchProgress'] = $partProgress;
+
 		$statusCode = 200;
+
 		return View::responseJson($data, $statusCode);
 
 		die();
@@ -68,7 +95,20 @@ class batchCtrl extends appCtrl
 	public function listEligibleQuiz()
 	{
 
+		
+		if(!jwACL::isLoggedIn()) 
+			return $this->uaReponse();
+
+
+
+		if(!jwACL::has('batch-add')) 
+	 		return $this->accessDenied();
+
+
+		
 		$user_id = $this->jwtUserId();
+
+
 
 		if($quiz = $this->module->listBatchEligibleQuiz($user_id))
 		{
@@ -155,7 +195,18 @@ class batchCtrl extends appCtrl
 	public function progressOverview()
 	{
 
+		if(!jwACL::isLoggedIn()) 
+			return $this->uaReponse();
+
+
+
+		if(!jwACL::has('batch-list')) 
+	 		return $this->accessDenied();
+
+
+
 		$batchId = $this->getID();
+
 		$canidateId = $this->getParam('candiateId');
 
 
@@ -292,6 +343,16 @@ class batchCtrl extends appCtrl
 	{
 
 
+		if(!jwACL::isLoggedIn()) 
+			return $this->uaReponse();
+
+
+
+		if(!jwACL::has('batch-list')) 
+	 		return $this->accessDenied();
+
+
+
 		$batch_id = $this->getID();
 
 		if($candidates = $this->module->listTaggedStudents($batch_id))
@@ -317,6 +378,16 @@ class batchCtrl extends appCtrl
 	public function batchDetails()
 	{
 		
+		
+		if(!jwACL::isLoggedIn()) 
+			return $this->uaReponse();
+
+
+		if(!jwACL::has('batch-list')) 
+	 		return $this->accessDenied();
+
+
+
 		$batch_id = $this->getID();
 
 		

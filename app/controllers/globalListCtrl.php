@@ -19,6 +19,14 @@ class globalListCtrl extends appCtrl {
     public function index()
     {
 
+
+        if(!jwACL::isLoggedIn()) 
+            return $this->uaReponse();
+
+
+        
+
+
         $categories = $this->catModule->flatJoinList();
         $poolSummary = $this->queModule->summaryCount();
         $data['categories'] = $categories;

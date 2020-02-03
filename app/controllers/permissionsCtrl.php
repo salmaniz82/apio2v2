@@ -19,6 +19,16 @@ class permissionsCtrl extends appCtrl
 	public function index()
 	{
 
+
+		if(!jwACL::isLoggedIn()) 
+			return $this->uaReponse();	
+		
+		if(!jwACL::has('permission-list')) 
+			return $this->accessDenied();
+
+
+
+
 		if($rows = $this->module->returnAllPermissions())
 		{
 			$data['permissions'] = $rows;

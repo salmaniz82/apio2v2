@@ -63,7 +63,12 @@ class userCtrl extends appCtrl
 	{
 
 		if(!jwACL::isLoggedIn()) 
-			return $this->uaReponse();	
+			return $this->uaReponse();
+
+
+		if(!jwACL::has('user-local-list')) 
+			return $this->accessDenied();
+
 
 		$entity_id = jwACL::authUserId();
 		
@@ -101,6 +106,16 @@ class userCtrl extends appCtrl
 	{
 
 
+
+		if(!jwACL::isLoggedIn()) 
+			return $this->uaReponse();
+
+
+		if(!jwACL::isAdmin())
+			return $this->accessDenied();
+
+
+
 		if($data['users'] = $this->module->allUsers())
 		{
 			
@@ -127,8 +142,14 @@ class userCtrl extends appCtrl
 	public function single()
 	{
 
+
 		$id = $this->getID();
-		echo "show single user with id" . $id;
+	
+		if($id === 0)
+			return $this->nonIntegorResponse();	
+
+		echo $id;
+		
 
 	}
 

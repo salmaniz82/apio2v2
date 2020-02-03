@@ -84,9 +84,6 @@ $route->get('/validate', 'jwtauthCtrl@validateToken');
 
 $route->put('/changepassword/{id}', 'userCtrl@changePassword');
 
-$route->get('/hashpass', 'userCtrl@udpatePasswordHash');
-
-
 
 
 /*
@@ -117,8 +114,6 @@ $route->post('/cat/add-with-text', 'categoryCtrl@addWithText');
 
 
 
-
-
 /* USERS */
 
 $route->get('/profile', 'profileCtrl@index');
@@ -138,23 +133,6 @@ $route->post('/profile', 'profileCtrl@save');
 
 
 $route->get('/profile-authlogo', 'profileCtrl@authProfileLogo');
-
-
-
-$route->get('/strcheck', function() {
-
-	$user_id = 110;
-
-	$logoImageUrl = 'uplooads/110-logo.png';
-
-
-	$str = "INSERT INTO profile (user_id, logo) VALUES($user_id, '{$logoImageUrl}')	
-		ON DUPLICATE KEY UPDATE logo = '{$logoImageUrl}'";
-
-
-		echo $str;
-
-});
 
 
 
@@ -453,29 +431,20 @@ $route->get('/dlstesting/{id}', 'moduleTestCtrl@dlsSummaryReport');
 $route->get('/testtickets/{id}', 'moduleTestCtrl@testTickets');
 $route->get('/testmailmodule', 'moduleTestCtrl@emailmoduletest');
 $route->post('/postmeta/{id}', 'moduleTestCtrl@postmeta');
-*/
-
-
 $route->get('/dbsingle', 'moduleTestCtrl@dbsingle');
-
-
+$route->get('/testphpmailer', 'moduleTestCtrl@testphpmailer');
+$route->get('/testconfigmail', 'moduleTestCtrl@testConfigEmailStatus');
 $route->get('/checkesc', 'moduleTestCtrl@checkESCvalues');
 
-
-$route->get('/intercept/{id}', 'moduleTestCtrl@attemptIntercept');
-
-
-$route->get('/testphpmailer', 'moduleTestCtrl@testphpmailer');
-
-
-$route->get('/testconfigmail', 'moduleTestCtrl@testConfigEmailStatus');
-
-
-$route->post('/servicepost', 'moduleTestCtrl@servicePost');
-
+$route->get('/pdftest', 'pdfCtrl@testInstaller');
 
 $route->post('/message', 'moduleTestCtrl@twilloPost');
 
+$route->post('/servicepost', 'moduleTestCtrl@servicePost');
+
+$route->get('/intercept/{id}', 'moduleTestCtrl@attemptIntercept');
+
+*/
 
 
 
@@ -503,45 +472,16 @@ $route->get('/pages/invite-batch?', 'emailTemplateCtrl@inviteBatch');
 
 
 
-
-
-$route->get('/verify', function() {
-
-
-	$uriToken = array(
-
-		'action' => 'quizInvitation',
-		'entitySlug' => 'virtual-tech',
-		'enroll_id' => 329,
-		'entity_id' => 33,
-		'candidate_id' => 44,
-		'invite_id' => 356
-
-		);
-
-		echo urlencode(base64_encode(json_encode($uriToken)));
-
-});
-
-
 $route->put('/intercept/{id}/{quizId}', 'enrollmentCtrl@defineIntercept');
 
 $route->get('/pages/staticpage', 'pagesCtrl@staticPage');
 
 $route->get('/pages-scoresheet/{quiz_id}/{attempt_id}', 'pagesCtrl@scoresheet');
 
-$route->get('/pdftest', 'pdfCtrl@testInstaller');
+
 
 $route->post('/scorecard-pdf/{quiz_id}/{attempt_id}', 'pdfCtrl@scorecardPDF');
 
-
-$route->get('/assert', function() {
-
-	$lastMAXID = false;
-	$lastId = ($lastMAXID) ? $lastMAXID : 0;
-	echo $lastId;
-	
-});
 
 
 

@@ -250,6 +250,16 @@ class answersCtrl extends appCtrl
 	{
 
 
+		if(!jwACL::isLoggedIn()) 
+			return $this->uaReponse();
+
+
+
+		if(!jwACL::has('quiz-progress')) 
+			return $this->accessDenied();
+
+
+
 			$quiz_id = (int) Route::$params['quiz_id'];
 			$attempt_id = (int) Route::$params['attempt_id'];
 			
@@ -296,6 +306,19 @@ class answersCtrl extends appCtrl
 
 	public function scoreCard()
 	{
+
+
+		if(!jwACL::isLoggedIn()) 
+			return $this->uaReponse();
+
+
+
+		if(!jwACL::has('quiz-progress')) 
+			return $this->accessDenied();
+
+
+
+
 
 		$quiz_id = (int) Route::$params['quiz_id'];
 		$attempt_id = (int) Route::$params['attempt_id'];

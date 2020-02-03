@@ -19,13 +19,14 @@ class quizCtrl extends appCtrl
 	{	
 
 
-
 		if(!jwACL::isLoggedIn()) 
 			return $this->uaReponse();
 
 
+		if(!jwACL::has('quiz-list')) 
+			return $this->accessDenied();
 
-
+		
 		$allowedRoles = [1,2, 6];
     	if( JwtAuth::validateToken() && in_array((int) JwtAuth::$user['role_id'], $allowedRoles) )
 		{
@@ -83,6 +84,13 @@ class quizCtrl extends appCtrl
 
 
 		$quizID = $this->getID();
+
+
+		if($quizID === 0)
+			return $this->nonIntegorResponse();	
+
+
+		
 
 
 		if($quiz = $this->module->getQuizById($quizID))
@@ -302,7 +310,7 @@ class quizCtrl extends appCtrl
 
 		else {
 
-			return $this->uaReponse();
+			return $this->accessDenied();
 			
 		}
 
@@ -324,7 +332,20 @@ class quizCtrl extends appCtrl
 	{
 
 
+		if(!jwACL::isLoggedIn()) 
+			return $this->uaReponse();
+			
+
+
 		$quiz_id = $this->getID();
+
+
+
+		if($quiz_id === 0)
+			return $this->nonIntegorResponse();
+
+
+
 
 
 		if($row = $this->module->quizQuestionEligible($quiz_id))
@@ -702,16 +723,35 @@ class quizCtrl extends appCtrl
 		{
 			return $this->uaReponse();
 		}
-		
+
+
+
+		$allowedRoles = [4];
+    	if( JwtAuth::validateToken() && !in_array((int) JwtAuth::$user['role_id'], $allowedRoles) )
+		{
+
+			return $this->accessDenied();
+
+		}
 
 
 		$quiz_id = (int) Route::$params['quiz_id'];
 
 		$attempt_id = (int) Route::$params['attempt_id'];
 
+
+		if($quiz_id == 0 || $attempt_id == 0) 
+		{
+			return $this->nonIntegorResponse();
+		}
+
+
+
+
 		$attemptModule = $this->load('module', 'attempt');
 
 		$usageXTimes = $attemptModule->getXTimesUsed($attempt_id);
+
 
 		
 		/*
@@ -849,15 +889,14 @@ class quizCtrl extends appCtrl
 
 				}
 
-
-				
-
 			}
+
+
 
 		}
 
 
-		if($questions != false AND $quiz != false)
+		if($quiz != false)
 		{
 			$statusCode = 200;
 		}
@@ -877,10 +916,20 @@ class quizCtrl extends appCtrl
     {
     	
     	if(!jwACL::isLoggedIn()) 
-			return $this->uaReponse();
+			return $this->uaReponse();	
 		
+		if(!jwACL::has('quiz-progress')) 
+			return $this->accessDenied();
 
-        $quiz_id = $this->getID();
+
+		$quiz_id = $this->getID();
+
+
+
+		if($quiz_id === 0)
+			return $this->nonIntegorResponse();	
+
+
 
 
         if($progress = $this->module->quizProgress($quiz_id))
@@ -915,6 +964,26 @@ class quizCtrl extends appCtrl
 		
 		$quiz_id = (int) Route::$params['quiz_id'];
 		$attempt_id = (int) Route::$params['attempt_id'];
+
+
+		$allowedRoles = [4];
+    	if( JwtAuth::validateToken() && !in_array((int) JwtAuth::$user['role_id'], $allowedRoles) )
+		{
+
+			return $this->accessDenied();
+
+		}
+
+
+
+		if($quiz_id == 0 || $attempt_id == 0) 
+		{
+			return $this->nonIntegorResponse();
+		}
+
+
+
+
 		$attemptModule = $this->load('module', 'attempt');
 		$usageXTimes = $attemptModule->getXTimesUsed($attempt_id);
 
@@ -1184,8 +1253,13 @@ class quizCtrl extends appCtrl
     	if(!jwACL::isLoggedIn()) 
 			return $this->uaReponse();
 
+
+
 		if(!jwACL::has('activity-monitor')) 
 			return $this->accessDenied();	
+
+
+
 
 
     	$attemptModule = $this->load('module', 'attempt');
@@ -1226,6 +1300,13 @@ class quizCtrl extends appCtrl
 
     public function pollingonfinish()
     {
+
+    	
+    	if(!jwACL::isLoggedIn()) 
+			return $this->uaReponse();
+
+
+
 
     	set_time_limit(0);
 
@@ -1443,6 +1524,12 @@ class quizCtrl extends appCtrl
     {
 
 
+
+    	if(!jwACL::isLoggedIn()) 
+			return $this->uaReponse();
+
+
+
         $quiz_id = $this->getID();
         $quizQuestionModule = $this->load('module', 'quizQuestions');
 
@@ -1530,11 +1617,13 @@ class quizCtrl extends appCtrl
     public function invitationQuizListHandler()
 	{
 
-
 			if(!jwACL::isLoggedIn()) 
-			return $this->uaReponse();
+				return $this->uaReponse();
+
 
 			$enroll_id = $this->getID();
+
+			
 			$candidate_id = $this->jwtUserId();
 
 
@@ -1579,9 +1668,23 @@ class quizCtrl extends appCtrl
 
 		public function canidateSelfProgressDetails()
 		{
+
+
+			if(!jwACL::isLoggedIn()) 
+				return $this->uaReponse();	
+
 		
 			$attemptId = $this->getID();
 			$canidateId = $this->jwtUserId();
+
+
+			$allowedRoles = [4];
+    		if( JwtAuth::validateToken() && in_array((int) JwtAuth::$user['role_id'], $allowedRoles) )
+			{
+
+
+
+
 			if($progress = $this->module->candidateSelfProgressReport($attemptId, $canidateId))
 			{
 
@@ -1596,7 +1699,19 @@ class quizCtrl extends appCtrl
 				$statusCode = 500;
 			}
 
+
 			return View::responseJson($data, $statusCode);
+
+			}
+
+			else {
+
+
+				return $this->accessDenied();
+
+			}
+
+			
 
 		}
 

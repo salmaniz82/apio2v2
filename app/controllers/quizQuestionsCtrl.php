@@ -19,6 +19,14 @@ class quizQuestionsCtrl extends appCtrl
 	public function getQuestionByQuizId()
 	{
 		
+		
+		if(!jwACL::isLoggedIn()) 
+			return $this->uaReponse();	
+
+		
+		
+
+
 		$quiz_id = $this->getID();
 
 
@@ -93,7 +101,22 @@ class quizQuestionsCtrl extends appCtrl
 	public function listMatchQuestions()
 	{
 
+		
+
+
+		if(!jwACL::isLoggedIn()) 
+			return $this->uaReponse();	
+		
+		
+		if(!jwACL::has('quiz-questions-list')) 
+			return $this->accessDenied();
+
+
+
 		$quiz_id = $this->getID();
+
+
+
 
 		$this->module->globalThresholdByQuizId($quiz_id);
 
@@ -127,7 +150,15 @@ class quizQuestionsCtrl extends appCtrl
 	public function questionSyncCheck()
 	{
 
+		if(!jwACL::isLoggedIn()) 
+			return $this->uaReponse();	
+
+
 		
+		if(!jwACL::has('quiz-questions-sync')) 
+			return $this->accessDenied();
+
+
 
 		$quiz_id = $this->getID();
 

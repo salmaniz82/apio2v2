@@ -19,6 +19,13 @@ class mediaCtrl extends appCtrl{
 	public function index()
 	{
 
+		
+		if(!jwACL::isLoggedIn()) 
+			return $this->uaReponse();
+
+
+
+
 		$user_id = jwACL::authUserId();
 
 		if( $media = $this->module->listall($user_id) )
@@ -39,6 +46,14 @@ class mediaCtrl extends appCtrl{
 
 	public function singleItemById()
 	{
+
+		
+		if(!jwACL::isLoggedIn()) 
+			return $this->uaReponse();
+
+		
+
+
 
 		$id = $this->getID();
 

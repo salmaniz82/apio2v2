@@ -22,6 +22,9 @@ class questionsCtrl extends appCtrl
 		if(!jwACL::isLoggedIn()) 
 			return $this->uaReponse();
 
+		if(!jwACL::has('dashboard-questions')) 
+			return $this->accessDenied();
+
 
 		
 		if($questions = $this->module->listall())
@@ -162,6 +165,19 @@ class questionsCtrl extends appCtrl
 
 	public function summaryCount()
 	{
+		
+
+
+		if(!jwACL::isLoggedIn()) 
+			return $this->uaReponse();
+
+
+		if(!jwACL::isAdmin())
+			return $this->accessDenied();
+
+
+
+
 		if($summary = $this->module->summaryCount())
 		{
 			
@@ -237,11 +253,16 @@ class questionsCtrl extends appCtrl
 		if(!jwACL::isLoggedIn()) 
 			return $this->uaReponse();
 
+		if(!jwACL::has('dashboard-questions')) 
+			return $this->accessDenied();
+
 
 
 
 		$queID = $this->getID();
+
 		$user_id = jwACL::authUserId();
+
 		$role = jwACL::authRole();
 
 		$quizQuestionsModule = $this->load('module', 'quizQuestions');

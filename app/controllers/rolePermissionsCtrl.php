@@ -16,14 +16,18 @@ class rolePermissionsCtrl extends appCtrl
 	}
 
 
-	public function check()
-	{
-		echo  "check this one";
-	}
-
-
+	
 	public function index()
 	{
+		
+		if(!jwACL::isLoggedIn()) 
+			return $this->uaReponse();
+
+
+		if(!jwACL::isAdmin())
+			return $this->accessDenied();
+
+
 		if($rows = $this->module->returnAllRolePermissions())
 		{
 			$data['permissions'] = $rows;

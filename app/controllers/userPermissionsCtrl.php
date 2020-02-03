@@ -17,10 +17,25 @@ class userPermissionsCtrl extends appCtrl
 
 	public function index()
 	{
-		
+
+
+		if(!jwACL::isLoggedIn()) 
+			return $this->uaReponse();
+
+
+		if(!jwACL::isAdmin())
+			return $this->accessDenied();
+
 
 
 		$user_id = $this->getID();
+
+		if($user_id === 0)
+			return $this->nonIntegorResponse();	
+		
+
+
+
 		if($rows = $this->module->userPermissionList($user_id))
 		{
 			$data['userPermissions'] = $rows;
@@ -40,7 +55,23 @@ class userPermissionsCtrl extends appCtrl
 
 	public function permissionArrayList()
 	{
+		
+
+		if(!jwACL::isLoggedIn()) 
+			return $this->uaReponse();
+
+
+
+		if(!jwACL::isAdmin())
+			return $this->accessDenied();
+
+
+
 		$user_id = $this->getID();
+
+
+		if($user_id === 0)
+			return $this->nonIntegorResponse();	
 
 
 		if($permissions = $this->module->permissionArrayList($user_id))

@@ -26,6 +26,16 @@ class enrollmentCtrl extends appCtrl
 	public function listEnrolledStudents()
 	{
 
+		if(!jwACL::isLoggedIn()) 
+			return $this->uaReponse();
+
+
+		if(!jwACL::has('quiz-enroll-list')) 
+			return $this->accessDenied();
+
+		
+
+
 		$quizId = $this->getID();
 
 		if($enroll = $this->module->enrolledStudents($quizId))

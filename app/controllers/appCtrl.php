@@ -36,7 +36,7 @@ class appCtrl {
 		$data['status'] = false;
     	$data['message'] = "Not Authenticated Request denied";
 	    $statusCode = 401;
-    	return view::responseJson($data, $statusCode);
+    	return View::responseJson($data, $statusCode);
 	}
 
 	public function accessDenied() 
@@ -55,7 +55,7 @@ class appCtrl {
 		$data['status'] = false;
     	$data['message'] = "Ownership rejected for this operation";
 	    $statusCode = 403;
-    	return view::responseJson($data, $statusCode);
+    	return View::responseJson($data, $statusCode);
 
 	}
 
@@ -66,7 +66,18 @@ class appCtrl {
 		$data['status'] = false;
     	$data['message'] = "The Request is Empty Process Terminated";
 	    $statusCode = 403;
-    	return view::responseJson($data, $statusCode);
+    	return View::responseJson($data, $statusCode);
+
+	}
+
+
+
+	public function nonIntegorResponse()
+	{
+		$data['status'] = false;
+    	$data['message'] = "Unexpected non-integer URI argument";
+	    $statusCode = 406;
+	    return View::responseJson($data, $statusCode);		
 
 	}
 

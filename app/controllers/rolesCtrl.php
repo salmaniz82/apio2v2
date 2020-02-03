@@ -19,6 +19,11 @@ class rolesCtrl extends appCtrl
 	public function index()
 	{
 		
+		
+		if(!jwACL::isLoggedIn()) 
+			return $this->uaReponse();
+
+
 		$role_id = $this->jwtRoleId();
 
 		$data = $this->module->returnAllRoles($role_id);

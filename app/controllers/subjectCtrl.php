@@ -23,6 +23,11 @@ class subjectCtrl extends appCtrl
 		if(!jwACL::isLoggedIn()) 
 			return $this->uaReponse();
 
+
+
+		
+		
+
 		
 		$quiz_id = $this->getID();
 		$quizModule = $this->load('module', 'quiz');
