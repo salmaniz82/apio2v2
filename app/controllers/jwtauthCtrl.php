@@ -63,6 +63,57 @@ class jwtauthCtrl extends appCtrl {
 	public function login()
 	{
 
+	    
+
+		$this->load('external', 'gump.class');
+
+		$gump = new GUMP();
+
+
+		if(isset($_POST)) 
+		{
+
+			$_POST = $gump->sanitize($_POST);
+
+		}
+
+		else {
+
+			return $this->emptyRequestResponse();
+
+		}
+
+
+		$gump->validation_rules(array(
+			
+			'email'    =>  'required|valid_email',
+			'password' 	=> 'required|min_len,6'
+			
+		));
+
+
+
+		$pdata = $gump->run($_POST);
+
+
+		if($pdata === false) 
+		{
+
+			// validation failed
+			$data['status'] = false;
+
+			$errorList = $gump->get_errors_array();
+			$errorFromArray = array_values($errorList);
+			$data['errorlist'] = $errorList;
+			$data['message'] = $errorFromArray[0];
+			$statusCode = 406;
+			return View::responseJson($data, $statusCode);
+
+		}
+
+
+
+
 	    $creds = array(
 	    	'email'=> $_POST['email'],
 	    	'password' => $_POST['password']
@@ -260,14 +311,81 @@ class jwtauthCtrl extends appCtrl {
 
 	public function register()
 	{
-		$db = new Database();
-		$db->table = 'users';
+		
+
+
+		$this->load('external', 'gump.class');
+
+		$gump = new GUMP();
+
+
+		if(isset($_POST)) 
+		{
+
+			$_POST = $gump->sanitize($_POST);
+
+		}
+
+		else {
+
+			return $this->emptyRequestResponse();
+
+		}
+
+
+		$gump->validation_rules(array(
+			
+			'name' => 'required|min_len,6',
+			'email'    =>  'required|valid_email',
+			'password' 	=> 'required|min_len,6'
+
+			
+		));
+
+
+
+		$pdata = $gump->run($_POST);
+
+
+		if($pdata === false) 
+		{
+
+			// validation failed
+			$data['status'] = false;
+
+			$errorList = $gump->get_errors_array();
+			$errorFromArray = array_values($errorList);
+			$data['errorlist'] = $errorList;
+			$data['message'] = $errorFromArray[0];
+			$statusCode = 406;
+			return View::responseJson($data, $statusCode);
+
+		}
+
+
+
+
+		$userModule = $this->load('module', 'user');
+
+
+		
 
 		$user['name'] = $_POST['name'];
 		$user['email'] = $_POST['email'];
-		$user['role_id'] = 3;
-
 		$password = $_POST['password'];
+		$user['role_id'] = (isset($_POST['role_id'])) ? $_POST['role_id'] : 4;
+
+
+		if($user['role_id'] != 4) 
+		{
+
+			$data['message'] = "User type is not open for registration";
+			$statusCode = 406;
+			return View::responseJson($data, $statusCode);
+
+		}
+
+
 		
 		$password = password_hash($password, PASSWORD_BCRYPT, array(
 		'cost' => 12
@@ -275,7 +393,21 @@ class jwtauthCtrl extends appCtrl {
 
 		$user['password'] = $password;
 
-		if( $db->insert($user) ) 
+
+
+		if($userModule->emailExists($user['email']))
+		{
+
+			$data['message'] = 'Email is already taken';
+			$statusCode = 406;
+			return View::responseJson($data, $statusCode);	
+
+		}
+
+
+		
+
+		if( $userModule->save($user) ) 
 		{
 
 			$data['title'] = 'Congratulations';
@@ -285,12 +417,11 @@ class jwtauthCtrl extends appCtrl {
 		} else 
 			{
 
-			$data['message'] = 'Some thing went wrong during registration';
-			$statusCode = 500;
-			
+				$data['message'] = 'Some thing went wrong during registration';
+				$statusCode = 500;
 			}
 
-		view::responseJson($data, $statusCode);
+		return View::responseJson($data, $statusCode);
 	}
 
 }

@@ -20,24 +20,39 @@ if(SITE_URL == 'http://api.io2v3.dvp/')
 
 $route->get('/', function() {
 	
-	$data = "iSkillMetrics API Base";
+	$data['route'] = "iSkillMetrics API Root";
+	$data['version'] = '1.0.0';
+	$data['lastUpdate'] = "API Test Validation Completed";
+	$data['dated'] = DATE('Y-m-d h:i:s');
+	$data['author'] = "Salman Ahmed";
+	$data['copyrights'] = utf8_encode("Copyright iSystematics.com © " . DATE('Y'));
+
+
 	view::responseJson($data, 200);
 
 });
 
 
-$route->get('/masterdatalist', 'masterdataListController@masterDataRouter');
+
 
 
 $route->get('/dashboard', 'dashboardCtrl@router');
 
 $route->get('/dasboard/activity?', 'dashboardCtrl@activity');
 
-
 $route->put('/dashboard/markactivityinactive/{id}', 'dashboardCtrl@clearEndActivity');
 
+$route->post('/login', 'jwtauthCtrl@login');
+
+$route->post('/register', 'jwtauthCtrl@register');
+
+$route->put('/changepassword/{id}', 'userCtrl@changePassword');
 
 
+
+
+
+/*
 
 $route->get('/routes', function() {
 
@@ -67,26 +82,11 @@ $route->delete('/routes', function() {
 
 });
 
-
-
-
-
-
-
 $route->get('/checktoken', 'jwtauthCtrl@check');
-
-$route->post('/login', 'jwtauthCtrl@login');
-
-$route->post('/register', 'jwtauthCtrl@register');
 
 $route->get('/validate', 'jwtauthCtrl@validateToken');
 
-
-$route->put('/changepassword/{id}', 'userCtrl@changePassword');
-
-
-
-/*
+$route->get('/masterdatalist', 'masterdataListController@masterDataRouter');
 
 $route->get('/cat/child-by-id/{catID}', 'categoryCtrl@dDirectChildrenById');
 
@@ -477,32 +477,7 @@ $route->get('/pages/staticpage', 'pagesCtrl@staticPage');
 $route->get('/pages-scoresheet/{quiz_id}/{attempt_id}', 'pagesCtrl@scoresheet');
 
 
-
 $route->post('/scorecard-pdf/{quiz_id}/{attempt_id}', 'pdfCtrl@scorecardPDF');
-
-
-$route->get('/assert', function() {
-
-	
-	$startDateTime = "2020-02-06 13:21";
-
-
-	function validateDateTime24hrs($date, $format = 'Y-m-d H:i')
-	{
-    		$d = DateTime::createFromFormat($format, $date);
-    		return ($d && $d->format($format) == $date);
-	}
-
-
-	var_dump( validateDateTime($startDateTime) );
-
-
-
-
-});
-
-
-
 
 
 $route->otherwise( function() {

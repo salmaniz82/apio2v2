@@ -156,8 +156,58 @@ class userCtrl extends appCtrl
 	public function save()
 	{
 
-			$authenticatedRequest = false;
-			$sendMail = false;
+		$authenticatedRequest = false;
+		$sendMail = false;
+
+
+
+		$this->load('external', 'gump.class');
+
+		$gump = new GUMP();
+
+
+		if(isset($_POST)) 
+		{
+
+			$_POST = $gump->sanitize($_POST);
+
+		}
+
+		else {
+
+			return $this->emptyRequestResponse();
+
+		}
+
+
+		$gump->validation_rules(array(
+			
+			'name' => 'required|min_len,6',
+			'email'    =>  'required|valid_email',
+			'password' 	=> 'required|min_len,6'
+
+			
+		));
+
+
+
+		$pdata = $gump->run($_POST);
+
+
+		if($pdata === false) 
+		{
+
+			// validation failed
+			$data['status'] = false;
+
+			$errorList = $gump->get_errors_array();
+			$errorFromArray = array_values($errorList);
+			$data['errorlist'] = $errorList;
+			$data['message'] = $errorFromArray[0];
+			$statusCode = 406;
+			return View::responseJson($data, $statusCode);
+
+		}
 
 
 
@@ -550,12 +600,7 @@ class userCtrl extends appCtrl
 		if(!jwACL::isLoggedIn()) {
 			return $this->uaReponse();
 
-			die();
 		}
-
-
-
-
 
 
 
@@ -596,6 +641,69 @@ class userCtrl extends appCtrl
 
 	public function registerEnroll()
 	{
+
+
+
+		if(!jwACL::isLoggedIn()) 
+			return $this->uaReponse();	
+
+
+		if(!jwACL::has('register-enroll')) 
+			return $this->accessDenied();
+
+
+
+
+		$this->load('external', 'gump.class');
+
+		$gump = new GUMP();
+
+
+		if(isset($_POST)) 
+		{
+
+			$_POST = $gump->sanitize($_POST);
+
+		}
+
+		else {
+
+			return $this->emptyRequestResponse();
+
+		}
+
+
+		$gump->validation_rules(array(
+			
+			'name' => 'required|min_len,6',
+			'email'    =>  'required|valid_email',
+			'password' 	=> 'required|min_len,6',
+			'examID'=> 'required|integer'
+
+			
+		));
+
+
+
+		$pdata = $gump->run($_POST);
+
+
+		if($pdata === false) 
+		{
+
+			// validation failed
+			$data['status'] = false;
+
+			$errorList = $gump->get_errors_array();
+			$errorFromArray = array_values($errorList);
+			$data['errorlist'] = $errorList;
+			$data['message'] = $errorFromArray[0];
+			$statusCode = 406;
+			return View::responseJson($data, $statusCode);
+
+		}
+
+
 
 
 		$sendRegistrationEmail = (isset($_POST['sendRegisterEmail']) && $_POST['sendRegisterEmail'] == true ) ? true : false;
@@ -786,6 +894,14 @@ class userCtrl extends appCtrl
 
 		if(!jwACL::isLoggedIn()) 
 			return $this->uaReponse();
+
+
+
+
+		if(!jwACL::has('users-upload')) 
+			return $this->accessDenied();
+
+
 
 		$fileRowsLimit = 100;
 

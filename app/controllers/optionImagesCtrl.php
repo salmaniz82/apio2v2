@@ -23,6 +23,73 @@ class optionImagesCtrl extends appCtrl
 	{
 		if(!jwACL::isLoggedIn()) 
 			return $this->uaReponse();	
+		
+
+
+		
+		if(!jwACL::has('dashboard-questions-add')) 
+			return $this->accessDenied();
+
+
+
+		$this->load('external', 'gump.class');
+
+		$gump = new GUMP();
+
+
+		if(isset($_FILES)) 
+		{
+
+			$_FILES = $gump->sanitize($_FILES);
+
+		}
+
+		else {
+
+			return $this->emptyRequestResponse();
+
+		}
+
+
+		$gump->validation_rules(array(
+			
+			'file'   =>  'required_file|extension,png;jpg'
+			
+		));
+
+
+
+			$maxLogoSize = 1048576;
+
+		 	if( $_FILES["file"]["size"] > $maxLogoSize)
+			{
+
+				$data['message'] = "File size must not be highier than 1 MB";
+				$statusCode = 406;
+				return View::responseJson($data, $statusCode);
+
+			}
+
+
+
+		$pdata = $gump->run($_FILES);
+
+
+		if($pdata === false) 
+		{
+
+			// validation failed
+			$data['status'] = false;
+			$errorList = $gump->get_errors_array();
+			$errorFromArray = array_values($errorList);
+			$data['errorlist'] = $errorList;
+			$data['message'] = $errorFromArray[0];
+			$statusCode = 406;
+			return View::responseJson($data, $statusCode);
+
+		}
+
+
 
 		$user_id = jwACL::authUserId();
 		$optionLabel = $this->getParam('optionLabel');

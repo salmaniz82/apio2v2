@@ -64,8 +64,8 @@ class appCtrl {
 	{
 
 		$data['status'] = false;
-    	$data['message'] = "The Request is Empty Process Terminated";
-	    $statusCode = 403;
+    	$data['message'] = "Request is empty process terminated";
+	    $statusCode = 400;
     	return View::responseJson($data, $statusCode);
 
 	}

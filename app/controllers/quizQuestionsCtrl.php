@@ -51,6 +51,20 @@ class quizQuestionsCtrl extends appCtrl
 	public function allocateQuestions()
 	{
 		
+			
+
+		if(!jwACL::isLoggedIn()) 
+			return $this->uaReponse();		
+
+	
+
+
+		if(!jwACL::has('quiz-add')) 
+			return $this->accessDenied();
+
+
+
+
 		$quiz_id = $this->getID();
 
 		$this->module->globalThresholdByQuizId($quiz_id);
@@ -59,6 +73,19 @@ class quizQuestionsCtrl extends appCtrl
 
 
 		$quizModule = $this->load('module', 'quiz');
+
+
+		if(!$quizModule->checkExists($quiz_id))
+		{
+
+
+			$data['message'] = 'Quiz does not exist with supplied id';
+			$statusCode = 400;
+			return View::responseJson($data, $statusCode);
+
+		}
+
+
 
 		if($quizModule->isDLSEnabledQuiz($quiz_id))
 		{
@@ -231,8 +258,69 @@ class quizQuestionsCtrl extends appCtrl
 	public function processSynchronize()
 	{
 
-		$quiz_id = $_POST['quiz_id'];
-		$queIDs = $_POST['queIDs'];
+		if(!jwACL::isLoggedIn()) 
+			return $this->uaReponse();	
+		
+		
+		if(!jwACL::has('quiz-questions-sync')) 
+			return $this->accessDenied();
+
+
+		if(!isset($_POST)) 
+		{
+			return $this->emptyRequestResponse();
+		}
+
+
+		$quiz_id = (isset($_POST['quiz_id'])) ? $_POST['quiz_id'] : NULL;
+
+
+		if($quiz_id == NULL)
+		{
+
+
+			$data['message'] = "Quiz id not provided";
+			$statusCode = 406;
+			return View::responseJson($data, $statusCode);
+
+		}
+
+
+
+		$quizModule = $this->load('module', 'quiz');
+
+
+		if(!$quizModule->checkExists($quiz_id))
+		{
+
+			$data['message'] = "Quiz not found with provided id";
+			$data['status'] = false;
+			$statusCode = 406;
+
+			return View::responseJson($data, $statusCode);
+
+		}
+
+
+
+
+
+
+		$queIDs = ( isset($_POST['queIDs']) ) ? $_POST['queIDs'] : NULL;
+
+
+		if($queIDs == NULL)
+		{
+
+
+			$data['message'] = "Question ids not provided";
+			$statusCode = 406;
+			return View::responseJson($data, $statusCode);
+
+			die();
+		}
+
+
 
 		if($rows = $this->module->SynchronizeHandler($quiz_id, $queIDs))
 		{
@@ -262,7 +350,7 @@ class quizQuestionsCtrl extends appCtrl
 		}
 
 
-		View::responseJson($data, $statusCode);
+		return View::responseJson($data, $statusCode);
 
 
 	}

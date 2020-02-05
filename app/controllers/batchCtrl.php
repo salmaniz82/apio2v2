@@ -146,6 +146,64 @@ class batchCtrl extends appCtrl
 	{
 
 
+		if(!jwACL::isLoggedIn()) 
+			return $this->uaReponse();	
+		
+
+
+		if(!jwACL::has('batch-add')) 
+			return $this->accessDenied();
+
+
+		$this->load('external', 'gump.class');
+
+		$gump = new GUMP();
+
+
+		if(isset($_POST)) 
+		{
+
+			$_POST = $gump->sanitize($_POST);
+
+		}
+
+		else {
+
+			return $this->emptyRequestResponse();
+
+		}
+
+		
+		$gump->validation_rules(array(
+			
+			'title'    =>  'required|min_len,6',
+			'maxScore' 	=> 'required|integer',
+			'passingScore' => 'required|integer',
+			'quizIds' => 'required'
+			
+		));
+
+
+
+		$pdata = $gump->run($_POST);
+
+
+		if($pdata === false) 
+		{
+
+			// validation failed
+			$data['status'] = false;
+
+			$errorList = $gump->get_errors_array();
+			$errorFromArray = array_values($errorList);
+			$data['errorlist'] = $errorList;
+			$data['message'] = $errorFromArray[0];
+			$statusCode = 406;
+			return View::responseJson($data, $statusCode);
+
+		}
+
+
 		$keys = array('title', 'maxScore', 'passingScore');
 
 		$user_id = $this->jwtUserId();
@@ -180,8 +238,8 @@ class batchCtrl extends appCtrl
 		}
 
 		else {
+
 			$data['message'] = "New Batch Save Failed";
-			
 			$statusCode = 500;
 		}
 
@@ -243,15 +301,22 @@ class batchCtrl extends appCtrl
 	{
 
 
+		if(!jwACL::isLoggedIn()) 
+			return $this->uaReponse();	
 		
+		
+		if(!jwACL::has('quiz-enroll-add')) 
+			return $this->accessDenied();
 
+
+		
 		$email = $_POST['email'];
 		$batch_id = $this->getID();
 
 		$usersModule = $this->load('module', 'user');
 
 
-		//userById($id)
+		
 
 
 

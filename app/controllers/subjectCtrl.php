@@ -26,9 +26,6 @@ class subjectCtrl extends appCtrl
 
 
 		
-		
-
-		
 		$quiz_id = $this->getID();
 		$quizModule = $this->load('module', 'quiz');
 
@@ -105,9 +102,68 @@ class subjectCtrl extends appCtrl
 
     	*/
 
+
+    	if(!jwACL::isLoggedIn()) 
+			return $this->uaReponse();
+
+		
+		if(!jwACL::has('quiz-add')) 
+			return $this->accessDenied();
+
+
+
+
+
         $entityId = jwACL::authUserId();
 
         $threshold = (isset($_POST['threshold'])) ? $_POST['threshold'] : "10000";
+
+
+
+        $this->load('external', 'gump.class');
+
+			$gump = new GUMP();
+
+
+		if(isset($_POST)) 
+		{
+
+			$_POST = $gump->sanitize($_POST);
+
+		}
+
+		else {
+
+			return $this->emptyRequestResponse();
+
+		}
+
+
+		$gump->validation_rules(array(
+			
+			'subject_ids' => 'required'
+			
+		));
+
+
+
+		$pdata = $gump->run($_POST);
+
+
+		if($pdata === false) 
+		{
+
+			// validation failed
+			$data['status'] = false;
+
+			$errorList = $gump->get_errors_array();
+			$errorFromArray = array_values($errorList);
+			$data['errorlist'] = $errorList;
+			$data['message'] = $errorFromArray[0];
+			$statusCode = 406;
+			return View::responseJson($data, $statusCode);
+
+		}
 
 
 
@@ -124,7 +180,6 @@ class subjectCtrl extends appCtrl
         else {
 
             $data['message'] = 'Unable to fetch distribution of chosen subjects';
-            $data['debug'] = $this->module->DB;
             $statusCode = 500;
 
         }

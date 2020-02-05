@@ -50,11 +50,65 @@ class permissionsCtrl extends appCtrl
 	public function save()
 	{
 
+
+
+
+			if(!jwACL::isLoggedIn()) 
+				return $this->uaReponse();	
 		
-		if(isset($_POST['name']) && $_POST['name'] != null)
+		
+			if(!jwACL::isAdmin())
+				return $this->accessDenied();
+
+
+			$this->load('external', 'gump.class');
+
+			$gump = new GUMP();
+
+
+		if(isset($_POST)) 
 		{
 
-				// $dataPayload['name'] = slugify($_POST['name']);
+			$_POST = $gump->sanitize($_POST);
+
+		}
+
+		else {
+
+			return $this->emptyRequestResponse();
+
+		}
+
+
+		$gump->validation_rules(array(
+			
+			'name' => 'required|min_len,6'
+			
+		));
+
+
+
+		$pdata = $gump->run($_POST);
+
+
+		if($pdata === false) 
+		{
+
+			// validation failed
+			$data['status'] = false;
+
+			$errorList = $gump->get_errors_array();
+			$errorFromArray = array_values($errorList);
+			$data['errorlist'] = $errorList;
+			$data['message'] = $errorFromArray[0];
+			$statusCode = 406;
+			return View::responseJson($data, $statusCode);
+
+		}
+
+
+
+
 
 				$dataPayload['name'] = trim($_POST['name']);
 
@@ -79,15 +133,11 @@ class permissionsCtrl extends appCtrl
 					$data['message'] = "Failed While adding new permission";
 					$data['debug'] = $this->module->DB;
 					$statusCode = 500;
-				}	
-		}
+				}
 
-		else {
-			$data['message'] = "Mission Permission Name";
-			$statusCode = 406;
-		}
-		
-		return View::responseJson($data, $statusCode);
+				return View::responseJson($data, $statusCode);
+
+
 	}
 
 

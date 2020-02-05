@@ -54,6 +54,9 @@ class pdfCtrl extends appCtrl {
 	public function scorecardPDF()
 	{
 
+		if(!jwACL::isLoggedIn()) 
+			return $this->uaReponse();	
+
 
 		$quiz_id = (int) Route::$params['quiz_id'];
 
@@ -64,10 +67,6 @@ class pdfCtrl extends appCtrl {
 
 		$options->setIsRemoteEnabled(true);
 
-
-		/*
-			
-		*/
 
 		$DomPdf = new Dompdf();	
 

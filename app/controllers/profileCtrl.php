@@ -87,6 +87,62 @@ class profileCtrl extends appCtrl {
 			return $this->uaReponse();	
 
 
+		$this->load('external', 'gump.class');
+
+		$gump = new GUMP();
+
+		
+
+		if(isset($_POST)) 
+		{
+			$_POST = $gump->sanitize($_POST);	
+		}
+
+		else {
+			return $this->emptyRequestResponse();
+		}
+
+	
+		
+
+		$gump->validation_rules(array(
+			'companyTitle' => 'required',
+			'url'    =>  'required',
+			'email'    =>  'required|valid_email',
+			'contactPerson' 	=> 'required',
+			'address' 	=> 'required',
+			'mobile' 		=> 'required',
+			'landline' 	=> 'required'
+		));
+
+
+
+		$pdata = $gump->run($_POST);
+
+
+
+		if($pdata === false) 
+		{
+
+			$data['status'] = false;
+
+			$errorList = $gump->get_errors_array();
+			$errorFromArray = array_values($errorList);
+			$data['errorlist'] = $errorList;
+			$data['message'] = $errorFromArray[0];
+			$statusCode = 406;
+			return View::responseJson($data, $statusCode);
+
+			die();
+			
+		}
+
+
+
+
+
+
+
 
 		$user_id = jwACL::authUserId();
 
@@ -137,16 +193,79 @@ class profileCtrl extends appCtrl {
 		if(!jwACL::isLoggedIn()) 
 			return $this->uaReponse();	
 
+
+
 		$user_id = jwACL::authUserId();
 
-		// var_dump($_FILES);
 
-		$target_dir = "uploads/logo/";
-		$filename = $user_id.basename($_FILES["file"]["name"]);
-		$target_file = $target_dir.$filename;
 
-		if (move_uploaded_file($_FILES["file"]["tmp_name"], $target_file)) 
+		$this->load('external', 'gump.class');
+
+		$gump = new GUMP();
+
+
+		if(isset($_FILES)) 
 		{
+
+			$_FILES = $gump->sanitize($_FILES);
+
+		}
+
+		else {
+
+			return $this->emptyRequestResponse();
+
+		}
+
+
+		$gump->validation_rules(array(
+			
+			'file'   =>  'required_file|extension,png;jpg'
+			
+		));
+
+
+
+		$pdata = $gump->run($_FILES);
+
+
+		if($pdata === false) 
+		{
+
+			// validation failed
+			$data['status'] = false;
+			$errorList = $gump->get_errors_array();
+			$errorFromArray = array_values($errorList);
+			$data['errorlist'] = $errorList;
+			$data['message'] = $errorFromArray[0];
+			$statusCode = 406;
+			return View::responseJson($data, $statusCode);
+
+		}
+
+
+		 	$maxLogoSize = 1048576;
+
+		 	if( $_FILES["file"]["size"] > $maxLogoSize)
+			{
+				
+				$maxReachedFileSize = true;
+				$data['message'] = "File size must not be highier than 1 MB";
+				$statusCode = 406;
+				return View::responseJson($data, $statusCode);
+
+			}
+			
+
+
+			$target_dir = "uploads/logo/";
+			$filename = $user_id.basename($_FILES["file"]["name"]);
+			$target_file = $target_dir.$filename;
+
+
+
+			if (move_uploaded_file($_FILES["file"]["tmp_name"], $target_file)) 
+			{
      			
 				$data['message'] = 'File uploaded to server';
         		
@@ -162,18 +281,15 @@ class profileCtrl extends appCtrl {
 
         		}
 
-
         		$statusCode = 200;
 
 
-
-
-   		} else {
+	   		} else {
 
 				$data['message'] = 'Error while handling file upload from server';
         		$statusCode = 500;
 
-   		}	
+   			}	
 
 
    		return View::responseJson($data, $statusCode);
@@ -288,6 +404,39 @@ class profileCtrl extends appCtrl {
 
 	public function slugAvailable()
 	{
+
+
+
+		if(!jwACL::isLoggedIn()) 
+			return $this->uaReponse();	
+
+
+		$this->load('external', 'gump.class');
+
+		$gump = new GUMP();
+
+
+		if(isset($_POST)) 
+		{
+
+			$_POST = $gump->sanitize($_POST);
+
+		}
+
+		else {
+
+			return $this->emptyRequestResponse();
+
+		}
+
+
+
+		$gump->validation_rules(array(
+			
+			'slug'    =>  'required'
+			
+		));
+		
 
 		$slug = $_POST['slug'];	
 

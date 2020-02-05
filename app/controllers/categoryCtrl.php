@@ -89,6 +89,56 @@ class categoryCtrl extends appCtrl {
 			return $this->accessDenied();
 
 
+		$this->load('external', 'gump.class');
+
+			$gump = new GUMP();
+
+
+		if(isset($_POST)) 
+		{
+
+			$_POST = $gump->sanitize($_POST);
+
+		}
+
+		else {
+
+			return $this->emptyRequestResponse();
+
+		}
+
+
+		$gump->validation_rules(array(
+			
+			'name' => 'required|min_len,4'
+			
+		));
+
+
+
+		$pdata = $gump->run($_POST);
+
+
+		if($pdata === false) 
+		{
+
+			// validation failed
+			$data['status'] = false;
+
+			$errorList = $gump->get_errors_array();
+			$errorFromArray = array_values($errorList);
+			$data['errorlist'] = $errorList;
+			$data['message'] = $errorFromArray[0];
+			$statusCode = 406;
+			return View::responseJson($data, $statusCode);
+
+		}
+
+
+
+
+
+
 		if($_POST['name'] == "" || strlen($_POST['name']) < 3)
 		{
 			$data['message'] = 'Category must be at least 3 characters long';

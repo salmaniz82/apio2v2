@@ -35,6 +35,10 @@ class invitationsCtrl extends appCtrl
 		if(!jwACL::isLoggedIn()) 
 			return $this->uaReponse();	
 
+
+
+
+
 		$user_id = jwACL::authUserId();
 
 		$enroll_id = $this->getID();

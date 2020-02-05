@@ -120,11 +120,15 @@ class quizCtrl extends appCtrl
 	{
 
 		if(!jwACL::isLoggedIn()) 
-			return $this->uaReponse();	
-		
+			return $this->uaReponse();
 
-		if(!jwACL::has('add-quiz')) 
+		
+		if(!jwACL::has('quiz-add')) 
 			return $this->accessDenied();
+
+
+
+		return die('This route is updated to wizard and no longer in use');
 		
 
 		$keys = array('title', 'category_id', 'minScore', 'maxScore', 'startDateTime', 'endDateTime', 'noques', 'duration');
@@ -601,6 +605,13 @@ class quizCtrl extends appCtrl
 		{
 			return $this->uaReponse();
 		}
+
+
+
+		
+
+
+
 			
 		
 
@@ -1127,19 +1138,79 @@ class quizCtrl extends appCtrl
     "showScore": 0,
     "showResult": "1",
     "showGrading": "1",
-    "showGPA": "1",
-    
+    "showGPA": "1",   
 
     	*/
-
-
-
 
     	if(!jwACL::isLoggedIn()) 
 			return $this->uaReponse();	
 		
 		if(!jwACL::has('quiz-add')) 
 			return $this->accessDenied();
+
+
+		$this->load('external', 'gump.class');
+
+			$gump = new GUMP();
+
+
+		if(isset($_POST)) 
+		{
+
+			$_POST = $gump->sanitize($_POST);
+
+		}
+
+		else {
+
+			return $this->emptyRequestResponse();
+
+		}
+
+
+
+		$gump->validation_rules(array(
+			
+			'code' => 'required',
+			'title' => 'required',
+			'category_id' => 'required|integer',
+			'minScore' => 'required|integer',
+			'maxScore' => 'required|integer',
+			'startDateTime' => 'required',
+			'endDateTime' => 'required',
+			'noques' => 'required|integer',
+			'duration' => 'required|integer',
+			'threshold' => 'required|integer',
+			'maxAllocation' => 'required|integer',	
+			'venue' => 'required',
+			
+		));
+
+
+
+		$pdata = $gump->run($_POST);
+
+
+		if($pdata === false) 
+		{
+
+			// validation failed
+			$data['status'] = false;
+
+			$errorList = $gump->get_errors_array();
+			$errorFromArray = array_values($errorList);
+			$data['errorlist'] = $errorList;
+			$data['message'] = $errorFromArray[0];
+			$statusCode = 406;
+			return View::responseJson($data, $statusCode);
+
+		}
+
+
+
+
+
+
 
 
 		$keys = array(

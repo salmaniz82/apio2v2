@@ -67,9 +67,70 @@ class enrollmentCtrl extends appCtrl
 		if(!jwACL::isLoggedIn()) 
 			return $this->uaReponse();
 
+
+
+
+		if(!jwACL::has('quiz-enroll-add')) 
+			return $this->accessDenied();
+
+
+
+
 		$entity_id = jwACL::authUserId();
 
 		$sendInvite = (isset($_POST['sendInviteEmail']) && $_POST['sendInviteEmail'] == true) ? true : false;
+
+
+
+		$this->load('external', 'gump.class');
+
+		$gump = new GUMP();
+
+
+		if(isset($_POST)) 
+		{
+
+			$_POST = $gump->sanitize($_POST);
+
+		}
+
+		else {
+
+			return $this->emptyRequestResponse();
+
+		}
+
+
+		$gump->validation_rules(array(
+			
+			'email' => 'required|valid_email',
+			'quiz_id'    =>  'required|integer'
+			
+		));
+
+
+
+		$pdata = $gump->run($_POST);
+
+
+		if($pdata === false) 
+		{
+
+			// validation failed
+			$data['status'] = false;
+
+			$errorList = $gump->get_errors_array();
+			$errorFromArray = array_values($errorList);
+			$data['errorlist'] = $errorList;
+			$data['message'] = $errorFromArray[0];
+			$statusCode = 406;
+			return View::responseJson($data, $statusCode);
+
+		}
+
+
+
+
 
 		$email = $_POST['email'];
 

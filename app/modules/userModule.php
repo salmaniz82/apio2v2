@@ -452,6 +452,20 @@ class userModule extends appCtrl{
 
 	}
 
+
+	public function save($payload)
+	{
+		if($lastId = $this->DB->insert($payload))
+		{
+
+			return $lastId;
+
+		}
+
+
+		return false;
+	}
+
 	
 
 

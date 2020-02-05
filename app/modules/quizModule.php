@@ -376,10 +376,16 @@ class quizModule extends appCtrl {
 
 
 		$dlsStatus = $this->DB->pluck('dls')->Where("id = '".$quiz_id."'");
-		
-
 		return $dlsStatus;
 
+	}
+
+	public function checkExists($quiz_id)
+	{
+
+
+		$dlsStatus = $this->DB->pluck('id')->Where("id = '".$quiz_id."'");
+		return $dlsStatus;
 
 	}
 

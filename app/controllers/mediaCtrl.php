@@ -76,6 +76,15 @@ class mediaCtrl extends appCtrl{
 	public function save()
 	{
 	
+
+		if(!jwACL::isLoggedIn()) 
+			return $this->uaReponse();	
+		
+		
+		if(!jwACL::has('media-upload')) 
+			return $this->accessDenied();
+
+
 		
 		$allowedImages = array('image/jpeg', 'image/jpg', 'image/png');
 		$allowedDocuments = array('application/pdf');

@@ -55,6 +55,71 @@ class questionsCtrl extends appCtrl
 			return $this->uaReponse();
 
 
+
+		if(!jwACL::has('dashboard-questions-add')) 
+			return $this->accessDenied();
+
+
+		$this->load('external', 'gump.class');
+
+			$gump = new GUMP();
+
+
+		if(isset($_POST)) 
+		{
+
+			$_POST = $gump->sanitize($_POST);
+
+		}
+
+		else {
+
+			return $this->emptyRequestResponse();
+
+		}
+
+
+		$gump->validation_rules(array(
+			
+			'category_id' => 'required|integer',
+			'section_id' => 'required|integer',
+			'level_id' => 'required|integer',
+			'type_id' => 'required|integer',
+			'queDesc' => 'required|min_len,10',
+			'optionA' => 'required|max_len,255',
+			'optionB' => 'required|max_len,255',
+			'optionC' => 'required|max_len,255',
+			'optionD' => 'required|max_len,255',
+			'answer' => 'required|max_len,255',
+
+		));
+
+
+
+		$pdata = $gump->run($_POST);
+
+
+		if($pdata === false) 
+		{
+
+			// validation failed
+			$data['status'] = false;
+
+			$errorList = $gump->get_errors_array();
+			$errorFromArray = array_values($errorList);
+			$data['errorlist'] = $errorList;
+			$data['message'] = $errorFromArray[0];
+			$statusCode = 406;
+			return View::responseJson($data, $statusCode);
+
+		}
+
+
+
+
+
+
+
 		$keys = array('category_id', 'section_id', 'level_id', 'type_id', 'queDesc', 'optionA', 'optionB', 'optionC', 'optionD', 'answer');
 		$dataPayload = $this->module->DB->sanitize($keys);
 		$dataPayload['user_id'] = $this->jwtUserId();
@@ -361,9 +426,62 @@ class questionsCtrl extends appCtrl
 
 
 
+			if(!jwACL::isLoggedIn()) 
+				return $this->uaReponse();	
 
-		if(!jwACL::isLoggedIn()) 
-			return $this->uaReponse();
+
+
+		
+			if(!jwACL::has('questions-upload')) 
+				return $this->accessDenied();
+
+
+
+			$this->load('external', 'gump.class');
+
+		$gump = new GUMP();
+
+		
+
+		if(isset($_POST)) 
+		{
+			$_POST = $gump->sanitize($_POST);	
+		}
+
+		else {
+			return $this->emptyRequestResponse();
+		}
+
+	
+		$gump->validation_rules(array(
+
+			'category_id' => 'required|integer',
+			'section_id'    =>  'required|integer'
+
+		));
+
+
+
+		$pdata = $gump->run($_POST);
+
+
+
+		if($pdata === false) 
+		{
+
+			$data['status'] = false;
+
+			$errorList = $gump->get_errors_array();
+			$errorFromArray = array_values($errorList);
+			$data['errorlist'] = $errorList;
+			$data['message'] = $errorFromArray[0];
+			$statusCode = 406;
+			return View::responseJson($data, $statusCode);
+
+			die();
+			
+		}
+
 
 
 
