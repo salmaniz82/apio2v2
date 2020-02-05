@@ -96,7 +96,16 @@ class userPermissionsCtrl extends appCtrl
 	public function resetUserPermission()
 	{
 
-		
+
+
+		if(!jwACL::isLoggedIn()) 
+			return $this->uaReponse();	
+
+
+		if(!jwACL::isAdmin())
+			return $this->accessDenied();
+
+
 		
 		$userID = (int) $this->getParam('user_id');
 		$role_id = (int) $this->getParam('role_id');
@@ -122,6 +131,15 @@ class userPermissionsCtrl extends appCtrl
 
 	public function userPrivatePermissionToggle()
 	{
+
+		
+			if(!jwACL::isLoggedIn()) 
+				return $this->uaReponse();	
+	
+
+			if(!jwACL::isAdmin())
+				return $this->accessDenied();
+
 
 		$_POST = Route::$_PUT;
 		$dataPayload['pStatus'] = $_POST['pStatus'];		
@@ -199,6 +217,18 @@ class userPermissionsCtrl extends appCtrl
 
 	public function resetAllUserPermissionUnderRole()
 	{
+
+		
+
+		if(!jwACL::isLoggedIn()) 
+			return $this->uaReponse();
+
+
+
+		if(!jwACL::isAdmin())
+			return $this->accessDenied();
+
+
 
 		$role_id = $this->getID();
 

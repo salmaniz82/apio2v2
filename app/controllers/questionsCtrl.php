@@ -303,6 +303,11 @@ class questionsCtrl extends appCtrl
 		if(!jwACL::isLoggedIn()) 
 			return $this->uaReponse();
 
+
+		if(!jwACL::has('question-edit')) 
+			return $this->accessDenied();
+
+
 		$queID = $this->getID();
 
 		$user_id = jwACL::authUserId();

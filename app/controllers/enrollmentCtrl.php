@@ -290,6 +290,18 @@ class enrollmentCtrl extends appCtrl
 	{
 
 
+
+		if(!jwACL::isLoggedIn()) 
+			return $this->uaReponse();
+
+
+
+		if(!jwACL::has('quiz-retake-toggle')) 
+			return $this->accessDenied();
+
+
+
+
 		$enroll_id = $this->getID();
 		$_POST = Route::$_PUT;
 		$retake  = (int) $_POST['retake'];
@@ -347,10 +359,52 @@ class enrollmentCtrl extends appCtrl
 	public function udpateScheduleDatetime()
 	{
 
+
+
+		if(!jwACL::isLoggedIn()) 
+			return $this->uaReponse();	
+		
+		if(!jwACL::has('enroll-schedule')) 
+			return $this->accessDenied();
+
+
 		$enroll_id = $this->getID();
-		$quiz_id = $this->getParam('quiz_id');
+
+		$quiz_id = (int) $this->getParam('quiz_id');
+
+
+		if($enroll_id == 0 || $quiz_id == 0)	
+		{
+
+			return $this->nonIntegorResponse();
+
+		}
+
+
 		$_POST = Route::$_PUT;
-		$dateScheduled  = $_POST['dtsScheduled'];
+
+
+
+		$dateScheduled  = (isset($_POST['dtsScheduled'])) ? $_POST['dtsScheduled'] : NULL;
+
+
+		if($dateScheduled == NULL)
+		{
+
+			return $this->responseNullDatetime();	
+
+		}
+
+
+
+		if(!$this->validateDateTime24hrs($dateScheduled))
+		{
+			return $this->responseInvalidDatetime();
+		}
+
+
+
+
 
 
 		$quizModule = $this->load('module', 'quiz');
@@ -376,6 +430,13 @@ class enrollmentCtrl extends appCtrl
 			$statusCode = 200;
 		}
 
+		else {
+
+			$data['message'] = "Enrollment failed make sure provided datetime is not the same";
+			$statusCode = 500;
+
+		}
+
 		return View::responseJson($data, $statusCode);
 
 	}
@@ -387,6 +448,15 @@ class enrollmentCtrl extends appCtrl
 
 		if(!jwACL::isLoggedIn()) 
 			return $this->uaReponse();
+
+
+
+
+		if(!jwACL::has('quiz-enroll-delete')) 
+			return $this->accessDenied();
+
+		
+
 
 		$id = $this->getID();
 
@@ -417,12 +487,19 @@ class enrollmentCtrl extends appCtrl
 		if(!jwACL::isLoggedIn()) 
 			return $this->uaReponse();
 
+
+
+		if(!jwACL::has('quiz-enroll-reset')) 
+			return $this->accessDenied();
+
+
 		
 		$enrollID = $this->getID();
 
 		$enrollResetPayload = array(
 			'attempts' => 0,
-			'retake'=> 0
+			'retake'=> 0,
+			'invited'=> 0
 		);
 
 		$attemptModule = $this->load('module', 'attempt');

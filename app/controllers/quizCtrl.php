@@ -1372,20 +1372,29 @@ class quizCtrl extends appCtrl
 
     	$_POST = Route::$_PUT;
 
+
     	if(!jwACL::isLoggedIn()) 
 			return $this->uaReponse();	
 
 
 		if(!jwACL::has('quiz-modify-datetime')) 
 			return $this->accessDenied();
-		
 
 
 		$id = $this->getID();
 
-		$startDateTime = $_POST['startDateTime'];
-		$endDateTime = $_POST['endDateTime'];
+		$startDateTime = (isset($_POST['startDateTime'])) ? $_POST['startDateTime'] : NULL;
 
+		$endDateTime = (isset($_POST['endDateTime'])) ? $_POST['endDateTime'] : NULL;
+
+
+
+		if($startDateTime == NULL || $endDateTime == NULL)
+		{
+
+			return $this->responseNullDatetime();
+
+		}
 
 
 		$dataPayload = array(
@@ -1394,6 +1403,25 @@ class quizCtrl extends appCtrl
 			'endDateTime' => $endDateTime
 
 		);
+
+
+
+		if(!$this->validateDateTime24hrs($startDateTime, 'Y-m-d H:i:s') && !$this->validateDateTime24hrs($startDateTime))
+		{
+			
+			return $this->responseInvalidDatetime();
+
+		}
+
+
+		if(!$this->validateDateTime24hrs($endDateTime, 'Y-m-d H:i:s') && !$this->validateDateTime24hrs($endDateTime))
+		{
+			
+			return $this->responseInvalidDatetime();
+
+		}
+
+
 
 
 		if($this->module->update($dataPayload, $id))
@@ -1469,6 +1497,12 @@ class quizCtrl extends appCtrl
 
 		if(!jwACL::isLoggedIn()) 
 			return $this->uaReponse();	
+
+
+		if(!jwACL::has('quiz-edit')) 
+			return $this->accessDenied();
+
+
 
     	$id = $this->getID();
 

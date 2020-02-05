@@ -273,6 +273,19 @@ class quizQuestionsCtrl extends appCtrl
     {
 
 
+    	if(!jwACL::isLoggedIn()) 
+			return $this->uaReponse();	
+
+		
+		
+		
+		if(!jwACL::has('quiz-question-edit')) 
+			return $this->accessDenied();
+
+
+
+
+
     	$_POST = Route::$_PUT;
 
     	$qqid = $_POST['qqId'];

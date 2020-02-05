@@ -81,6 +81,23 @@ class appCtrl {
 
 	}
 
+	public function responseNullDatetime()
+	{
+		$data['status'] = false;
+    	$data['message'] = "Provided with NULL datetime";
+	    $statusCode = 406;
+	    return View::responseJson($data, $statusCode);		
+	}
+
+
+	public function responseInvalidDatetime()
+	{
+		$data['status'] = false;
+    	$data['message'] = "Provided with invalid datetime format";
+	    $statusCode = 406;
+	    return View::responseJson($data, $statusCode);		
+	}
+
 
 
 	public function getID()
@@ -229,6 +246,20 @@ class appCtrl {
 		}
 
 		return false;
+	}
+
+
+
+	public function validateDateTime24hrs($date, $format = 'Y-m-d H:i')
+	{
+			/*
+			validate datetime mysql format without sections
+			for checking with seconds add Y-m-d H:i:s
+			as second argument for method $format
+			*/
+
+    		$d = DateTime::createFromFormat($format, $date);
+    		return ($d && $d->format($format) == $date);
 	}
 
 

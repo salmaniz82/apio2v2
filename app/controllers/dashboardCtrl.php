@@ -214,6 +214,13 @@ class dashboardCtrl extends appCtrl
 				return $this->uaReponse();
 
 			
+
+			if(!jwACL::has('activity-clear')) 
+				return $this->accessDenied();
+
+			
+
+			
 			$attemptID = $this->getID();
 
 			$attemptModule = $this->load('module', 'attempt');

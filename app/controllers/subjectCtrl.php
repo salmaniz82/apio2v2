@@ -57,6 +57,16 @@ class subjectCtrl extends appCtrl
 	public function updateDistro()
 	{
 
+		
+		if(!jwACL::isLoggedIn()) 
+			return $this->uaReponse();	
+
+
+		if(!jwACL::has('quiz-edit')) 
+			return $this->accessDenied();
+
+
+
 		$_POST = Route::$_PUT;
 		$quiz_id = $this->getID();
 

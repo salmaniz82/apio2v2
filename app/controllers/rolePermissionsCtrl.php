@@ -117,8 +117,19 @@ class rolePermissionsCtrl extends appCtrl
 	{
 
 
+
+		if(!jwACL::isLoggedIn()) 
+			return $this->uaReponse();	
+		
+		
+		if(!jwACL::has('rolepermission-delete')) 
+			return $this->accessDenied();
+
+
 		$rolePermissionId = $this->getID();
+
 		$role_id = (int) Route::$params['role_id'];;
+
 		$permission_id = Route::$params['permission_id'];
 		
 
@@ -158,6 +169,16 @@ class rolePermissionsCtrl extends appCtrl
 
 	public function statusToggle()
 	{
+
+		
+		if(!jwACL::isLoggedIn()) 
+			return $this->uaReponse();
+
+
+
+		if(!jwACL::isAdmin())
+			return $this->accessDenied();
+
 
 		$_POST = Route::$_PUT;
 		$dataPayload['status'] = $_POST['status'];		

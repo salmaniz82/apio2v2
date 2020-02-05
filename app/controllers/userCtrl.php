@@ -539,7 +539,7 @@ class userCtrl extends appCtrl
 			$statusCode = 500;
 		}
 
-		View::responseJson($data, $statusCode);
+		return View::responseJson($data, $statusCode);
 
 	}
 
@@ -552,7 +552,10 @@ class userCtrl extends appCtrl
 
 			die();
 		}
-		
+
+
+
+
 
 
 

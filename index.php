@@ -176,11 +176,9 @@ $route->put('/roles-reset-permission/{id}', 'userPermissionsCtrl@resetAllUserPer
 
 /* PERMISSIONS */
 
-
 $route->get('/permissions', 'permissionsCtrl@index');
 
 $route->post('/permissions', 'permissionsCtrl@save');
-
 
 $route->delete('/permissions/{id}', 'permissionsCtrl@delete');
 
@@ -481,6 +479,27 @@ $route->get('/pages-scoresheet/{quiz_id}/{attempt_id}', 'pagesCtrl@scoresheet');
 
 
 $route->post('/scorecard-pdf/{quiz_id}/{attempt_id}', 'pdfCtrl@scorecardPDF');
+
+
+$route->get('/assert', function() {
+
+	
+	$startDateTime = "2020-02-06 13:21";
+
+
+	function validateDateTime24hrs($date, $format = 'Y-m-d H:i')
+	{
+    		$d = DateTime::createFromFormat($format, $date);
+    		return ($d && $d->format($format) == $date);
+	}
+
+
+	var_dump( validateDateTime($startDateTime) );
+
+
+
+
+});
 
 
 

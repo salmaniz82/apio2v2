@@ -187,13 +187,56 @@ class profileCtrl extends appCtrl {
 	public function updateInfo()
 	{
 
-
+		
 		if(!jwACL::isLoggedIn()) 
 			return $this->uaReponse();	
+		
+
+		$this->load('external', 'gump.class');
+
+		$gump = new GUMP();
+
+		$_POST = Route::$_PUT;
+
+	
+		$_POST = $gump->sanitize($_POST);
+
+
+		$gump->validation_rules(array(
+			'companyTitle' => 'required',
+			'url'    =>  'required',
+			'email'    =>  'required|valid_email',
+			'contactPerson' 	=> 'required',
+			'address' 	=> 'required',
+			'mobile' 		=> 'required',
+			'landline' 	=> 'required'
+		));
+
+
+
+		$pdata = $gump->run($_POST);
+
+
+
+		if($pdata === false) 
+		{
+
+			// validation failed
+		
+			$data['status'] = false;
+			$data['message'] = 'Required fields were missing or supplied with invalid format';
+			$data['errorlist'] = $gump->get_errors_array();
+			$statusCode = 406;
+
+			return View::responseJson($data, $statusCode);
+
+			die();
+			
+		}
+
 
 		$user_id = jwACL::authUserId();
 
-		$_POST = Route::$_PUT;
 
 		$keys = array('companyTitle', 'url', 'email', 'contactPerson', 'address', 'mobile', 'landline');
 

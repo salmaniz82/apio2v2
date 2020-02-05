@@ -18,13 +18,16 @@ class answersCtrl extends appCtrl
 	public function recoverFromActivity()
 	{
 
+
+
+		if(!jwACL::isLoggedIn()) 	
+			return $this->uaReponse();
+		
+
 		$attempt_id = $this->getID();
-
 		/*
-
 		1. copy answers from activity
 		2. insert to questions
-
 		3. toggleActive
 		4. markAnswer with correct & incorrect
 		5. calcuate score and insert into score sheet
@@ -32,8 +35,6 @@ class answersCtrl extends appCtrl
 		7. set / udpate score on attempts table
 		8. update question counter
 		9. 
-
-
 		*/
 
 

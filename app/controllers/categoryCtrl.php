@@ -258,9 +258,13 @@ class categoryCtrl extends appCtrl {
 
 		if(!jwACL::isLoggedIn()) 
 			return $this->uaReponse();	
+
+
 		
 		if(!jwACL::has('category-delete')) 
 			return $this->accessDenied();
+
+		
 
 		$id = $this->getID();
 

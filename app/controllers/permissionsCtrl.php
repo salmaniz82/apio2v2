@@ -104,14 +104,13 @@ class permissionsCtrl extends appCtrl
 			return $this->accessDenied();
 
 
+		$id =  $this->getID();
 		
-		if(!$id = (int) $this->getID())
+		if($id == 0)
 		{
+		
+			return $this->nonIntegorResponse();
 
-			$data['message'] = "Expecting Permission ID to be removed";
-			$statusCode = 406;
-			return View::responseJson($data, $statusCode);		
-			die();					
 		}
 
 
