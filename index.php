@@ -326,6 +326,9 @@ $route->get('/newquestion-available/{id}', 'quizQuestionsCtrl@questionSyncCheck'
 $route->post('/quiz-question-sycnronize', 'quizQuestionsCtrl@processSynchronize');
 
 
+$route->get('/demoquizplay', 'quizCtrl@demoQuizplay');
+
+
 
 
 

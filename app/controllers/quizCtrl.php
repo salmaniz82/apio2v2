@@ -2011,28 +2011,19 @@ class quizCtrl extends appCtrl
 
        while($isShortCodeDuplicate & !$oldAlphaExists)
        {
-
-                $generatedCode  = $urlShortnerModule->convertIntToShortCode($inputID);
-
-                if(!$quizModule->alphaIDBinaryCheck($generatedCode))
-                {
-                    
+            $generatedCode  = $urlShortnerModule->convertIntToShortCode($inputID);
+            if(!$quizModule->alphaIDBinaryCheck($generatedCode))
+            {                   
 
                     $payload = array(
-
                     'alphaID' => $generatedCode
-
                     );
-
                 $quizModule->update($payload, $quizId);
-
                 $isShortCodeDuplicate = false;
-
-                    
-                }
+                   
+            }
 
         }
-
 
             $data['alphaID'] = $generatedCode;
             $data['type'] = 'generated';
@@ -2042,9 +2033,140 @@ class quizCtrl extends appCtrl
     }
 
 
+    public function demoQuizplay()
+    {
 
 
-		
+
+		$quiz_id = 197;
+
+		/*
+		pick from random array
+		*/
+
+
+		$quizQuestionModule = $this->load('module', 'quizQuestions');
+
+
+		if($quiz = $this->module->getQuizInfo($quiz_id))
+		{
+
+
+			
+			$data['quiz'] = $quiz;
+
+			$data['imagesPreload'] = array();
+
+			$requiredQuestions = $quiz[0]['noques'];
+
+			if($questions = $quizQuestionModule->listQuizPlayQuestionsDistro($quiz_id))
+			{
+				
+				// inject media to each question if available
+				for($i=0; $i<sizeof($questions); $i++)
+				{
+
+					
+					$question_id = $questions[$i]['questionId'];
+
+					
+					if($this->stringIsAbsoluteImagePath($questions[$i]['optionA']))
+					{
+
+						$data['imagesPreload'][] = $questions[$i]['optionA'];
+
+					}
+
+					
+					if($this->stringIsAbsoluteImagePath($questions[$i]['optionB']))
+					{
+						
+						$data['imagesPreload'][] = $questions[$i]['optionB'];
+					}
+
+					if($this->stringIsAbsoluteImagePath($questions[$i]['optionC']))
+					{
+						$data['imagesPreload'][] = $questions[$i]['optionC'];
+
+					}
+
+					if($this->stringIsAbsoluteImagePath($questions[$i]['optionD']))
+					{
+						
+						$data['imagesPreload'][] = $questions[$i]['optionD'];
+
+					}
+
+					
+
+
+					if($media = $quizQuestionModule->getQuestionMedia($question_id))
+					{					
+						
+						$questions[$i]['media'] = $media;
+
+
+						foreach ($media as $key => $imgObject) {
+
+							
+
+							$data['imagesPreload'][] = $imgObject['filepathurl'];
+							
+						}
+
+
+						
+
+
+					}
+
+				}
+
+				
+
+				$data['imagesPreload'] = array_values(array_unique($data['imagesPreload']));
+
+				$data['questions'] = $questions;	
+
+
+				$data['usageXTimes'] = 1;
+
+				$data['count'] = sizeof($questions);
+
+
+				
+				if($logo = $this->module->getQuizEntityLogo($quiz_id))
+				{
+					$data['entityLogo'] = $logo;	
+				}
+
+				else {
+
+					$data['entityLogo'] = false;
+
+				}
+
+			}
+
+
+
+		}
+
+
+		if($quiz != false)
+		{
+			$statusCode = 200;
+		}
+
+		else {
+			$data['message'] = 'question cannot be loaded';
+			$statusCode = 500;
+		}
+
+		return View::responseJson($data, $statusCode);
+
+    }
+
 
 }
 
