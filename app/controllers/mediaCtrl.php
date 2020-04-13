@@ -28,10 +28,16 @@ class mediaCtrl extends appCtrl{
 
 		$user_id = jwACL::authUserId();
 
-		if( $media = $this->module->listall($user_id) )
+		$role_id = jwACL::roleId();
+
+
+		
+
+		if( $media = $this->module->listall($user_id, $role_id) )
 		{
 			$data['media'] = $media;
 			$statusCode = 200;
+
 		}
 
 		else {
@@ -40,6 +46,8 @@ class mediaCtrl extends appCtrl{
 			$statusCode = 500;
 		}
 		return View::responseJson($data, $statusCode);
+
+		
 
 	}
 
@@ -50,9 +58,6 @@ class mediaCtrl extends appCtrl{
 		
 		if(!jwACL::isLoggedIn()) 
 			return $this->uaReponse();
-
-		
-
 
 
 		$id = $this->getID();

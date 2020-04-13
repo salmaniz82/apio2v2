@@ -33,7 +33,9 @@ class batchCtrl extends appCtrl
 
 		$user_id = $this->jwtUserId();
 
-		if($batches = $this->module->listAllBatches($user_id))
+		$role_id = jwACL::roleId();
+
+		if($batches = $this->module->listAllBatches($user_id, $role_id))
 		{
 			$data['batches'] = $batches;
 
@@ -78,7 +80,9 @@ class batchCtrl extends appCtrl
 
 		$user_id = $this->jwtUserId();
 
-		$partProgress = $this->module->candParticipation($batchId, $user_id);
+		$role_id = jwACL::roleId();
+
+		$partProgress = $this->module->candParticipation($batchId, $user_id, $role_id);
 
 		$data['batchProgress'] = $partProgress;
 

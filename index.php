@@ -280,6 +280,8 @@ $route->put('/quiz-status-toggle/{id}', 'quizCtrl@statusToggle');
 $route->get('/quiz/progress/{id}', 'quizCtrl@quizProgress');
 
 
+
+
 /* quiz overview uses same data */
 
 $route->get('/quiz/subjects/{id}', 'subjectCtrl@index');
@@ -389,6 +391,15 @@ $route->post('/sendinvitation/{id}', 'invitationsCtrl@addInvitation');
 
 $route->get('/invitation-quizzes/{id}', 'quizCtrl@invitationQuizListHandler');
 
+/* GENERATE  ALPHA ID FOR DIRECT ACCESS*/
+$route->get('/quiz-alphaid/{id}', 'quizCtrl@generateAlphaID');
+
+/* GET ACCESS TOKEN via ALPHA ID */
+
+$route->get('/quiz-direct-url/{alphaID}', 'quizCtrl@directUrl');
+
+
+$route->get('/direct-access-quiz/{id}', 'quizCtrl@quizDirectAccessHandler');
 
 
 $route->get('/batch/details/{id}', 'batchCtrl@batchDetails');
@@ -478,6 +489,21 @@ $route->get('/pages-scoresheet/{quiz_id}/{attempt_id}', 'pagesCtrl@scoresheet');
 
 
 $route->post('/scorecard-pdf/{quiz_id}/{attempt_id}', 'pdfCtrl@scorecardPDF');
+
+
+
+
+
+
+
+$route->get('/quizalphaid/{alphaID}', 'moduleTestCtrl@getAlplaIDCheck');
+
+
+
+$route->get('/assert', function() {
+
+
+});
 
 
 $route->otherwise( function() {

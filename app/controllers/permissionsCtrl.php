@@ -107,11 +107,13 @@ class permissionsCtrl extends appCtrl
 		}
 
 
+				$keys = array('name');
 
 
+				$dataPayload = $this->module->DB->sanitize($keys);
 
-				$dataPayload['name'] = trim($_POST['name']);
-
+				
+				
 				if($this->module->checkDuplicate($dataPayload['name']))
 				{
 

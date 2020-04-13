@@ -225,6 +225,27 @@ class enrollModule
 	}
 
 
+	public function getEnrollviaCandidateId($user_id, $quiz_id)
+	{
+
+
+		$sql = "SELECT id from enrollment WHERE student_id = {$user_id} AND quiz_id = {$quiz_id} LIMIT 1";
+
+		if($enroll_id = $this->DB->rawSql($sql)->returnData())
+		{
+
+
+			return $enroll_id[0]['id'];
+
+
+		}
+
+		return false;
+
+
+	}
+
+
 
 	public function updateInvited($enroll_id)
 	{

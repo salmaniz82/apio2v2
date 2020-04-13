@@ -765,7 +765,7 @@ class quizCtrl extends appCtrl
 
 
 		
-		/*
+		
 
 		if($usageXTimes === false)
 		{
@@ -790,7 +790,7 @@ class quizCtrl extends appCtrl
 			
 		}
 
-		*/
+		
 
 		
 
@@ -999,7 +999,7 @@ class quizCtrl extends appCtrl
 		$usageXTimes = $attemptModule->getXTimesUsed($attempt_id);
 
 
-		/*
+		
 
 
 		if($usageXTimes === false)
@@ -1025,13 +1025,7 @@ class quizCtrl extends appCtrl
 		}
 	
 
-		*/
-
 		
-		
-		
-		
-
 		$attemptModule->incrementUsageXTimes($attempt_id);
 
 		$quizQuestionModule = $this->load('module', 'quizQuestions');
@@ -1771,6 +1765,91 @@ class quizCtrl extends appCtrl
 		}
 
 
+		public function quizDirectAccessHandler()
+		{
+
+
+			if(!jwACL::isLoggedIn()) 
+				return $this->uaReponse();
+
+			$quiz_id = $this->getID();
+
+			$user_id = $this->jwtUserId();
+
+			/*
+			1. check if auth role type is candidate
+			2. check if quiz enroll is enabled
+			2. check if that is enrolled
+			3. enroll if not already enrollledd
+			4. get enroll_id
+			5. get list of quiz
+			*/
+
+
+			$quizModule = $this->load('module', 'quiz');
+
+			$enrollModule = $this->load('module', 'enroll');
+
+
+			if(JwtAuth::$user['role_id'] != 4)
+			{
+				$data['message'] = "User type is not allowed to access this route";
+				$statusCode = 406;
+				return View::responseJson($data, $statusCode);
+			}
+
+
+			if(!$quizModule->quizEnrollmentEnabled($quiz_id))
+			{
+
+
+				$data['message'] = "Quiz enrollment is disabled cannot continue";
+				$statusCode = 406;
+				return View::responseJson($data, $statusCode);	
+
+			}
+
+
+			if(!$enroll_id = $enrollModule->getEnrollviaCandidateId($user_id, $quiz_id))
+			{
+
+				
+				$enroll_id = $enrollModule->enrolltoQuiz($user_id, $quiz_id);
+
+			}
+
+
+
+
+			if($attempted = $quizModule->getAttemptedInvitedQuizList($user_id, $enroll_id))
+			{
+					$data['attempted'] = $attempted;
+			}
+			else {
+					$data['attempted'] = 0;
+			}
+			
+			if($quiz = $quizModule->getPendingInvitedQuiList($user_id, $enroll_id))
+			{
+				$data['quiz'] = $quiz;
+				$data['status'] = true;
+				$statusCode = 200;			
+			}
+
+			else {
+				$data['quiz'] = 0;
+				$statusCode = 200;
+				
+			}
+			
+			return View::responseJson($data, $statusCode);
+
+		}
+
+
+
+
+
 		public function canidateSelfProgressDetails()
 		{
 
@@ -1819,6 +1898,150 @@ class quizCtrl extends appCtrl
 			
 
 		}
+
+
+
+		public function directUrl()
+		{
+
+			
+			$alphaID = $this->getParam('alphaID');
+
+
+			$quizModule = $this->load('module', 'quiz');
+
+
+			if(!$quizID = $quizModule->pluckIdfromAlphaID($alphaID))
+			{
+				
+				$data['message'] = "Invalid Access Id provided";
+				$statusCode  = 406;
+				return View::responseJson($data, $statusCode);			
+
+			}
+
+
+			if(!$quizInfo = $quizModule->extractEntitySlugviaQuizID($quizID))
+			{
+
+				$data['message'] = "Invalid Quiz Id";
+				$statusCode  = 500;
+				return View::responseJson($data, $statusCode);
+
+			}
+
+			$quizInfo = $quizInfo[0];
+
+			if($quizInfo['slug'] == null)
+			{
+
+				$data['message'] = "Please set slug in profile";
+				$statusCode  = 406;
+				$data['slug'] = false;
+				return View::responseJson($data, $statusCode);
+
+			}
+
+
+			$slug = $quizInfo['slug'];
+
+			$actionToken = array(
+				'action' => 'directQuiz',
+				'entitySlug'=> $slug,
+				'quiz_id'=> $quizID
+
+			);
+
+			$encodedToken = urlencode(base64_encode(json_encode($actionToken)));
+
+			$data['urltoken'] = $encodedToken;
+			$data['slug'] = $slug;
+
+			return View::responseJson($data, 200);
+
+
+		}
+
+
+	public function generateAlphaID()
+    {
+
+        $quizId = $this->getID();
+
+        $urlShortnerModule = $this->load('module', 'urlshortner');
+
+        $quizModule = $this->load('module', 'quiz');      
+
+        $inputID = (int) $quizId . time(); 
+
+        $isShortCodeDuplicate = true;
+
+        $generatedCode = null;
+
+        $oldAlphaExists = false;
+
+
+        if(!$quizModule->pluckQuizID($quizId))
+        {
+
+
+            $data['message'] = "Invalid quiz id";
+            $statusCode = 500;
+            return View::responseJson($data, $statusCode);
+            die();
+
+
+        }
+
+
+        if($oldAlpha = $quizModule->pluckAlphaIDviaID($quizId))
+        {
+
+             $oldAlphaExists = true;   
+
+             $data['alphaID'] = $oldAlpha;
+             $data['type'] = 'existing';
+             $statusCode = 200;
+             return View::responseJson($data, $statusCode);
+
+             die();
+
+        }
+
+
+       while($isShortCodeDuplicate & !$oldAlphaExists)
+       {
+
+                $generatedCode  = $urlShortnerModule->convertIntToShortCode($inputID);
+
+                if(!$quizModule->alphaIDBinaryCheck($generatedCode))
+                {
+                    
+
+                    $payload = array(
+
+                    'alphaID' => $generatedCode
+
+                    );
+
+                $quizModule->update($payload, $quizId);
+
+                $isShortCodeDuplicate = false;
+
+                    
+                }
+
+        }
+
+
+            $data['alphaID'] = $generatedCode;
+            $data['type'] = 'generated';
+            $statusCode = 200;
+            return View::responseJson($data, $statusCode);
+
+    }
+
+
 
 
 		

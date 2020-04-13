@@ -111,9 +111,6 @@ class subjectCtrl extends appCtrl
 			return $this->accessDenied();
 
 
-
-
-
         $entityId = jwACL::authUserId();
 
         $threshold = (isset($_POST['threshold'])) ? $_POST['threshold'] : "10000";

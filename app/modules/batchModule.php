@@ -16,10 +16,22 @@ class batchModule extends appCtrl {
 
 
 
-	public function listAllBatches($user_id)
+	public function listAllBatches($user_id, $role_id = null)
 	{
 		
-		$sql = "SELECT id, title, maxScore, passingScore, user_id from batches WHERE user_id = $user_id";
+
+		if($role_id == null || $role_id != 1)
+		{
+			$sql = "SELECT id, title, maxScore, passingScore, user_id from batches WHERE user_id = $user_id";		
+		}
+
+		else {
+
+			$sql = "SELECT id, title, maxScore, passingScore, user_id from batches";
+
+		}
+
+		
 
 		if($rows = $this->DB->rawSql($sql)->returnData())
 		{
@@ -44,7 +56,7 @@ class batchModule extends appCtrl {
 	}
 
 
-	public function getCandiateParticipation($batchId, $user_id)
+	public function getCandiateParticipation($batchId, $user_id, $role_id)
 	{
 
 		
@@ -70,8 +82,14 @@ class batchModule extends appCtrl {
 		from tagging tg
 		INNER JOIN users u on u.id = tg.candidate_id 
 		INNER JOIN batches bt on bt.id = tg.batch_id 
-		WHERE tg.batch_id = $batchId 
-		AND bt.user_id = $user_id";
+		WHERE tg.batch_id = $batchId ";
+
+
+		if($role_id == null || $role_id != 1)
+		{
+			$sql .= " AND bt.user_id = $user_id ";	
+		}
+		
 
 		$row = $this->DB->rawSql($sql)->returnData();
 
@@ -85,11 +103,11 @@ class batchModule extends appCtrl {
 	}
 
 
-	public function candParticipation($batchId, $user_id)
+	public function candParticipation($batchId, $user_id, $role_id = null)
 	{
 
 
-		$data = $this->getCandiateParticipation($batchId, $user_id);
+		$data = $this->getCandiateParticipation($batchId, $user_id, $role_id);
 
 		if(!$data)
 		{

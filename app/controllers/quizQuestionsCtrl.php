@@ -75,6 +75,9 @@ class quizQuestionsCtrl extends appCtrl
 		$quizModule = $this->load('module', 'quiz');
 
 
+		$quizModule = $this->load('module', 'quiz');
+
+
 		if(!$quizModule->checkExists($quiz_id))
 		{
 

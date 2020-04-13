@@ -359,13 +359,15 @@ class Database
         foreach ($colums as $key => $value) {
             if(isset($_POST[$value]))
             {
-                $data[$value] = mysqli_real_escape_string($this->connection, $_POST[$value]);  
+                $data[$value] = mysqli_real_escape_string($this->connection, trim($_POST[$value]));  
             }
         }
 
         return $data;
 
     }
+
+    
 
 
     public function escArray($dataarray)

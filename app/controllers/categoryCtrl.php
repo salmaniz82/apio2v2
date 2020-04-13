@@ -174,7 +174,7 @@ class categoryCtrl extends appCtrl {
 
 		}
 
-		$payload = sanitize($keys);
+		$payload = $this->module->DB->sanitize($keys);
 
 
 		if((!$this->module->checkDuplicate($payload)) && (!$crossTail))

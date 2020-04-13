@@ -19,12 +19,25 @@ class mediaModule
 
 	
 
-	public function listall($user_id)
+	public function listall($user_id, $role_id = null)
 	{
 
 
-		$sql = "SELECT m.id, m.category_id, cat.name as 'category', m.title, m.filepathurl, m.type, format_bytes(m.size) as 'size', m.user_id from media m 
-		INNER JOIN categories cat on cat.id = m.category_id WHERE m.user_id = $user_id";
+		if($role_id == null || $role_id != 1)
+		{
+
+			$sql = "SELECT m.id, m.category_id, cat.name as 'category', m.title, m.filepathurl, m.type, format_bytes(m.size) as 'size', m.user_id from media m 
+			INNER JOIN categories cat on cat.id = m.category_id WHERE m.user_id = $user_id";
+
+		}
+
+		else {
+
+			$sql = "SELECT m.id, m.category_id, cat.name as 'category', m.title, m.filepathurl, m.type, format_bytes(m.size) as 'size', m.user_id from media m 
+			INNER JOIN categories cat on cat.id = m.category_id";
+
+		}
+	
 
 		$media = $this->DB->rawsql($sql)->returnData();
 

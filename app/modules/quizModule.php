@@ -212,6 +212,64 @@ class quizModule extends appCtrl {
 
 	}
 
+	public function alphaIDBinaryCheck($alphaID)
+	{
+
+		$sql = "SELECT alphaID from quiz WHERE BINARY alphaID = '{$alphaID}' LIMIT 1";
+
+
+		if($data = $this->DB->rawSql($sql)->returnData($sql))
+		{
+			return $data[0]['alphaID'];
+		}
+
+		return false;
+
+	}
+
+	public function pluckQuizID($id)
+	{
+		$sql = "SELECT id from quiz WHERE id = {$id} LIMIT 1";
+
+		if($this->DB->rawSql($sql)->returnData($sql))
+		{
+			return true;
+		}
+
+		return false;
+	}
+
+	public function pluckAlphaIDviaID($id){
+
+		$sql = "SELECT alphaID from quiz WHERE id = '{$id}' LIMIT 1";
+
+
+		if($data = $this->DB->rawSql($sql)->returnData($sql))
+		{
+			return $data[0]['alphaID'];
+		}
+
+		return false;
+
+	}
+
+	public function pluckIdfromAlphaID($alphaID)
+	{
+
+		$sql = "SELECT id from quiz WHERE BINARY alphaID = '{$alphaID}' LIMIT 1";
+
+
+		if($data = $this->DB->rawSql($sql)->returnData($sql))
+		{
+			return $data[0]['id'];
+		}
+
+		return false;
+
+	}
+
+
+
 
 	public function getQuizInfo($quiz_id)
 	{
@@ -543,6 +601,27 @@ class quizModule extends appCtrl {
 			}
 
 			return false;
+
+		}
+
+
+		public function extractEntitySlugviaQuizID($quiz_id)
+		{
+
+
+			$sql = "SELECT qz.id, p.slug, u.id as entity_id from quiz qz 
+					INNER JOIN users u on qz.user_id = u.id 
+					INNER JOIN profile p on p.user_id = u.id 
+					where qz.id = {$quiz_id}";
+
+
+			if($data = $this->DB->rawSql($sql)->returnData())
+			{
+				return $data;
+			}
+
+			return false;
+
 
 		}
 

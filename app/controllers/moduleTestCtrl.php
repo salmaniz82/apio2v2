@@ -904,23 +904,33 @@ class moduleTestCtrl extends appCtrl {
 
         
         $userModule  = $this->load('module', 'user');
-
         $emaiCollection  = array(
 
             'sa@domain.com',
             'std01@domain.com'
         );
 
-
         $emailIDString = "'" .implode("','", $emaiCollection) . "'";
 
         $res = $userModule->findUserWithMatchedEmailsString($emailIDString);
 
-
         var_dump($res);
 
+    }
+
+
+    
+    public function getAlplaIDCheck()
+    {
 
         
+        $alhaID = $this->getParam('alphaID');
+
+        $quizModule = $this->load('module', 'quiz');
+
+        $output = $quizModule->alphaIDBinaryCheck($alhaID);
+
+        var_dump($output);
 
     }
 
