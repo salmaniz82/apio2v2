@@ -52,14 +52,14 @@
 
 ### Define Database Connection in app/config.php
 
-code (define('SERVER', 'localhost'))
+<code> define('SERVER', 'localhost') </code>
 
-code (define('USER', 'my-db-user');)
+<code> define('USER', 'my-db-user'); </code>
 
-code (define('DATABASE', 'your-database-name');)
+<code> define('DATABASE', 'your-database-name'); </code>
 
-code (define('PASSWORD', 'my-password');)
+<code> define('PASSWORD', 'my-password'); </code>
 
 ### Define Routes
 
-code (\$route->get('/', 'pagesCtrl@home'));
+<code> \$route->get('/', 'pagesCtrl@home') </code>
