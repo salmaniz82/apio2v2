@@ -4,7 +4,7 @@
 
 ## Custom MVC framework written in PHP for extremly lightweight and rapid application & REST API developement.
 
-### Third parth libraries
+### Third party libraries
 
 - GUMP for INPUT VALIDATION
 - PHP MAILER
